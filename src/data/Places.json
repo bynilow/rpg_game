@@ -1,0 +1,241 @@
+
+[
+    {
+        "id": "south_beach",
+        "avatar": "",
+        "title": "Южный пляж",
+        "description": "",
+        "areaItems": [
+            {
+                "id": "birch_tree",
+                "countMin": 1,
+                "countMax": 4
+            },
+            {
+                "id": "iron_ore",
+                "countMin": 0,
+                "countMax": 2
+            }
+        ],
+        "currentAreaItems": [
+
+        ],
+        "enemies": [],
+        "timeToRespawnAreaItems": 120,
+        "timeToRespawnAreaEnemies": 180,
+        "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
+        "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z" 
+    },
+    {
+        "id": "low_hills",
+        "avatar": "",
+        "title": "Невысокие холмы",
+        "description": "",
+        "areaItems": [
+            {
+                "id": "birch_tree",
+                "countMin": 1,
+                "countMax": 2
+            },
+            {
+                "id": "oak_tree",
+                "countMin": 0,
+                "countMax": 2
+            },
+            {
+                "id": "iron_ore",
+                "countMin": 1,
+                "countMax": 2
+            }
+        ],
+        "currentAreaItems": [
+
+        ],
+        "enemies": [],
+        "timeToRespawnAreaItems": 90,
+        "timeToRespawnAreaEnemies": 120,
+        "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
+        "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z" 
+    },
+    {
+        "id": "sharp_mountains",
+        "avatar": "",
+        "title": "Острогорье",
+        "description": "",
+        "areaItems": [
+            {
+                "id": "oak_tree",
+                "countMin": 1,
+                "countMax": 2
+            },
+            {
+                "id": "iron_ore",
+                "countMin": 1,
+                "countMax": 2
+            },
+            {
+                "id": "titanium_ore",
+                "countMin": 1,
+                "countMax": 2
+            },
+            {
+                "id": "platinum_ore",
+                "countMin": 1,
+                "countMax": 2
+            },
+            {
+                "id": "adamantite_ore",
+                "countMin": 0,
+                "countMax": 2
+            }
+        ],
+        "currentAreaItems": [
+
+        ],
+        "enemies": [],
+        "timeToRespawnAreaItems": 110,
+        "timeToRespawnAreaEnemies": 135,
+        "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
+        "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z" 
+    },
+    {
+        "id": "fish_ponds",
+        "avatar": "",
+        "title": "Рыбные пруды",
+        "description": "",
+        "areaItems": [
+            {
+                "id": "oak_tree",
+                "countMin": 0,
+                "countMax": 1
+            },
+            {
+                "id": "willow_tree",
+                "countMin": 1,
+                "countMax": 2
+            },
+            {
+                "id": "tungsten_ore",
+                "countMin": 0,
+                "countMax": 2
+            }
+        ],
+        "currentAreaItems": [
+
+        ],
+        "enemies": [],
+        "timeToRespawnAreaItems": 125,
+        "timeToRespawnAreaEnemies": 140,
+        "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
+        "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z" 
+    },
+    {
+        "id": "forgotten_road",
+        "avatar": "",
+        "title": "Забытая тропа",
+        "description": "",
+        "areaItems": [
+            {
+                "id": "willow_tree",
+                "countMin": 1,
+                "countMax": 2
+            },
+            {
+                "id": "cedar_tree",
+                "countMin": 1,
+                "countMax": 1
+            },
+            {
+                "id": "teak_tree",
+                "countMin": 0,
+                "countMax": 1
+            },
+            {
+                "id": "iron_ore",
+                "countMin": 1,
+                "countMax": 2
+            },
+            {
+                "id": "tungsten_ore",
+                "countMin": 0,
+                "countMax": 1
+            }
+        ],
+        "currentAreaItems": [
+
+        ],
+        "enemies": [],
+        "timeToRespawnAreaItems": 115,
+        "timeToRespawnAreaEnemies": 80,
+        "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
+        "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z" 
+    },
+    {
+        "id": "central_castle",
+        "avatar": "",
+        "title": "Центральный замок",
+        "description": "",
+        "areaItems": [
+            {
+                "id": "birch_tree",
+                "countMin": 2,
+                "countMax": 4
+            },
+            {
+                "id": "oak_tree",
+                "countMin": 1,
+                "countMax": 2
+            }
+        ],
+        "currentAreaItems": [
+
+        ],
+        "enemies": [],
+        "timeToRespawnAreaItems": 100,
+        "timeToRespawnAreaEnemies": 120,
+        "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
+        "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z" 
+    },
+    {
+        "id": "bloody_forest",
+        "avatar": "",
+        "title": "Кровавые леса",
+        "description": "",
+        "areaItems": [
+            {
+                "id": "willow_tree",
+                "countMin": 1,
+                "countMax": 4
+            },
+            {
+                "id": "cedar_tree",
+                "countMin": 1,
+                "countMax": 2
+            },
+            {
+                "id": "teak_tree",
+                "countMin": 0,
+                "countMax": 2
+            },
+            {
+                "id": "tungsten_ore",
+                "countMin": 0,
+                "countMax": 1
+            },
+            {
+                "id": "platinum_ore",
+                "countMin": 0,
+                "countMax": 1
+            }
+
+        ],
+        "currentAreaItems": [
+
+        ],
+        "enemies": [],
+        "timeToRespawnAreaItems": 160,
+        "timeToRespawnAreaEnemies": 210,
+        "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
+        "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z" 
+    }
+]

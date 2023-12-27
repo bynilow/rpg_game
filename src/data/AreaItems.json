@@ -1,0 +1,210 @@
+[
+    
+    [
+        {
+            "id": "birch_tree",
+            "title": "Обычная Береза",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 7.0,
+            "type": "tree",
+            "rare": "common",
+            "countMin": 0,
+            "countMax": 0
+        },
+        {
+            "id": "oak_tree",
+            "title": "Крепкий Дуб",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 10.0,
+            "type": "tree",
+            "rare": "uncommon",
+            "countMin": 0,
+            "countMax": 0
+        },
+        {
+            "id": "willow_tree",
+            "title": "Плакучая Ива",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 16.0,
+            "type": "tree",
+            "rare": "rare",
+            "countMin": 0,
+            "countMax": 0
+        },
+        {
+            "id": "cedar_tree",
+            "title": "Вечнозеленный Кедр",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 20.0,
+            "type": "tree",
+            "rare": "mythical",
+            "countMin": 0,
+            "countMax": 0
+        },
+        {
+            "id": "teak_tree",
+            "title": "Долговечный Тик",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 26.0,
+            "type": "tree",
+            "rare": "legendary",
+            "countMin": 0,
+            "countMax": 0
+        },
+        {
+            "id": "iron_ore",
+            "title": "Железная руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 8.0,
+            "type": "ore",
+            "rare": "common",
+            "countMin": 0,
+            "countMax": 0
+        },
+        {
+            "id": "tungsten_ore",
+            "title": "Вольфрамовая руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 14.0,
+            "type": "ore",
+            "rare": "uncommon",
+            "countMin": 0,
+            "countMax": 0
+        },
+        {
+            "id": "platinum_ore",
+            "title": "Платиновая руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 21.0,
+            "type": "ore",
+            "rare": "rare",
+            "countMin": 0,
+            "countMax": 0
+        },
+        {
+            "id": "titanium_ore",
+            "title": "Титановая руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 26.0,
+            "type": "ore",
+            "rare": "mythical",
+            "countMin": 0,
+            "countMax": 0
+        },
+        {
+            "id": "adamantite_ore",
+            "title": "Адамантитовая руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 31.0,
+            "type": "ore",
+            "rare": "legendary",
+            "countMin": 0,
+            "countMax": 0
+        }
+    ],
+    
+
+
+    [
+        {
+            "id": "birch_tree",
+            "title": "Обычная Береза",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 7.0,
+            "type": "tree",
+            "rare": "common"
+        },
+        {
+            "id": "oak_tree",
+            "title": "Крепкий Дуб",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 10.0,
+            "type": "tree",
+            "rare": "uncommon"
+        },
+        {
+            "id": "willow_tree",
+            "title": "Плакучая Ива",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 16.0,
+            "type": "tree",
+            "rare": "rare"
+        },
+        {
+            "id": "cedar_tree",
+            "title": "Вечнозеленный Кедр",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 20.0,
+            "type": "tree",
+            "rare": "mythical"
+        },
+        {
+            "id": "teak_tree",
+            "title": "Долговечный Тик",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 26.0,
+            "type": "tree",
+            "rare": "legendary"
+        },
+        {
+            "id": "iron_ore",
+            "title": "Железная руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 8.0,
+            "type": "ore",
+            "rare": "common"
+        },
+        {
+            "id": "tungsten_ore",
+            "title": "Вольфрамовая руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 14.0,
+            "type": "ore",
+            "rare": "uncommon"
+        },
+        {
+            "id": "platinum_ore",
+            "title": "Платиновая руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 21.0,
+            "type": "ore",
+            "rare": "rare"
+        },
+        {
+            "id": "titanium_ore",
+            "title": "Титановая руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 26.0,
+            "type": "ore",
+            "rare": "mythical"
+        },
+        {
+            "id": "adamantite_ore",
+            "title": "Адамантитовая руда",
+            "avatar": "",
+            "description": "",
+            "timeToMining": 31.0,
+            "type": "ore",
+            "rare": "legendary"
+        }
+    ]
+]
