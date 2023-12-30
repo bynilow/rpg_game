@@ -14,14 +14,18 @@ export interface IArea {
     lastRespawnAreaEnemies: string;
 }
 
-export interface IAPath {
+export interface IPath {
     pathA: string;
     pathB: string;
+    time: number;
+}
+
+export interface IAviablePath{
+    pathId: string;
     time: number;
 }
 
 export interface ILocationToMove {
     time: number;
     locationId: string;
-    currentTimeToMove: number;
 }

@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IAreaFullItem, IAreaItem } from "../../models/IAreaItem";
-import { IAPath, IArea, ILocationToMove } from "../../models/IArea";
+import { IPath, IArea, ILocationToMove, IAviablePath } from "../../models/IArea";
+import { IInventory, IItemInventory } from "../../models/IInventory";
 
 
 
@@ -8,13 +9,14 @@ import { IAPath, IArea, ILocationToMove } from "../../models/IArea";
 
 interface GameSlice {
     currentLocationId: string;
-    availablePaths: IAPath[];
-    paths: IAPath[];
+    availablePaths: IAviablePath[];
+    paths: IPath[];
     areas: IArea[];
     areaItems: IAreaFullItem[];
     currentAreaItem: IAreaFullItem | {};
     currentAreaItemMiningTime: number;
     currentAreaToMove: ILocationToMove;
+    inventory: IItemInventory[];
 }
 
 interface IUpdateAreaItems {
@@ -68,38 +70,13 @@ const initialState: GameSlice = {
         },
 
     ],
-    areas: [{
-        "id": "south_beach",
-        "avatar": "",
-        "title": "Южный пляж",
-        "description": "",
-        "areaItems": [
-          {
-            "id": "birch_tree",
-            "countMin": 1,
-            "countMax": 2
-          },
-          {
-            "id": "iron_ore",
-            "countMin": 0,
-            "countMax": 1
-          }
-        ],
-        "currentAreaItems": [
-
-        ],
-        "enemies": [],
-        "timeToRespawnAreaItems": 120,
-        "timeToRespawnAreaEnemies": 180,
-        "lastRespawnAreaItems": "2970-02-17T11:25:33.715Z",
-        "lastRespawnAreaEnemies": "2970-02-17T11:25:33.715Z"
-      }],
+    areas: localStorage.areas ? JSON.parse(localStorage.areas) : [],
     areaItems: [
         {
             "id": "birch_tree",
             "idInArea": "",
             "title": "Обычная Береза",
-            "avatar": "",
+            "avatar": "icons/items/birch_tree.png",
             "description": "",
             "timeToMining": 7.0,
             "type": "tree",
@@ -109,7 +86,7 @@ const initialState: GameSlice = {
             "id": "oak_tree",
             "idInArea": "",
             "title": "Крепкий Дуб",
-            "avatar": "",
+            "avatar": "icons/items/oak_tree.png",
             "description": "",
             "timeToMining": 10.0,
             "type": "tree",
@@ -119,7 +96,7 @@ const initialState: GameSlice = {
             "id": "willow_tree",
             "idInArea": "",
             "title": "Плакучая Ива",
-            "avatar": "",
+            "avatar": "icons/items/willow_tree.png",
             "description": "",
             "timeToMining": 16.0,
             "type": "tree",
@@ -129,7 +106,7 @@ const initialState: GameSlice = {
             "id": "cedar_tree",
             "idInArea": "",
             "title": "Вечнозеленный Кедр",
-            "avatar": "",
+            "avatar": "icons/items/cedar_tree.png",
             "description": "",
             "timeToMining": 20.0,
             "type": "tree",
@@ -139,7 +116,7 @@ const initialState: GameSlice = {
             "id": "teak_tree",
             "idInArea": "",
             "title": "Долговечный Тик",
-            "avatar": "",
+            "avatar": "icons/items/teak_tree.png",
             "description": "",
             "timeToMining": 26.0,
             "type": "tree",
@@ -149,7 +126,7 @@ const initialState: GameSlice = {
             "id": "iron_ore",
             "idInArea": "",
             "title": "Железная руда",
-            "avatar": "",
+            "avatar": "icons/items/iron_ore.png",
             "description": "",
             "timeToMining": 8.0,
             "type": "ore",
@@ -159,7 +136,7 @@ const initialState: GameSlice = {
             "id": "tungsten_ore",
             "idInArea": "",
             "title": "Вольфрамовая руда",
-            "avatar": "",
+            "avatar": "icons/items/tungsten_ore.png",
             "description": "",
             "timeToMining": 14.0,
             "type": "ore",
@@ -169,7 +146,7 @@ const initialState: GameSlice = {
             "id": "platinum_ore",
             "idInArea": "",
             "title": "Платиновая руда",
-            "avatar": "",
+            "avatar": "icons/items/platinum_ore.png",
             "description": "",
             "timeToMining": 21.0,
             "type": "ore",
@@ -179,7 +156,7 @@ const initialState: GameSlice = {
             "id": "titanium_ore",
             "idInArea": "",
             "title": "Титановая руда",
-            "avatar": "",
+            "avatar": "icons/items/titanium_ore.png",
             "description": "",
             "timeToMining": 26.0,
             "type": "ore",
@@ -189,7 +166,7 @@ const initialState: GameSlice = {
             "id": "adamantite_ore",
             "idInArea": "",
             "title": "Адамантитовая руда",
-            "avatar": "",
+            "avatar": "icons/items/adamantite_ore.png",
             "description": "",
             "timeToMining": 31.0,
             "type": "ore",
@@ -198,11 +175,11 @@ const initialState: GameSlice = {
     ],
     currentAreaToMove: {
         time: 0,
-        locationId: 'south_beach',
-        currentTimeToMove: 0
+        locationId: 'south_beach'
     },
     currentAreaItem: {},
     currentAreaItemMiningTime: 0,
+    inventory: []
 }
 
 export const gameSlice = createSlice({
@@ -210,15 +187,19 @@ export const gameSlice = createSlice({
     initialState,
     reducers: {
         goLevel(state, action: PayloadAction<string>){
-            if(state.currentAreaToMove.locationId !== ''){
-                state.currentLocationId = state.areas.find(p => p.id === action.payload)!.id;
-                state.currentAreaToMove.time = 0;
-            }
+            state.currentLocationId = state.areas.find(p => p.id === action.payload)!.id;
+            // state.currentAreaToMove.time = 0;
         },
         getAvailablePaths(state, action: PayloadAction<string>){
-            if(state.currentAreaToMove.locationId !== ''){
-                state.availablePaths = state.paths.filter(p => (p.pathA+' '+p.pathB).includes(action.payload));
-            }
+            const levelId = action.payload;
+            // if(state.currentAreaToMove.locationId !== ''){
+            //     state.availablePaths = state.paths.filter(p => (p.pathA+' '+p.pathB).includes(levelId));
+            // }
+            const paths:IAviablePath[] = state.paths.filter(p => (p.pathA+' '+p.pathB).includes(levelId))
+                .map(i => ({
+                    pathId: i.pathA !== levelId ? i.pathA : i.pathB,
+                    time: i.time}))
+            state.availablePaths = paths;
         },
         setLocationToMove(state, action: PayloadAction<ILocationToMove>){
             state.currentAreaToMove = action.payload;
@@ -226,13 +207,7 @@ export const gameSlice = createSlice({
         stopMove(state){
             state.currentAreaToMove = {
                 time: 0,
-                locationId: '',
-                currentTimeToMove: 0
-            }
-        },
-        decrementTimeToMove(state, action: PayloadAction<number>){
-            if(state.currentAreaToMove.locationId !== ''){
-                state.currentAreaToMove.currentTimeToMove -= action.payload;
+                locationId: ''
             }
         },
         updateAreaItems(state, action: PayloadAction<IUpdateAreaItems>){
@@ -245,7 +220,7 @@ export const gameSlice = createSlice({
 
             state.areas[foundedIndex].lastRespawnAreaItems = payloadDate;
 
-            let changedStorage:IArea[] = JSON.parse(localStorage.areas);
+            let changedStorage:IArea[] = state.areas;
             changedStorage[foundedIndex].lastRespawnAreaItems = payloadDate;
             
 
@@ -261,28 +236,17 @@ export const gameSlice = createSlice({
 
             changedStorage[foundedIndex].currentAreaItems = items!;
 
-
-            localStorage.areas = JSON.stringify(changedStorage);
+            localStorage.areas = JSON.stringify(state.areas);
         },
         mineItem(state, action: PayloadAction<IAreaFullItem>){
             const indexLevel = state.areas.findIndex(i => i.id === state.currentLocationId);
             const currentAreaItems = state.areas[indexLevel].currentAreaItems;
             const idInArea = action.payload.idInArea;
 
-            if(Object.keys(state.currentAreaItem).length){
-                state.areas[indexLevel].currentAreaItems = state.areas[indexLevel].currentAreaItems.filter(i => i.idInArea !== idInArea);
-            }
-            state.currentAreaItem = {};
-            state.currentAreaItemMiningTime = 0;
-        },
-        setItemToMine(state, action: PayloadAction<IAreaFullItem>){
-            state.currentAreaItemMiningTime = action.payload.timeToMining;
-            state.currentAreaItem = action.payload;
-        },
-        decrementTimeToMine(state, action: PayloadAction<number>){
-            if(Object.keys(state.currentAreaItem).length){
-                state.currentAreaItemMiningTime -= action.payload;
-            }
+            state.areas[indexLevel].currentAreaItems = state.areas[indexLevel].currentAreaItems.
+                filter(i => i.idInArea !== idInArea);
+
+            localStorage.areas = JSON.stringify(state.areas);
         },
         stopMine(state){
             state.currentAreaItem = {};
@@ -295,7 +259,18 @@ export const gameSlice = createSlice({
             //     console.log("TRUE")
             //     console.log(JSON.parse(localStorage.areas)[0])
             // }
-                
+        },
+        addItemToInventory(state, action: PayloadAction<IAreaFullItem>){
+            const foundedItemIndex = state.inventory.findIndex(i => i.item.id === action.payload.id);
+            if(foundedItemIndex !== -1){
+                state.inventory[foundedItemIndex].count += 1;
+            }
+            else{
+                state.inventory.push({
+                    item: action.payload,
+                    count: 1
+                })
+            }
             
         }
 

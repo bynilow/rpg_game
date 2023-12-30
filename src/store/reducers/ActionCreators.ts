@@ -39,24 +39,6 @@ export const getAvailablePaths = (levelId:string) => async (dispatch: AppDispatc
 export const setLocationToMove = (location:ILocationToMove) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.setLocationToMove(location));
-        const timer = setInterval(() => {
-            
-            dispatch(decrementTimeToMove(0.05))
-        }, 50);
-        setTimeout(() => {
-            clearInterval(timer);
-            dispatch(gameSlice.actions.goLevel(location.locationId));
-            dispatch(gameSlice.actions.getAvailablePaths(location.locationId));
-        }, location.time * 1000);
-    }
-    catch{
-
-    }
-}
-
-export const decrementTimeToMove = (time:number) => async (dispatch: AppDispatch) => {
-    try{
-        dispatch(gameSlice.actions.decrementTimeToMove(time));
     }
     catch{
 
@@ -97,35 +79,10 @@ export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispat
     }
 }
 
-export const setItemToMine = (miningItem: IAreaFullItem) => async (dispatch: AppDispatch) => {
-    try{
-        dispatch(gameSlice.actions.setItemToMine(miningItem));
-        const timer = setInterval(() => {
-            dispatch(decrementTimeToMine(0.05));
-            
-        }, 50);
-        const timeout = setTimeout(() => {
-            clearInterval(timer);
-            dispatch(gameSlice.actions.mineItem(miningItem));
-        }, miningItem.timeToMining * 1000);
-    }
-    catch{
-
-    }
-}
-
-export const decrementTimeToMine = (time:number) => async (dispatch: AppDispatch) => {
-    try{
-        dispatch(gameSlice.actions.decrementTimeToMine(time));
-    }
-    catch{
-
-    }
-}
-
 export const mineItem = (miningItem: IAreaFullItem) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.mineItem(miningItem));
+        dispatch(gameSlice.actions.addItemToInventory(miningItem));
         
     }
     catch{
@@ -147,6 +104,16 @@ export const stopMineItem = () => async (dispatch: AppDispatch) => {
 export const setAreasFromStorage = () => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.setAreasFromStorage());
+        
+    }
+    catch{
+
+    }
+}
+
+export const addItemToInventory = (item:IAreaFullItem) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.addItemToInventory(item));
         
     }
     catch{

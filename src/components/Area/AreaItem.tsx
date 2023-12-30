@@ -1,43 +1,61 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { useAppDispatch } from '../../hooks/redux';
 import { stopMineItem, stopMoveToLocation } from '../../store/reducers/ActionCreators';
 import { IAreaFullItem } from '../../models/IAreaItem';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 
 interface IAreaItemProps {
     item: IAreaFullItem;
-    currentTimeToMine: number;
-    onClicked: Function;
+    mineItem: Function;
+    index: number;
 }
 
-function Area({ item, currentTimeToMine=item.timeToMining, onClicked }: IAreaItemProps) {
+function Area({ item, mineItem, index }: IAreaItemProps) {
 
     const dispatch = useAppDispatch();
 
     const [isMining, setIsMining] = useState(false);
+    const isMiningRef = useRef(isMining);
+    isMiningRef.current = isMining;
+    const [timeToMining, setTimeToMining] = useState(item.timeToMining);
 
-    const onClickLevel = (e:React.MouseEvent<HTMLDivElement>) => {
+    const onClickStartMining = (e:React.MouseEvent<HTMLDivElement>) => {
         setIsMining(true);
-        onClicked();
+        startIntervalMine();
+        
     }
 
     const onClickStopMining = () => {
         dispatch(stopMineItem());
+        setTimeToMining(item.timeToMining);
         setIsMining(false);
         
     }
 
-    // const isThisLevelSelected = '' === selectedLevelId;
+    const startIntervalMine = () => {
+        const interval = setInterval(() => {
+            if(!isMiningRef.current) clearInterval(interval);
+            setTimeToMining(t => t - 0.05);
+        }, 50);
+        setTimeout(() => {
+            clearInterval(interval);
+            if(isMiningRef.current) {
+                mineItem();
+            }
+        }, item.timeToMining*1000)
+        
+    }
 
     return (
-        <AreaItemBlock rare={item.rare} >
-            <AreaItemBlockClickable onClick={e => onClickLevel(e)} />
-            <Avatar>
+        <AreaItemBlock rare={item.rare} index={index} >
+            <AreaItemBlockClickable onClick={e => onClickStartMining(e)} />
+            <Avatar image={item.avatar}>
+                {/* <AvatarImg alt="" src={require('../../'+item.avatar)} /> */}
                 {
                     isMining
                         ? <StopMiningCross id='stopminning' onClick={() => onClickStopMining()}>
-                            ✘
+                            ✕
                         </StopMiningCross>
                         : null
                 }
@@ -49,17 +67,19 @@ function Area({ item, currentTimeToMine=item.timeToMining, onClicked }: IAreaIte
             <Timer>
                 {
                     isMining
-                        ? currentTimeToMine.toFixed(1)
+                        ? timeToMining.toFixed(1)
                         : item.timeToMining
                 }s
             </Timer>
             <TimerLine 
-            rare={item.rare}
-            max={item.timeToMining} 
-            value={isMining ? currentTimeToMine : item.timeToMining} />
+                rare={item.rare}
+                max={item.timeToMining} 
+                value={isMining ? timeToMining : item.timeToMining} />
         </AreaItemBlock>
     );
 }
+
+
 
 const AreaItemBlockClickable = styled.div`
     width: 100%;
@@ -71,72 +91,39 @@ const AreaItemBlockClickable = styled.div`
 
 interface IRareProp {
     rare: string;
+    
 }
 
-const AreaItemBlock = styled.div<IRareProp>`
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
-    padding: 20px;
-    border-radius: 5px;
-    width: 350px;
-    height: 30px;
-    display: flex;
-    gap: 20px;
-    align-items: center;
+interface IAvatarProps{
+    image: string;
+}
+
+const Avatar = styled.div<IAvatarProps>`
+    z-index: 2;
     position: relative;
-    cursor: pointer;
-    transition: 0.1s;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    background: ${props => 
-        props.rare === 'common' 
-        ? "linear-gradient(135deg, white 80%, #a4a4ab 80%);"
-        : props.rare === 'uncommon'
-        ? "linear-gradient(135deg, white 80%, #59c87f 80%);"
-        : props.rare === 'rare'
-        ? "linear-gradient(135deg, white 80%, #4d69cd 80%);"
-        : props.rare === 'mythical'
-        ? "linear-gradient(135deg, white 80%, #d42be6 80%);"
-        : "linear-gradient(135deg, white 80%, #caab05 80%);"
-    };
+    background-image: url(${p => require('../../' + p.image)});
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    
 
+    transition: 0.3s;
     &:hover{
-        transform: scale(1.05);
-        
+        transform: scale(1.1);
     }
 `
 
-//common
-//background: rgb(255,255,255);
-// background: linear-gradient(145deg, rgba(255,255,255,1) 0%, #a4a4ab 100%);
-
-//uncommon
-// background: rgb(255,255,255);
-// background: linear-gradient(145deg, rgba(255,255,255,1) 0%, #65e28f 100%);
-
-//rare
-// background: rgb(255,255,255);
-// background: linear-gradient(145deg, rgba(255,255,255,1) 0%, #4d69cd 100%);
-
-//mythical
-// background: rgb(255,255,255);
-// background: linear-gradient(145deg, rgba(255,255,255,1) 0%, #d42be6 100%);
-
-//legendary
-// background: rgb(255,255,255);
-// background: linear-gradient(145deg, rgba(255,255,255,1) 0%, #caab05 100%);
-
-
-const Avatar = styled.div`
-    z-index: 2;
-    width: 70px;
-    height: 70px;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1);
-    background-color: #A9A9A9;
-    border-radius: 50%;
-
-    transition: 0.1s;
-    &:hover{
-        transform: scale(0.95);
-    }
+const AvatarImg = styled.img`
+    width: 120%;
+    top: -10%;
+    left: -10%;
+    position: absolute;
 `
 
 const Timer = styled.p`
@@ -190,17 +177,92 @@ const TimerLine = styled.progress<IRareProp>`
 
 const Title = styled.p`
     cursor: pointer;
+    transition: .1s;
 `
 
 const StopMiningCross = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 50px;
-    text-align: center;
+    padding: 30px;
+    width: 50%;
+    height: 50%;
+    z-index: 99;
+    line-height: 0;
     color: white;
-    text-shadow: 0px 0px 6px rgba(0,0,0,0.5);
+    background-color: #00000050;
+    border-radius: 50%;
     transition: 0.1s;
+    box-sizing: border-box;
 
     &:hover{
-        transform: scale(2);
+        transform: scale(1.5);
+        background-color: #00000084;
+    }
+`
+
+const AreaItemBlockAnim = keyframes`
+    from{
+        transform: scale(0) rotate(-50deg);
+    }
+    to{
+        transform: scale(1) rotate(0deg);
+    }
+`
+
+interface IAreaItemBlockProps{
+    rare: string;
+    index: number;
+}
+
+const AreaItemBlock = styled.div<IAreaItemBlockProps>`
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
+    padding: 20px;
+    border-radius: 5px;
+    width: 350px;
+    height: 30px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+
+    background: ${props => 
+        props.rare === 'common' 
+        ? "linear-gradient(135deg, white 80%, #a4a4ab 80%);"
+        : props.rare === 'uncommon'
+        ? "linear-gradient(135deg, white 80%, #59c87f 80%);"
+        : props.rare === 'rare'
+        ? "linear-gradient(135deg, white 80%, #4d69cd 80%);"
+        : props.rare === 'mythical'
+        ? "linear-gradient(135deg, white 80%, #d42be6 80%);"
+        : "linear-gradient(135deg, white 80%, #caab05 80%);"
+    };
+
+    transform: scale(0) rotate(-45deg);
+    animation: ${AreaItemBlockAnim} .5s ease;
+    animation-delay: ${p => p.index/3}s;
+    animation-fill-mode: forwards;
+
+    transition: 1s;
+
+    &:hover ${Title} {
+        padding: 20px;
+    }
+
+    &:hover{
+        background: ${props =>
+        props.rare === 'common'
+            ? "linear-gradient(135deg, #e7e7e7 80%, #a4a4ab 80%);"
+            : props.rare === 'uncommon'
+            ? "linear-gradient(135deg, #e7e7e7 80%, #59c87f 80%);"
+            : props.rare === 'rare'
+            ? "linear-gradient(135deg, #e7e7e7 80%, #4d69cd 80%);"
+            : props.rare === 'mythical'
+            ? "linear-gradient(135deg, #e7e7e7 80%, #d42be6 80%);"
+            : "linear-gradient(135deg, #e7e7e7 80%, #caab05 80%);"
+    };
     }
 `
 
