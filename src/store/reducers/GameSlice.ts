@@ -80,7 +80,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 7.0,
             "type": "tree",
-            "rare": "common"
+            "rare": "common",
+            "dateReceiving": "",
+            "cost": 3
         },
         {
             "id": "oak_tree",
@@ -90,7 +92,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 10.0,
             "type": "tree",
-            "rare": "uncommon"
+            "rare": "uncommon",
+            "dateReceiving": "",
+            "cost": 7
         },
         {
             "id": "willow_tree",
@@ -100,7 +104,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 16.0,
             "type": "tree",
-            "rare": "rare"
+            "rare": "rare",
+            "dateReceiving": "",
+            "cost": 18
         },
         {
             "id": "cedar_tree",
@@ -110,7 +116,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 20.0,
             "type": "tree",
-            "rare": "mythical"
+            "rare": "mythical",
+            "dateReceiving": "",
+            "cost": 35
         },
         {
             "id": "teak_tree",
@@ -120,7 +128,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 26.0,
             "type": "tree",
-            "rare": "legendary"
+            "rare": "legendary",
+            "dateReceiving": "",
+            "cost": 70
         },
         {
             "id": "iron_ore",
@@ -130,7 +140,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 8.0,
             "type": "ore",
-            "rare": "common"
+            "rare": "common",
+            "dateReceiving": "",
+            "cost": 5
         },
         {
             "id": "tungsten_ore",
@@ -140,7 +152,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 14.0,
             "type": "ore",
-            "rare": "uncommon"
+            "rare": "uncommon",
+            "dateReceiving": "",
+            "cost": 13
         },
         {
             "id": "platinum_ore",
@@ -150,7 +164,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 21.0,
             "type": "ore",
-            "rare": "rare"
+            "rare": "rare",
+            "dateReceiving": "",
+            "cost": 34
         },
         {
             "id": "titanium_ore",
@@ -160,7 +176,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 26.0,
             "type": "ore",
-            "rare": "mythical"
+            "rare": "mythical",
+            "dateReceiving": "",
+            "cost": 65
         },
         {
             "id": "adamantite_ore",
@@ -170,7 +188,9 @@ const initialState: GameSlice = {
             "description": "",
             "timeToMining": 31.0,
             "type": "ore",
-            "rare": "legendary"
+            "rare": "legendary",
+            "dateReceiving": "",
+            "cost": 93
         }
     ],
     currentAreaToMove: {
@@ -247,6 +267,7 @@ export const gameSlice = createSlice({
                 filter(i => i.idInArea !== idInArea);
 
             localStorage.areas = JSON.stringify(state.areas);
+            
         },
         stopMine(state){
             state.currentAreaItem = {};
@@ -262,17 +283,23 @@ export const gameSlice = createSlice({
         },
         addItemToInventory(state, action: PayloadAction<IAreaFullItem>){
             const foundedItemIndex = state.inventory.findIndex(i => i.item.id === action.payload.id);
+            const date = new Date().toISOString();
             if(foundedItemIndex !== -1){
                 state.inventory[foundedItemIndex].count += 1;
+                state.inventory[foundedItemIndex].item.dateReceiving = date;
             }
             else{
                 state.inventory.push({
-                    item: action.payload,
+                    item: {...action.payload, dateReceiving: date},
                     count: 1
                 })
             }
-            
+            localStorage.inventory = JSON.stringify(state.inventory);
+        },
+        setInventory(state, action: PayloadAction<IItemInventory[]>){
+            state.inventory = action.payload;
         }
+
 
     }
 })

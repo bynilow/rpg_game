@@ -4,6 +4,10 @@ export interface IAreaItem {
     countMax: number;
 }
 
+type Rare = 'common' | 'uncommon' | 'rare' | 'mythical' | 'legendary';
+
+export const rareList = ['common', 'uncommon', 'rare', 'mythical', 'legendary'];
+
 export interface IAreaFullItem {
     id: string;
     idInArea: string;
@@ -12,7 +16,9 @@ export interface IAreaFullItem {
     description: string;
     timeToMining: number;
     type: string;
-    rare: string;
+    rare: Rare;
+    dateReceiving: string;
+    cost: number;
     
 }
 ///types - food, ore, tree

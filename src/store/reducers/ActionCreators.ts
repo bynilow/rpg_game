@@ -4,6 +4,7 @@ import { gameSlice } from "./GameSlice";
 import { ILocationToMove } from "../../models/IArea";
 import { IAreaFullItem, IAreaItem } from "../../models/IAreaItem";
 import { useAppSelector } from "../../hooks/redux";
+import { IItemInventory } from "../../models/IInventory";
 
 interface IResult {
     results: any[]
@@ -114,6 +115,17 @@ export const setAreasFromStorage = () => async (dispatch: AppDispatch) => {
 export const addItemToInventory = (item:IAreaFullItem) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.addItemToInventory(item));
+        
+    }
+    catch{
+
+    }
+}
+
+export const setInventoryFromStorage = () => async (dispatch: AppDispatch) => {
+    try{
+        const items = JSON.parse(localStorage.inventory);
+        dispatch(gameSlice.actions.setInventory(items));
         
     }
     catch{

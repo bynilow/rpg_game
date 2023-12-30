@@ -27,6 +27,11 @@ function InventoryItem({item, count}:IItemInventory) {
                     item.title
                 }
             </Title>
+            <Cost>
+                {
+                    item.cost
+                }$
+            </Cost>
             <Count>
                 x{ count }
             </Count>
@@ -34,7 +39,16 @@ function InventoryItem({item, count}:IItemInventory) {
      );
 }
 
-
+const Cost = styled.p`
+    color: black;
+    background-color: #dddddd;
+    border-radius: 5px;
+    position: absolute;
+    padding: 5px;
+    margin: 5px;
+    bottom: 0;
+    left: 0;
+`
 
 interface ButtonProps{
     isDisabled: boolean;

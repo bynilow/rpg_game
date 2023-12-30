@@ -4,6 +4,7 @@ export interface IArea {
     id: string;
     avatar: string;
     title: string;
+    color: string;
     description: string;
     areaItems: IAreaItem[];
     currentAreaItems: IAreaFullItem[];

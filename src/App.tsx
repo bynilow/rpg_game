@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import s from './app.module.css'
 import MapCreatorPage from './components/MapCreator/MapCreatorPage';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
-import { getAvailablePaths, goLevel, mineItem, setAreasFromStorage, setLocationToMove, updateAreaItems } from './store/reducers/ActionCreators';
+import { getAvailablePaths, goLevel, mineItem, setAreasFromStorage, setInventoryFromStorage, setLocationToMove, updateAreaItems } from './store/reducers/ActionCreators';
 import { IPath, IArea, IAviablePath } from './models/IArea';
 import Area from './components/Area/Area';
 import styled, { keyframes } from 'styled-components'
 import { IAreaFullItem } from './models/IAreaItem';
 import AreaItem from './components/Area/AreaItem';
 import InventoryModal from './components/Modals/InventoryModal/InventoryModal';
+import CircleButton from './components/Buttons/CircleButton';
+import InfoModal from './components/Modals/InfoModal/InfoModal';
 
 
 function App() {
@@ -32,7 +34,8 @@ function App() {
         "id": "south_beach",
         "avatar": "icons/areas/south_beach.png",
         "title": "Южный пляж",
-        "description": "",
+        "color": "green",
+        "description": "Южный пляж - одна из первых локаций, которую игрок может исследовать в игре. Это живописный район, расположенный на юге острова и известный своими золотистыми песчаными пляжами и теплыми лазурными водами. Воздух здесь наполнен свежестью и морским бризом, что создает атмосферу безмятежного отдыха.",
         "areaItems": [
           {
             "id": "birch_tree",
@@ -58,7 +61,8 @@ function App() {
         "id": "low_hills",
         "avatar": "icons/areas/low_hills.png",
         "title": "Невысокие холмы",
-        "description": "",
+        "color": "green",
+        "description": "Невысокие холмы - удивительно живописная земля, затерянная в глубине цветущего мира. Это место, где чарующая красота природы соседствует с таинственным волшебством, заставляющим сердца путников замирать от изумления.",
         "areaItems": [
           {
             "id": "birch_tree",
@@ -89,7 +93,8 @@ function App() {
         "id": "sharp_mountains",
         "avatar": "icons/areas/sharp_mountains.png",
         "title": "Острогорье",
-        "description": "",
+        "color": "red",
+        "description": "Острогорье - бурлящая опасностями локация в мире. Эта зыбучая земля, окруженная штормовыми облаками, возвышается на вершине свирепых горных пиков. Ветер в Острогорье с силой зовет каждого путника, готового принять вызов суровости этого места.",
         "areaItems": [
           {
             "id": "oak_tree",
@@ -130,7 +135,8 @@ function App() {
         "id": "fish_ponds",
         "avatar": "icons/areas/fish_ponds.png",
         "title": "Рыбные пруды",
-        "description": "",
+        "color": "yellow",
+        "description": "\"Рыбные пруды\" - уединенный район расположенный в живописной местности, вдали от всякой суеты. Просторные пруды, окруженные густыми зелеными деревьями и цветущими полевыми цветами, создают атмосферу спокойствия и умиротворения.",
         "areaItems": [
           {
             "id": "oak_tree",
@@ -161,7 +167,8 @@ function App() {
         "id": "forgotten_road",
         "avatar": "icons/areas/forgotten_road.png",
         "title": "Забытая тропа",
-        "description": "",
+        "color": "red",
+        "description": "Путь проходит через густой покров мха и лишайников, который под ногами приятно пружинит. Забытая тропа поражает разнообразием растительности - яркие цветы, дикие орхидеи, пышные папоротники и высокие деревья, покрытые изящными лианами. Воздух наполнен сладким ароматом цветов и свежести леса.",
         "areaItems": [
           {
             "id": "willow_tree",
@@ -202,7 +209,8 @@ function App() {
         "id": "central_castle",
         "avatar": "icons/areas/central_castle.png",
         "title": "Центральный замок",
-        "description": "",
+        "color": "green",
+        "description": "Центральный замок - величественный и впечатляющий сооружение, расположенное на холме в центре живописного ландшафта. Эта историческая локация представляет собой идеальное сочетание архитектурного великолепия и старинной культуры.",
         "areaItems": [
           {
             "id": "birch_tree",
@@ -228,7 +236,8 @@ function App() {
         "id": "bloody_forest",
         "avatar": "icons/areas/bloody_forest.png",
         "title": "Кровавые леса",
-        "description": "",
+        "color": "red",
+        "description": "Кровавые леса – мрачное и таинственное место, где сплетаются легенды о жутких событиях и загадочных историях. Эта локация представляет собой плотный лес, покрытый густыми, темными и кроваво-красными листвой деревьями, которые создают зловещую картину.",
         "areaItems": [
           {
             "id": "willow_tree",
@@ -312,7 +321,10 @@ function App() {
       dispatch(setAreasFromStorage());
     }
 
-    if (currentLocation) dispatch(getAvailablePaths(currentLocation.id));
+    if (currentLocation) {
+      dispatch(getAvailablePaths(currentLocation.id));
+      dispatch(setInventoryFromStorage());
+    }
 
     if (nextRespawnAreaItems.getTime() < (new Date()).getTime()) {
       dispatch(updateAreaItems({
@@ -331,85 +343,91 @@ function App() {
       <>
         <Background image={currentLocation.avatar} />
         <AppBlock>
-
-          <button onClick={() => setIsInventoryOpen(true)}>
-            Инвентарь
-          </button>
           {
             isInventoryOpen
               ? <InventoryModal closeModal={() => closeInventoryModal()} />
               : null
           }
-          <h1>Ты на уровне: {currentLocation.title} / {currentLocation.id}</h1>
+          <InfoModal />
+          <Container>
+            <button onClick={() => setIsInventoryOpen(true)}>
+              Инвентарь
+            </button>
+            
+            <LevelName>
+              Ты на уровне: {currentLocation.title} / {currentLocation.id}
+              <CircleButton symbol='?' />
+               
+            </LevelName>
 
-          <Menu>
+            <Menu>
 
-            <AreasBlock update={availablePaths[0].pathId}>
-              <h2>Доступные пути:</h2>
-              <LevelsList>
-                {
-                  availablePaths.map((p, ind) => <Area
-                    key={p.pathId}
-                    index={ind}
-                    avatarUrl={getAreaFromId(p.pathId).avatar}
-                    title={getNameAreaById(p.pathId) || ''}
-                    timeToMove={p.time}
-                    goLevel={() => onClickGoLevel(p)} />)
-                  // {
-                  //   p.pathA !== currentLocation.id ? getNameAreaById(p.pathA) : getNameAreaById(p.pathB)
-                  // }
-                }
-              </LevelsList>
-            </AreasBlock>
-
-            <PlaceBlock update={availablePaths[0].pathId}>
-
-              <h2>Местность: </h2>
-              <DescriptionText>
-                🔄 {currentLocation.timeToRespawnAreaItems}m
-              </DescriptionText>
-              <DescriptionText>
-                ⏪🔄 {lastRespawnAreaItems.toLocaleString()}
-              </DescriptionText>
-              <DescriptionText>
-                ⏩🔄 {nextRespawnAreaItems.toLocaleString()}
-              </DescriptionText>
-
-              <LevelsList>
-                {/* {
-                currentLocation.areaItems.map((i: any) =>
-                  <p>{i.id}; min: {i.countMin}; max: {i.countMax};</p>)
-              } */}
-                {
-                  currentLocation.currentAreaItems.map((i: IAreaFullItem, ind) =>
-                    <AreaItem
-                      key={i.idInArea+currentLocationId}
+              <AreasBlock update={availablePaths.length}>
+                <CircleButton symbol='?' />
+                <NameBlock>Доступные пути:</NameBlock>
+                <LevelsList>
+                  {
+                    availablePaths.map((p, ind) => <Area
+                      key={p.pathId}
                       index={ind}
-                      item={i}
-                      mineItem={() => onClickItem(i)} />)
-                }
-              </LevelsList>
-            </PlaceBlock>
+                      avatarUrl={getAreaFromId(p.pathId).avatar}
+                      title={getNameAreaById(p.pathId) || ''}
+                      timeToMove={p.time}
+                      goLevel={() => onClickGoLevel(p)} />)
+                  }
+                </LevelsList>
+              </AreasBlock>
 
-            <EmeniesBlock update={availablePaths[0].pathId}>
-              <h2>Монстры: </h2>
-              <DescriptionText>
-                🔄 {currentLocation.timeToRespawnAreaEnemies}m
-              </DescriptionText>
-              <DescriptionText>
-                ⏪🔄 {lastRespawnAreaEnemies.toLocaleString()}
-              </DescriptionText>
-              <DescriptionText>
-                ⏩🔄 {nextRespawnAreaEnemies.toLocaleString()}
-              </DescriptionText>
-            </EmeniesBlock>
+              <PlaceBlock update={currentLocation.currentAreaItems.length}>
+                <CircleButton symbol='?' />
+                <NameBlock>Местность: </NameBlock>
+                <div>
+                  <DescriptionText>
+                    🔄 {currentLocation.timeToRespawnAreaItems}m
+                  </DescriptionText>
+                  <DescriptionText>
+                    ⏪🔄 {lastRespawnAreaItems.toLocaleString()}
+                  </DescriptionText>
+                  <DescriptionText>
+                    ⏩🔄 {nextRespawnAreaItems.toLocaleString()}
+                  </DescriptionText>
+                </div>
+
+                <LevelsList>
+                  {
+                    currentLocation.currentAreaItems.map((i: IAreaFullItem, ind) =>
+                      <AreaItem
+                        key={i.idInArea + currentLocationId}
+                        index={ind}
+                        item={i}
+                        mineItem={() => onClickItem(i)} />)
+                  }
+                </LevelsList>
+              </PlaceBlock>
+
+              <EmeniesBlock update={currentLocation.enemies.length + 1.2}>
+                <CircleButton symbol='?' />
+                <NameBlock>Монстры: </NameBlock>
+                <div>
+                  <DescriptionText>
+                    🔄 {currentLocation.timeToRespawnAreaEnemies}m
+                  </DescriptionText>
+                  <DescriptionText>
+                    ⏪🔄 {lastRespawnAreaEnemies.toLocaleString()}
+                  </DescriptionText>
+                  <DescriptionText>
+                    ⏩🔄 {nextRespawnAreaEnemies.toLocaleString()}
+                  </DescriptionText>
+                </div>
+              </EmeniesBlock>
 
 
-          </Menu>
+            </Menu>
 
-          {
-            currentAreaToMove.time
-          }
+            {
+              currentAreaToMove.time
+            }
+          </Container>
         </AppBlock>
       </>
 
@@ -426,6 +444,21 @@ function App() {
   }
 
 }
+
+const NameBlock = styled.p`
+  font-size: 20px;
+  margin: 0;
+`
+
+const LevelName = styled.div`
+  position: relative;
+  font-size: 30px;
+  padding: 10px;
+  margin: 20px 0;
+  background: white;
+  box-shadow: 0 0 5px black;
+  border-radius: 5px;
+`
 
 interface IBackgroundProps {
   image: string;
@@ -458,21 +491,24 @@ const Background = styled.div<IBackgroundProps>`
 
 const AppBlock = styled.div`
   width: 100vw;
+  height: auto;
+  
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  transition: 1s;
 `
 
 const LevelsList = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
   justify-content: center;
-  align-items: center;
-
-  transition: 3s;
+  align-items: left;
 
 `
 
@@ -482,39 +518,73 @@ const DescriptionText = styled.p`
   line-height: 0.9;
 `
 interface IBlockProps {
-  update: string;
+  update: number;
 }
 
 const Block = styled.div<IBlockProps>`
+  display: flex;
+  flex-direction: column;
+  justify-content: baseline;
+  gap: 20px;
   box-shadow: 0 0 5px black;
+  max-height: 75%;
   border-radius: 5px;
   flex: 1;
-  padding: 10px;
-  height: min-content;
-  max-height: ${p => '500px'};
+  padding: 20px;
+  overflow-y: auto;
+  position: relative;
   background-color: white;
-  transition: max-height 5s;
+  transition: 3s;
+  box-sizing: border-box;
+
+
+  &::-webkit-scrollbar{
+    width: 5px;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #d4d4d4; 
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    margin: 10px;
+    width: 20px;
+    background-color: #858585;    
+    border-radius: 10px;       
+  }  
 `
 
 const PlaceBlock = styled(Block)`
+  overflow-y: scroll;
+  height: ${p => 160 + p.update * 100}px;
   
 `
 
 const EmeniesBlock = styled(Block)`
-  
+  overflow-y: hidden;
+  height: ${p => 50 + p.update * 120}px;
 `
 
 const AreasBlock = styled(Block)`
-  
+  overflow-y: hidden;
+  height: ${p => 50 + p.update * 100}px;
 `
 
 const Menu = styled.div`
   z-index: 1;
-  width: 100%;
   display: flex;
   justify-content: space-around;
+
   gap: 50px;
-  width: 95%;
+  width: 100%;
+  height: 100%;
+  transition: 1s;
+`
+
+const Container = styled.div`
+  width: 90%;
+  height: 100vh;
+  transition: 1s;
 `
 
 

@@ -186,7 +186,7 @@ const AreaBlock = styled.div<IAreaBlockProps>`
     background-color: white;
     padding: 20px;
     border-radius: 5px;
-    width: 350px;
+    width: 100%;
     height: 70px;
     display: flex;
     gap: 20px;

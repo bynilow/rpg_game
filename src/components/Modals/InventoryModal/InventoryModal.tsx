@@ -1,7 +1,10 @@
 import styled, { keyframes } from 'styled-components'
 import InventoryItem from './InventoryItem';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hooks/redux';
+import { rareList } from '../../../models/IAreaItem';
+import CircleButton from '../../Buttons/CircleButton';
+import ModalBackground from '../Other/ModalBackground';
 
 interface IInventoryModal {
     closeModal: Function;
@@ -15,17 +18,71 @@ function InventoryModal({closeModal}:IInventoryModal) {
     const [selectedMaterial, setSelectedMaterial] = useState('all');
     const [selectedRare, setSelectedRare] = useState('all');
     const [selectedSort, setSelectedSort] = useState('title');
+    const [isReversed, setIsReversed] = useState(false);
 
+    const [sortedInventory, setSortedInventory] = useState(inventory);
+    
+    const sortFilterInventory = () => {
+        let inventoryFilterMaterial = inventory;
+        let inventoryFilterRare = inventory;
+        let inventorySorted = inventory;
+
+        if(selectedMaterial !== 'all'){
+            inventoryFilterMaterial = inventory.filter(i => i.item.type === selectedMaterial);
+        }
+        if(selectedRare !== 'all'){
+            inventoryFilterRare = inventory.filter(i => i.item.rare === selectedRare);
+        }
+
+        let filteredInventory = inventoryFilterMaterial.filter(i => inventoryFilterRare.includes(i));
+        
+        switch (selectedSort){
+            case 'title':
+                inventorySorted = filteredInventory.sort((a, b) => 
+                    a.item.title.localeCompare(b.item.title));
+                break;
+            case 'date':
+                inventorySorted = filteredInventory.sort((a, b) => 
+                    a.item.dateReceiving.localeCompare(b.item.dateReceiving)).reverse();
+                break;
+            case 'rare':
+                inventorySorted = filteredInventory.sort((a, b) =>
+                    rareList.indexOf(a.item.rare) - rareList.indexOf(b.item.rare));
+                break;
+            case 'cost':
+                inventorySorted = filteredInventory.sort((a, b) =>
+                    a.item.cost - b.item.cost).reverse();
+                break;
+            case 'count':
+                inventorySorted = filteredInventory.sort((a, b) =>
+                    a.count - b.count).reverse();
+                break;
+            default:
+                break;
+        }
+
+        let inventoryTexted = inventorySorted.filter(i => 
+            i.item.title.toLocaleLowerCase().includes(inputText.toLowerCase()));
+
+        setSortedInventory(isReversed ? inventoryTexted.reverse() : inventoryTexted);
+    }
+    
+    useEffect(() => {
+        sortFilterInventory();
+    }, [selectedMaterial, selectedRare, selectedSort, isReversed, inputText])
     return (
         <>
-            <Background />
+            <ModalBackground />
             <Inventory>
-                <CloseButton onClick={() => closeModal()}>
-                    ✕
-                </CloseButton>
+                <CircleButton onClick={() => closeModal()} symbol='✕' />
                 <InventoryText>Инвентарь</InventoryText>
                 <Bar>
-                    <InputName type='text' placeholder='Название' value={inputText} onChange={e => setInputText(e.currentTarget.value)} />
+                    <InputName
+                        type='text'
+                        placeholder='Название'
+                        maxLength={30}
+                        value={inputText}
+                        onChange={e => setInputText(e.currentTarget.value)} />
 
                     <SelectDropdown>
                         <DropdownButton>
@@ -191,14 +248,20 @@ function InventoryModal({closeModal}:IInventoryModal) {
 
                         </DropdownOptions>
                     </SelectDropdown>
-
+                    <ReverseButton onClick={() => setIsReversed(!isReversed)}>
+                        {
+                            isReversed
+                                ? 'ᐯ'
+                                : 'ᐱ'
+                        }
+                    </ReverseButton>
                 </Bar>
                 {
                     inventory.length
                         ? <ItemsList>
 
                             {
-                                inventory.map(i => <InventoryItem item={i.item} count={i.count} />)
+                                sortedInventory.map(i => <InventoryItem item={i.item} count={i.count} />)
                             }
                             <EmptyItem />
                             <EmptyItem />
@@ -221,23 +284,28 @@ function InventoryModal({closeModal}:IInventoryModal) {
 
 ///🠗  🠕
 
+const ReverseButton = styled.div`
+    font-size: 16px;
+    line-height: 0;
+    height: 40px;
+    width: 40px;
+    border-radius: 5px;
+    border: 1px solid black;
+    box-shadow: 0 0 5px #0000005a;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+`
+
 const EmptyText = styled.p`
     font-size: 30px;
     margin: 20px;
 `
 
-const Background = styled.div`
-    position: absolute;
-    z-index: 99;
-    
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
 
-    background-color: #0000006f;
-    backdrop-filter: blur(5px);
-`
 
 interface IRareIconProps {
     color: string;
@@ -395,37 +463,12 @@ const ItemsList = styled.div`
         width: 20px;
         background-color: #858585;    
         border-radius: 10px;       
-}
+    }
 `
 
 const InventoryText = styled.p`
     font-size: 20px;
     margin: 20px;
-`
-
-const CloseButton = styled.div`
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 20px;
-    height: 20px;
-    background: #e9e9e9;
-    border-radius: 50%;
-    color: black;
-    padding: 10px;
-    margin: 10px;
-    line-height: 0;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    transition: 0.1s;
-    cursor: pointer;
-
-    &:hover{
-        transform: scale(0.95);
-        background: #c9c9c9;
-    }
 `
 
 export default InventoryModal;
