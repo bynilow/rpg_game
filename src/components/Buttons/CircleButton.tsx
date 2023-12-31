@@ -2,12 +2,12 @@ import styled from 'styled-components'
 
 interface CircleButtonProps {
     symbol: string;
-    onClick?: Function;
+    click?: Function;
 }
 
-function CircleButton({symbol, onClick}:CircleButtonProps) {
+function CircleButton({symbol, click}:CircleButtonProps) {
     return ( 
-        <Button onClick={onClick ? () => onClick() : () => null}>
+        <Button onClick={click ? () => click() : () => null}>
             {
                 symbol
             }

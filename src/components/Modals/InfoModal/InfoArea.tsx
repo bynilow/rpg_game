@@ -1,32 +1,32 @@
 import { useState } from 'react';
 import styled from 'styled-components'
 import { useAppSelector } from '../../../hooks/redux';
-import { IChangeInfo } from '../../../models/IArea';
-import { getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
+import { IArea, IChangeInfo } from '../../../models/IArea';
+import { getAreaBackground, getHoveredAreaBackground } from '../../../styles/backgrounds';
 
-interface IInfoItem {
-    id: string
+interface IInfoArea {
+    areaId: string;
     countMin: number;
     countMax: number;
     changeWhatInfo: Function;
 }
 
-function InfoItem({id, countMin, countMax, changeWhatInfo}:IInfoItem) {
+function InfoArea({areaId, countMin, countMax, changeWhatInfo}:IInfoArea) {
 
-    const {areaItems} = useAppSelector(state => state.userReducer);
+    const {areas} = useAppSelector(state => state.userReducer);
 
-    const item = areaItems.find(i => i.id === id)!;
+    const area = areas.find(i => i.id === areaId)!;
 
     return ( 
-        <Item 
-        color={getItemBackground(item.rare)}
-        hoveredColor={getItemHoveredBackground(item.rare)} 
-        onClick={() => changeWhatInfo()}>
-            <Avatar alt='' src={require('../../../'+item.avatar)} />
+        <Area 
+            color={getAreaBackground(area.color)}
+            hoveredColor={getHoveredAreaBackground(area.color)} 
+            onClick={() => changeWhatInfo()}>
+            <Avatar alt='' src={require('../../../'+area.avatar)} />
             <Info>
                 <Title>
                     {
-                        item.title
+                        area.title
                     }
                 </Title>
                 <Count>
@@ -37,13 +37,14 @@ function InfoItem({id, countMin, countMax, changeWhatInfo}:IInfoItem) {
                     }
                 </Count>
             </Info>
-        </Item>
+        </Area>
      );
 }
 
 const Info = styled.div`
     display: flex;
     flex-direction: column;
+    width: 100%;
     transition: .1s;
 `
 
@@ -65,12 +66,12 @@ const Avatar = styled.img`
     box-sizing: border-box;
 `
 
-interface IItemProps {
+interface IAreaProps {
     color: string;
     hoveredColor: string;
 }
 
-const Item = styled.div<IItemProps>`
+const Area = styled.div<IAreaProps>`
     
     width: 100%;
     height: 100px;
@@ -97,4 +98,4 @@ const Item = styled.div<IItemProps>`
 
 `
 
-export default InfoItem;
+export default InfoArea;

@@ -30,3 +30,9 @@ export interface ILocationToMove {
     time: number;
     locationId: string;
 }
+
+export interface IChangeInfo {
+    area?: IArea;
+    itemId?: string;
+    whatInfo: string;
+  }

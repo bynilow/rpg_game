@@ -6,14 +6,27 @@ import { useEffect, useRef, useState } from 'react';
 interface IArea {
     title: string;
     timeToMove: number;
+    areaId: string;
     goLevel: Function;
     avatarUrl: string;
     index: number;
+    moveAreaId: string;
+    setMoveAreaId: Function;
+    clearMoveAreaId: Function;
 }
 
 
 
-function Area({ title, timeToMove, goLevel, avatarUrl = '', index }: IArea) {
+function Area({ 
+    title, 
+    timeToMove, 
+    goLevel, 
+    avatarUrl = '', 
+    index, 
+    moveAreaId,
+    setMoveAreaId,
+    clearMoveAreaId,
+    areaId }: IArea) {
 
     const dispatch = useAppDispatch();
 
@@ -25,14 +38,19 @@ function Area({ title, timeToMove, goLevel, avatarUrl = '', index }: IArea) {
     const [currentTimeToMove, setCurrentTimeToMove] = useState(timeToMove);
 
     const onClickLevel = (e:React.MouseEvent<HTMLDivElement>) => {
-        setIsMoving(true);
-        startIntervalMove();
-        setCurrentTimeToMove(timeToMove); 
+        if(!isMoving){
+            setIsMoving(true);
+            startIntervalMove();
+            setCurrentTimeToMove(timeToMove);
+            setMoveAreaId();
+        }
+
     }
     
     const onClickStopMove = () => {
         setIsMoving(false);
         dispatch(stopMoveToLocation());
+        clearMoveAreaId();
     }
 
     const startIntervalMove = () => {
@@ -42,14 +60,16 @@ function Area({ title, timeToMove, goLevel, avatarUrl = '', index }: IArea) {
         }, 50);
         setTimeout(() => {
             clearInterval(interval);
-            if(isMovingRef.current) goLevel();
+            if(isMovingRef.current) {
+                clearMoveAreaId();
+                goLevel();
+            };
         }, timeToMove*1000)
     }
-
     return (
-        <AreaBlock index={index} >
+        <AreaBlock index={index} isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')}>
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
-            <Avatar image={avatarUrl}>
+            <Avatar image={avatarUrl} isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')}>
                 {
                     isMoving
                         ? <StopMoveCross id='stopmove' onClick={() => onClickStopMove()}>
@@ -90,6 +110,7 @@ const AreaBlockClickable = styled.div`
 
 interface IAvatarProps{
     image: string;
+    isMovingOther: boolean;
 }
 
 const Avatar = styled.div<IAvatarProps>`
@@ -105,7 +126,14 @@ const Avatar = styled.div<IAvatarProps>`
     background-image: url(${p => require('../../' + p.image)});
     background-size: cover;
     border-radius: 50%;
-    transition: 0.1s;
+
+    ${p => p.isMovingOther 
+        ? `width: 50px;
+        height: 50px;`
+        : null
+    }
+
+    transition: 0.3s;
 
     &:hover{
         transform: scale(1);
@@ -170,6 +198,7 @@ const StopMoveCross = styled.div`
 
 interface IAreaBlockProps {
     index: number;
+    isMovingOther: boolean;
 }
 
 const AreaBlockAnim = keyframes`
@@ -200,14 +229,36 @@ const AreaBlock = styled.div<IAreaBlockProps>`
     animation-fill-mode: forwards;
     transition: 0.1s;
 
+    ${
+        p => p.isMovingOther
+            ? `&::after{
+                position: absolute;
+                z-index: 99;
+                border-radius: 5px;
+                top: 0;
+                left: 0;
+                content: '';
+                width: 100%;
+                height: 100%;
+                background: #00000071;
+            };`
+            : null
+    }
+
     box-sizing: border-box;
 
     &:hover ${Name} {
-        padding: 20px;
+        ${p => p.isMovingOther 
+            ? null 
+            : `padding: 20px;`
+        }
     }
 
     &:hover{
-        background-color: #e7e7e7;
+        ${p => p.isMovingOther 
+            ? null 
+            : `background-color: #d8d8d8`
+        }
     }
 `
 

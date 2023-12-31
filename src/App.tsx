@@ -3,7 +3,7 @@ import s from './app.module.css'
 import MapCreatorPage from './components/MapCreator/MapCreatorPage';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { getAvailablePaths, goLevel, mineItem, setAreasFromStorage, setInventoryFromStorage, setLocationToMove, updateAreaItems } from './store/reducers/ActionCreators';
-import { IPath, IArea, IAviablePath } from './models/IArea';
+import { IPath, IArea, IAviablePath, IChangeInfo } from './models/IArea';
 import Area from './components/Area/Area';
 import styled, { keyframes } from 'styled-components'
 import { IAreaFullItem } from './models/IAreaItem';
@@ -35,7 +35,7 @@ function App() {
         "avatar": "icons/areas/south_beach.png",
         "title": "Южный пляж",
         "color": "green",
-        "description": "Южный пляж - одна из первых локаций, которую игрок может исследовать в игре. Это живописный район, расположенный на юге острова и известный своими золотистыми песчаными пляжами и теплыми лазурными водами. Воздух здесь наполнен свежестью и морским бризом, что создает атмосферу безмятежного отдыха.",
+        "description": "Южный пляж - одна из первых локаций, которую игрок может исследовать в игре. Это выразительный район, расположенный на юге острова и известный своими золотистыми песчаными пляжами и теплыми лазурными водами. Воздух здесь наполнен свежестью и морским бризом, что создает атмосферу безмятежного отдыха.",
         "areaItems": [
           {
             "id": "birch_tree",
@@ -62,7 +62,7 @@ function App() {
         "avatar": "icons/areas/low_hills.png",
         "title": "Невысокие холмы",
         "color": "green",
-        "description": "Невысокие холмы - удивительно живописная земля, затерянная в глубине цветущего мира. Это место, где чарующая красота природы соседствует с таинственным волшебством, заставляющим сердца путников замирать от изумления.",
+        "description": "Невысокие холмы - затерянная в глубине цветущего мира. Это место, где чарующая красота природы соседствует с таинственным волшебством, заставляющим сердца путников замирать от изумления.",
         "areaItems": [
           {
             "id": "birch_tree",
@@ -136,7 +136,7 @@ function App() {
         "avatar": "icons/areas/fish_ponds.png",
         "title": "Рыбные пруды",
         "color": "yellow",
-        "description": "\"Рыбные пруды\" - уединенный район расположенный в живописной местности, вдали от всякой суеты. Просторные пруды, окруженные густыми зелеными деревьями и цветущими полевыми цветами, создают атмосферу спокойствия и умиротворения.",
+        "description": "\"Рыбные пруды\" - уединенный район, вдали от всякой суеты. Просторные пруды, окруженные густыми зелеными деревьями и цветущими полевыми цветами, создают атмосферу спокойствия и умиротворения.",
         "areaItems": [
           {
             "id": "oak_tree",
@@ -291,9 +291,7 @@ function App() {
     const name = areas.find(p => p.id === lvlId)?.title;
     return name
   }
-  console.log(areas)
   const currentLocation = areas[areas.findIndex((i: IArea) => i.id === currentLocationId)];
-  console.log(areas[areas.findIndex((i: IArea) => i.id === currentLocationId)])
 
 
   const lastRespawnAreaItems = new Date(currentLocation.lastRespawnAreaItems);
@@ -305,15 +303,43 @@ function App() {
   const [nextRespawnAreaEnemies, setNextRespawnAreaEnemies] = useState(new Date());
 
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [infoArea, setInfoArea] = useState(currentLocation);
+  const [whatInfo, setWhatInfo] = useState('area');
+  const [infoItemId, setInfoItemId] = useState('');
+
+
+  const [miningItemId, setMiningItemId] = useState<string>('');
+  const [moveAreaId, setMoveAreaId] = useState<string>('');
+  // const [isMaking, setIsMakingSomething] = useState<boolean>(false);
 
 
   const getAreaFromId = (id: string) => {
-    console.log(areas[areas.findIndex(i => i.id === id)]);
     return areas[areas.findIndex(i => i.id === id)];
   }
 
   const closeInventoryModal = () => {
     setIsInventoryOpen(false);
+  }
+
+  const onChangeInfo = ({area, itemId, whatInfo}: IChangeInfo) => {
+    if(whatInfo === 'area' && area){
+      setInfoArea(area);
+    }
+    else if(whatInfo === 'item' && itemId){
+      setInfoItemId(itemId);
+    }
+    else{
+
+    }
+    setWhatInfo(whatInfo);
+  }
+
+  const onClickCloseModalInfo = () => {
+    setIsInfoOpen(false);
+    setInfoArea(currentLocation);
+    setInfoItemId('');
+    setWhatInfo('area');
   }
 
   useEffect(() => {
@@ -333,9 +359,6 @@ function App() {
         itemsToUpdate: currentLocation.areaItems
       }));
     }
-
-
-
   }, [areas, currentLocation, currentLocationId])
 
   if (currentLocation) {
@@ -348,28 +371,41 @@ function App() {
               ? <InventoryModal closeModal={() => closeInventoryModal()} />
               : null
           }
-          <InfoModal />
+          {
+            isInfoOpen
+              ? <InfoModal 
+                  area={infoArea}
+                  itemId={infoItemId}
+                  closeModal={() => onClickCloseModalInfo()} 
+                  whatInfo={whatInfo}
+                  changeWhatInfo={(info: IChangeInfo) => 
+                    onChangeInfo(info)} />
+              : null
+          }
           <Container>
             <button onClick={() => setIsInventoryOpen(true)}>
               Инвентарь
             </button>
             
-            <LevelName>
+            <LevelName color={currentLocation.color}>
               Ты на уровне: {currentLocation.title} / {currentLocation.id}
-              <CircleButton symbol='?' />
+              <CircleButton symbol='?' click={() => setIsInfoOpen(true)} />
                
             </LevelName>
 
             <Menu>
 
-              <AreasBlock update={availablePaths.length}>
-                <CircleButton symbol='?' />
+              <AreasBlock update={availablePaths.length} isBlocked={miningItemId !== ''}>
                 <NameBlock>Доступные пути:</NameBlock>
                 <LevelsList>
                   {
                     availablePaths.map((p, ind) => <Area
                       key={p.pathId}
                       index={ind}
+                      areaId={p.pathId}
+                      setMoveAreaId={() => setMoveAreaId(p.pathId)}
+                      clearMoveAreaId={() => setMoveAreaId('')}
+                      moveAreaId={moveAreaId}
                       avatarUrl={getAreaFromId(p.pathId).avatar}
                       title={getNameAreaById(p.pathId) || ''}
                       timeToMove={p.time}
@@ -378,20 +414,20 @@ function App() {
                 </LevelsList>
               </AreasBlock>
 
-              <PlaceBlock update={currentLocation.currentAreaItems.length}>
-                <CircleButton symbol='?' />
+              <PlaceBlock update={currentLocation.currentAreaItems.length} isBlocked={moveAreaId !== ''}>
                 <NameBlock>Местность: </NameBlock>
-                <div>
+                <DescriptionText>
+                    ⟳ {nextRespawnAreaItems.toLocaleString()}
+                  </DescriptionText>
+                {/* <div>
                   <DescriptionText>
-                    🔄 {currentLocation.timeToRespawnAreaItems}m
+                    ⟳ {currentLocation.timeToRespawnAreaItems}m
                   </DescriptionText>
                   <DescriptionText>
                     ⏪🔄 {lastRespawnAreaItems.toLocaleString()}
                   </DescriptionText>
-                  <DescriptionText>
-                    ⏩🔄 {nextRespawnAreaItems.toLocaleString()}
-                  </DescriptionText>
-                </div>
+                  
+                </div> */}
 
                 <LevelsList>
                   {
@@ -399,26 +435,31 @@ function App() {
                       <AreaItem
                         key={i.idInArea + currentLocationId}
                         index={ind}
+                        setIsMiningId={() => setMiningItemId(i.idInArea)}
+                        clearIsMiningId={() => setMiningItemId('')}
+                        miningId={miningItemId}
                         item={i}
                         mineItem={() => onClickItem(i)} />)
                   }
                 </LevelsList>
               </PlaceBlock>
 
-              <EmeniesBlock update={currentLocation.enemies.length + 1.2}>
-                <CircleButton symbol='?' />
+              <EmeniesBlock 
+                update={currentLocation.enemies.length + 1.2} 
+                isBlocked={miningItemId !== '' || moveAreaId !==''}>
                 <NameBlock>Монстры: </NameBlock>
-                <div>
+                <DescriptionText>
+                    ⟳ {nextRespawnAreaEnemies.toLocaleString()}
+                  </DescriptionText>
+                {/* <div>
                   <DescriptionText>
-                    🔄 {currentLocation.timeToRespawnAreaEnemies}m
+                    ⟳ {currentLocation.timeToRespawnAreaEnemies}m
                   </DescriptionText>
                   <DescriptionText>
                     ⏪🔄 {lastRespawnAreaEnemies.toLocaleString()}
                   </DescriptionText>
-                  <DescriptionText>
-                    ⏩🔄 {nextRespawnAreaEnemies.toLocaleString()}
-                  </DescriptionText>
-                </div>
+                  
+                </div> */}
               </EmeniesBlock>
 
 
@@ -450,14 +491,29 @@ const NameBlock = styled.p`
   margin: 0;
 `
 
-const LevelName = styled.div`
+interface LevelNameProps{
+  color: string;
+}
+
+const LevelName = styled.div<LevelNameProps>`
   position: relative;
   font-size: 30px;
   padding: 10px;
   margin: 20px 0;
-  background: white;
+  background: ${p =>
+        p.color === 'green'
+            ? "linear-gradient(225deg, #ffffff 95%, #51973f 95%);"
+            : p.color === 'yellow'
+            ? "linear-gradient(225deg, #ffffff 95%, #b9ae4b 95%);"
+            : "linear-gradient(225deg, #ffffff 95%, #cd4d4d 95%);"
+        };
   box-shadow: 0 0 5px black;
   border-radius: 5px;
+  /* #7a7a80
+  #499b65
+  #3e539e
+  #8a2496
+  #978414 */
 `
 
 interface IBackgroundProps {
@@ -516,9 +572,11 @@ const LevelsList = styled.div`
 const DescriptionText = styled.p`
   font-size: 14px;
   line-height: 0.9;
+  margin: 0;
 `
 interface IBlockProps {
   update: number;
+  isBlocked: boolean;
 }
 
 const Block = styled.div<IBlockProps>`
@@ -536,6 +594,22 @@ const Block = styled.div<IBlockProps>`
   background-color: white;
   transition: 3s;
   box-sizing: border-box;
+
+  ${
+    p => p.isBlocked
+      ? `&::after{
+        position: absolute;
+        z-index: 99;
+        border-radius: 5px;
+        top: 0;
+        left: 0;
+        content: '';
+        width: 100%;
+        height: 5000%;
+        background: #00000071;
+      };`
+            : null
+    }
 
 
   &::-webkit-scrollbar{
@@ -556,7 +630,7 @@ const Block = styled.div<IBlockProps>`
 
 const PlaceBlock = styled(Block)`
   overflow-y: scroll;
-  height: ${p => 160 + p.update * 100}px;
+  height: ${p => 70 + p.update * 100}px;
   
 `
 

@@ -3,15 +3,19 @@ import { useAppDispatch } from '../../hooks/redux';
 import { stopMineItem, stopMoveToLocation } from '../../store/reducers/ActionCreators';
 import { IAreaFullItem } from '../../models/IAreaItem';
 import { useRef, useState } from 'react';
+import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../styles/backgrounds';
 
 
 interface IAreaItemProps {
     item: IAreaFullItem;
-    mineItem: Function;
     index: number;
+    miningId: string;
+    setIsMiningId: Function;
+    mineItem: Function;
+    clearIsMiningId: Function;
 }
 
-function Area({ item, mineItem, index }: IAreaItemProps) {
+function Area({ item, mineItem, index, miningId, setIsMiningId, clearIsMiningId }: IAreaItemProps) {
 
     const dispatch = useAppDispatch();
 
@@ -21,15 +25,18 @@ function Area({ item, mineItem, index }: IAreaItemProps) {
     const [timeToMining, setTimeToMining] = useState(item.timeToMining);
 
     const onClickStartMining = (e:React.MouseEvent<HTMLDivElement>) => {
-        setIsMining(true);
-        startIntervalMine();
-        
+        if(!isMining){
+            setIsMining(true);
+            setIsMiningId();
+            startIntervalMine();
+        }
     }
 
     const onClickStopMining = () => {
         dispatch(stopMineItem());
         setTimeToMining(item.timeToMining);
         setIsMining(false);
+        clearIsMiningId();
         
     }
 
@@ -41,16 +48,21 @@ function Area({ item, mineItem, index }: IAreaItemProps) {
         setTimeout(() => {
             clearInterval(interval);
             if(isMiningRef.current) {
+                clearIsMiningId();
                 mineItem();
             }
         }, item.timeToMining*1000)
         
     }
-
+///(miningId !== item.idInArea && miningId !== '')
     return (
-        <AreaItemBlock rare={item.rare} index={index} >
+        <AreaItemBlock 
+            color={getItemBackground(item.rare)} 
+            hoveredColor={getItemHoveredBackground(item.rare)}
+            index={index} 
+            isMiningOther={(miningId !== item.idInArea && miningId !== '')} >
             <AreaItemBlockClickable onClick={e => onClickStartMining(e)} />
-            <Avatar image={item.avatar}>
+            <Avatar image={item.avatar} isMiningOther={(miningId !== item.idInArea && miningId !== '')}>
                 {/* <AvatarImg alt="" src={require('../../'+item.avatar)} /> */}
                 {
                     isMining
@@ -72,7 +84,8 @@ function Area({ item, mineItem, index }: IAreaItemProps) {
                 }s
             </Timer>
             <TimerLine 
-                rare={item.rare}
+                color={getRareColor(item.rare)}
+                backgroundColor={getRareTimerBackgroundColor(item.rare)}
                 max={item.timeToMining} 
                 value={isMining ? timeToMining : item.timeToMining} />
         </AreaItemBlock>
@@ -89,13 +102,9 @@ const AreaItemBlockClickable = styled.div`
     left: 0;
 `
 
-interface IRareProp {
-    rare: string;
-    
-}
-
 interface IAvatarProps{
     image: string;
+    isMiningOther: boolean;
 }
 
 const Avatar = styled.div<IAvatarProps>`
@@ -112,6 +121,11 @@ const Avatar = styled.div<IAvatarProps>`
     background-position: center;
     background-repeat: no-repeat;
     
+    ${p => p.isMiningOther 
+        ? `width: 50px;
+        height: 50px;`
+        : null
+    }
 
     transition: 0.3s;
     &:hover{
@@ -119,59 +133,37 @@ const Avatar = styled.div<IAvatarProps>`
     }
 `
 
-const AvatarImg = styled.img`
-    width: 120%;
-    top: -10%;
-    left: -10%;
-    position: absolute;
-`
-
 const Timer = styled.p`
     position: absolute;
-    color: white;
+    color: black;
     bottom: 0;
     right: 0;
     margin: 10px;
 `
 
-const TimerLine = styled.progress<IRareProp>`
+interface ITimerLineProps{
+    color: string;
+    backgroundColor: string;
+}
+
+const TimerLine = styled.progress<ITimerLineProps>`
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 5px;
-
+    border-radius: 5px;
     -webkit-appearance: none;
    appearance: none;
 
    transition: 0.1s;
 
    &::-webkit-progress-value {
-    background-color: ${props => 
-        props.rare === 'common' 
-        ? "#a4a4ab;"
-        : props.rare === 'uncommon'
-        ? "#59c87f;"
-        : props.rare === 'rare'
-        ? "#4d69cd;"
-        : props.rare === 'mythical'
-        ? "#d42be6;"
-        : "#caab05;"
-    };
+    background-color: ${p => p.color};
     transition: 0.2s;
    }
    &::-webkit-progress-bar {
-    background-color: ${props => 
-        props.rare === 'common' 
-        ? "#8d8d92;"
-        : props.rare === 'uncommon'
-        ? "#4dac6e;"
-        : props.rare === 'rare'
-        ? "#4458a1;"
-        : props.rare === 'mythical'
-        ? "#b725c7;"
-        : "#ac9204;"
-    };
+    background-color: ${p => p.backgroundColor};
    }
 `
 
@@ -212,14 +204,19 @@ const AreaItemBlockAnim = keyframes`
 `
 
 interface IAreaItemBlockProps{
-    rare: string;
+    color: string;
+    hoveredColor: string;
     index: number;
+    isMiningOther: boolean;
+    
 }
+
+
 
 const AreaItemBlock = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 5px 5px 0 0;
     width: 350px;
     height: 30px;
     display: flex;
@@ -227,42 +224,44 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
     align-items: center;
     position: relative;
     cursor: pointer;
+    background: ${ p => p.color};
 
-    background: ${props => 
-        props.rare === 'common' 
-        ? "linear-gradient(135deg, white 80%, #a4a4ab 80%);"
-        : props.rare === 'uncommon'
-        ? "linear-gradient(135deg, white 80%, #59c87f 80%);"
-        : props.rare === 'rare'
-        ? "linear-gradient(135deg, white 80%, #4d69cd 80%);"
-        : props.rare === 'mythical'
-        ? "linear-gradient(135deg, white 80%, #d42be6 80%);"
-        : "linear-gradient(135deg, white 80%, #caab05 80%);"
-    };
+    ${
+        p => p.isMiningOther
+            ? ` &::after{
+                position: absolute;
+                z-index: 99;
+                border-radius: 5px;
+                top: 0;
+                left: 0;
+                content: '';
+                width: 100%;
+                height: 100%;
+                background: #00000081;
+            };`
+            : null
+    }
 
     transform: scale(0) rotate(-45deg);
     animation: ${AreaItemBlockAnim} .5s ease;
     animation-delay: ${p => p.index/3}s;
     animation-fill-mode: forwards;
-
+    
     transition: 1s;
 
     &:hover ${Title} {
-        padding: 20px;
+        ${p => p.isMiningOther 
+            ? null 
+            : `padding: 20px;`
+        }
     }
 
     &:hover{
-        background: ${props =>
-        props.rare === 'common'
-            ? "linear-gradient(135deg, #e7e7e7 80%, #a4a4ab 80%);"
-            : props.rare === 'uncommon'
-            ? "linear-gradient(135deg, #e7e7e7 80%, #59c87f 80%);"
-            : props.rare === 'rare'
-            ? "linear-gradient(135deg, #e7e7e7 80%, #4d69cd 80%);"
-            : props.rare === 'mythical'
-            ? "linear-gradient(135deg, #e7e7e7 80%, #d42be6 80%);"
-            : "linear-gradient(135deg, #e7e7e7 80%, #caab05 80%);"
-    };
+        ${
+            p => p.isMiningOther
+                ? null
+                : `background: ${p.hoveredColor};`
+        }
     }
 `
 

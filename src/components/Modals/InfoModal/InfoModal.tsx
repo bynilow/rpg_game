@@ -4,27 +4,49 @@ import CircleButton from '../../Buttons/CircleButton';
 import { useAppSelector } from '../../../hooks/redux';
 import InfoItem from './InfoItem';
 import { idText } from 'typescript';
+import { IArea, IChangeInfo } from '../../../models/IArea';
+import { useEffect, useState } from 'react';
+import InfoArea from './InfoArea';
+import { getAreaBackground, getAreaColor, getItemBackground, getRareColor } from '../../../styles/backgrounds';
 
-function InfoModal() {
+interface IInfoModal {
+    area: IArea;
+    itemId: string;
+    closeModal: Function;
+    whatInfo: string;
+    
+    changeWhatInfo: (item: IChangeInfo) => void;
+}
 
-    const {areas} = useAppSelector(state => state.userReducer)
+function InfoModal({area, closeModal, whatInfo, changeWhatInfo, itemId}:IInfoModal) {
+
+    const {areaItems, areas} = useAppSelector(state => state.userReducer);
+
+    const item = areaItems.find(i => i.id === itemId)!;
+    console.log(areaItems.find(i => i.id === itemId), itemId)
+
+    useEffect(() => {
+
+    }, [item])
 
     return ( 
         <>
         <ModalBackground />
-        <Info color={areas[3].color}>
+        {
+            whatInfo === 'area'
+            ? <Info color={getAreaBackground(area.color)}>
             
-            <CircleButton symbol='✕' />
+            <CircleButton symbol='✕' click={() => closeModal()} />
             <Section>
-                <Avatar alt='' src={require('../../../'+areas[3].avatar)} />
+                <Avatar alt='' src={require('../../../'+area.avatar)} />
                 <Title>
-                    "{areas[3].title}"
+                    "{area.title}"
                 </Title>
-                <ColorText>
+                <ColorText color={getAreaColor(area.color)}>
                     {
-                        areas[3].color === 'green'
+                        area.color === 'green'
                             ? 'Зеленная зона'
-                            : areas[3].color === 'yellow'
+                            : area.color === 'yellow'
                             ? 'Желтая зона'
                             : 'Красная зона'
                     
@@ -32,8 +54,9 @@ function InfoModal() {
                 </ColorText>
                 <Description>
                     {
-                        areas[3].description
+                        area.description
                     }
+                    
                 </Description>
             </Section>
             
@@ -42,15 +65,19 @@ function InfoModal() {
                     Местность
                 </Title>
                 <UpdateText>
-                    Обновляется каждые {areas[3].timeToRespawnAreaItems} минут
+                    Обновляется каждые {area.timeToRespawnAreaItems} минут
                 </UpdateText>
                 <List>
                     {
-                        areas[3].areaItems.map(i => 
+                        area.areaItems.map(i => 
                             <InfoItem 
                                 id={i.id}
                                 countMax={i.countMax}
-                                countMin={i.countMin} />)
+                                countMin={i.countMin}
+                                changeWhatInfo={() => changeWhatInfo({
+                                    whatInfo: 'item',
+                                    itemId: i.id
+                                })} />)
                     }
                     
                 </List>
@@ -61,14 +88,81 @@ function InfoModal() {
                     Враги
                 </Title>
                 <UpdateText>
-                    Обновляются каждые {areas[3].timeToRespawnAreaEnemies} минут
+                    Обновляются каждые {area.timeToRespawnAreaEnemies} минут
                 </UpdateText>
             </Section>
             
         </Info>
+            : <Info color={getItemBackground(item.rare)}>
+                <CircleButton symbol='✕' click={() => closeModal()} />
+                
+                <Section>
+                    <Avatar alt='' src={require('../../../'+item.avatar)} />
+                    <Title>
+                        "{item.title}"
+                    </Title>
+                    <ColorText color={getRareColor(item.rare)}>
+                    {
+                        item.rare === 'common' 
+                        ? "Обычное"
+                        : item.rare === 'uncommon'
+                        ? "Необычное"
+                        : item.rare === 'rare'
+                        ? "Редкое"
+                        : item.rare === 'mythical'
+                        ? "Мифическое"
+                        : "Легендарное"
+                    
+                    }
+                    </ColorText>
+                    <Cost>
+                        {item.cost}$
+                    </Cost>
+                    <Description>
+                        {item.description}
+                    </Description>
+                </Section>
+
+                <Section>
+                    <Title>
+                        Где найти
+                    </Title>
+                    <List>
+                        {
+                            areas.filter(a => a.areaItems.findIndex(i => i.id === itemId) !== -1)
+                                .map(a => 
+                                    <InfoArea 
+                                        key={a.id} 
+                                        areaId={a.id}
+                                        countMax={a.areaItems.find(i => i.id === itemId)!.countMax}
+                                        countMin={a.areaItems.find(i => i.id === itemId)!.countMin}
+                                        changeWhatInfo={() => changeWhatInfo({
+                                            whatInfo: 'area',
+                                            area: a
+                                        })} />)
+                        }
+                    </List>
+                </Section>
+
+                <Section>
+                    <Title> 
+                        Используется
+                    </Title>
+                </Section>
+            </Info>
+        }
         </>
      );
 }
+
+const Cost = styled.p`
+    color: black;
+    width: min-content;
+    background-color: #dddddd;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 0;
+`
 
 const List = styled.div`
     display: flex;
@@ -76,12 +170,19 @@ const List = styled.div`
     gap: 10px;
 `
 
-const ColorText = styled.p`
+interface IColorText {
+    color: string;
+}
+
+const ColorText = styled.p<IColorText>`
     font-size: 16px;
+    margin: 0;
+    color: ${props => props.color};
 `
 
 const UpdateText = styled.p`
     font-size: 16px;
+    margin: 0;
 `
 
 const Section = styled.div`
@@ -89,6 +190,11 @@ const Section = styled.div`
     padding: 20px;
     overflow-y: auto;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    gap: 10px;
+
     &::-webkit-scrollbar{
         width: 5px;
         border-radius: 10px;
@@ -108,10 +214,8 @@ const Section = styled.div`
 
 const Avatar = styled.img`
     width: 10vw;
-    height: 10vw;
-    background-color: #ffffff;
-    box-shadow: 0 0 5px black;
-    border-radius: 50%;
+    min-height: 10vw;
+    object-fit: contain;
 
     transition: .3s;
     box-sizing: border-box;
@@ -119,6 +223,7 @@ const Avatar = styled.img`
 
 const Description = styled.p`
     font-size: 18px;
+    margin: 0;
 `
 
 const Title = styled.p`
@@ -130,7 +235,7 @@ interface IInfoProps{
     color: string;
 }
 
-const Info = styled.div`
+const Info = styled.div<IInfoProps>`
     z-index: 9999;
     position: absolute;
     width: 70vw;
@@ -143,13 +248,7 @@ const Info = styled.div`
     justify-content: space-around;
     gap: 20px;
 
-    background: ${props =>
-        props.color === 'green'
-            ? "linear-gradient(225deg, #ffffff 95%, #51973f 95%);"
-            : props.color === 'yellow'
-            ? "linear-gradient(225deg, #ffffff 95%, #b9ae4b 95%);"
-            : "linear-gradient(225deg, #ffffff 95%, #cd4d4d 95%);"
-        }
+    background: ${p => p.color};
 `
 
 export default InfoModal;

@@ -74,7 +74,7 @@ function InventoryModal({closeModal}:IInventoryModal) {
         <>
             <ModalBackground />
             <Inventory>
-                <CircleButton onClick={() => closeModal()} symbol='✕' />
+                <CircleButton click={() => closeModal()} symbol='✕' />
                 <InventoryText>Инвентарь</InventoryText>
                 <Bar>
                     <InputName
