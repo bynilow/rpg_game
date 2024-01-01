@@ -1,4 +1,5 @@
-import { IAreaFullItem, IAreaItem } from "./IAreaItem";
+import { IFullItem, IAreaItem } from "./IAreaItem";
+import { IEnemy } from "./IEnemy";
 
 export interface IArea {
     id: string;
@@ -7,8 +8,8 @@ export interface IArea {
     color: string;
     description: string;
     areaItems: IAreaItem[];
-    currentAreaItems: IAreaFullItem[];
-    enemies: any;
+    currentAreaItems: IFullItem[];
+    enemies: IEnemy[];
     timeToRespawnAreaItems: number;
     timeToRespawnAreaEnemies: number;
     lastRespawnAreaItems: string;

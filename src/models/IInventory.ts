@@ -1,7 +1,7 @@
-import { IAreaFullItem } from "./IAreaItem";
+import { IFullItem } from "./IAreaItem";
 
 export interface IItemInventory{
-    item: IAreaFullItem;
+    item: IFullItem;
     count: number;
 }
 

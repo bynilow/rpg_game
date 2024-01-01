@@ -1,13 +1,13 @@
 import styled, { keyframes } from 'styled-components'
 import { useAppDispatch } from '../../hooks/redux';
 import { stopMineItem, stopMoveToLocation } from '../../store/reducers/ActionCreators';
-import { IAreaFullItem } from '../../models/IAreaItem';
+import { IFullItem } from '../../models/IAreaItem';
 import { useRef, useState } from 'react';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../styles/backgrounds';
 
 
 interface IAreaItemProps {
-    item: IAreaFullItem;
+    item: IFullItem;
     index: number;
     miningId: string;
     setIsMiningId: Function;

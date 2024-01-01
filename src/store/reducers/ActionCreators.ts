@@ -2,7 +2,7 @@ import axios from "axios";
 import { AppDispatch } from "../store";
 import { gameSlice } from "./GameSlice";
 import { ILocationToMove } from "../../models/IArea";
-import { IAreaFullItem, IAreaItem } from "../../models/IAreaItem";
+import { IFullItem, IAreaItem } from "../../models/IAreaItem";
 import { useAppSelector } from "../../hooks/redux";
 import { IItemInventory } from "../../models/IInventory";
 
@@ -80,7 +80,7 @@ export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispat
     }
 }
 
-export const mineItem = (miningItem: IAreaFullItem) => async (dispatch: AppDispatch) => {
+export const mineItem = (miningItem: IFullItem) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.mineItem(miningItem));
         dispatch(gameSlice.actions.addItemToInventory(miningItem));
@@ -112,7 +112,7 @@ export const setAreasFromStorage = () => async (dispatch: AppDispatch) => {
     }
 }
 
-export const addItemToInventory = (item:IAreaFullItem) => async (dispatch: AppDispatch) => {
+export const addItemToInventory = (item:IFullItem) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.addItemToInventory(item));
         

@@ -8,7 +8,7 @@ type Rare = 'common' | 'uncommon' | 'rare' | 'mythical' | 'legendary';
 
 export const rareList = ['common', 'uncommon', 'rare', 'mythical', 'legendary'];
 
-export interface IAreaFullItem {
+export interface IFullItem {
     id: string;
     idInArea: string;
     title: string;

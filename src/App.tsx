@@ -6,11 +6,13 @@ import { getAvailablePaths, goLevel, mineItem, setAreasFromStorage, setInventory
 import { IPath, IArea, IAviablePath, IChangeInfo } from './models/IArea';
 import Area from './components/Area/Area';
 import styled, { keyframes } from 'styled-components'
-import { IAreaFullItem } from './models/IAreaItem';
+import { IFullItem } from './models/IAreaItem';
 import AreaItem from './components/Area/AreaItem';
 import InventoryModal from './components/Modals/InventoryModal/InventoryModal';
 import CircleButton from './components/Buttons/CircleButton';
 import InfoModal from './components/Modals/InfoModal/InfoModal';
+import CombatPage from './components/Combat/CombatPage';
+import Container from './components/Container/Container';
 
 
 function App() {
@@ -283,7 +285,7 @@ function App() {
 
   }
 
-  const onClickItem = (miningItem: IAreaFullItem) => {
+  const onClickItem = (miningItem: IFullItem) => {
     dispatch(mineItem(miningItem));
   }
 
@@ -361,7 +363,13 @@ function App() {
     }
   }, [areas, currentLocation, currentLocationId])
 
-  if (currentLocation) {
+  if(true){
+    return(
+      <CombatPage enemyId={'bandit'} />
+    )
+  }
+
+  if (currentLocation && false) {
     return (
       <>
         <Background image={currentLocation.avatar} />
@@ -431,7 +439,7 @@ function App() {
 
                 <LevelsList>
                   {
-                    currentLocation.currentAreaItems.map((i: IAreaFullItem, ind) =>
+                    currentLocation.currentAreaItems.map((i: IFullItem, ind) =>
                       <AreaItem
                         key={i.idInArea + currentLocationId}
                         index={ind}
@@ -652,12 +660,6 @@ const Menu = styled.div`
   gap: 50px;
   width: 100%;
   height: 100%;
-  transition: 1s;
-`
-
-const Container = styled.div`
-  width: 90%;
-  height: 100vh;
   transition: 1s;
 `
 
