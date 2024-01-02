@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import Container from '../Container/Container';
 import CombatText from './CombatText';
 import { IActionTexts, IEnemy } from '../../models/IEnemy';
+import WinCombatModal from '../Modals/WinCombatModal/WinCombatModal';
+import Avatar from '../Avatar/Avatar';
 
 interface ICombatPage {
     enemyId: string;
@@ -41,7 +43,7 @@ function CombatPage({ enemyId }: ICombatPage) {
         health: 150,
         attackSpeed: 3,
         currentAttackTime: 3,
-        damage: 8,
+        damage: 200,
         critDamageMultiplier: 1.5,
         critChance: 10,
         dodgeChance: 15,
@@ -78,6 +80,7 @@ function CombatPage({ enemyId }: ICombatPage) {
     }
 
     const [combatHistory, setCombatHistory] = useState<ICombatHistory[]>([]);
+    const [isWin, setIsWin] = useState(false);
 
     const [enemyTime, setEnemyTime] = useState<number>(enemy.attackSpeed);
 
@@ -199,21 +202,60 @@ function CombatPage({ enemyId }: ICombatPage) {
             setPlayer(p => ({...p, health: p.health - damage}));
         }
         else{
-            setEnemyHealth(enemyHealth - damage);
+            setEnemyHealth(h => h - damage);
+        }
+
+        if(enemyHealth-damage < 0){
+            winCombat();
         }
     }
 
+    interface IItems {
+        id: string;
+        count: number;
+    }
+
+    const [receivedItems, setReceivedItems] = useState<IItems[]>([])
+
+    const winCombat = () => {
+        
+        const possibleItems = enemy.possibleLoot;
+        const items:IItems[] = [];
+        possibleItems.forEach(i => {
+            if(getChance(i.dropChance)){
+                items.push({
+                    id: i.id,
+                    count: getRandomNumber(i.countMin, i.countMax)
+                })
+            }
+        })
+        console.log(items)
+        setReceivedItems(items);
+        setIsWin(true);
+    }
 
     useEffect(() => {
         const timeToEnemySay = ((Math.random()*100000)+50000);
         console.log(timeToEnemySay/1000)
         const enemyTimerAttackInterval = setInterval(() => {
-            setEnemyTime(t => t - 0.1);
+            if(enemyHealth < 0){
+                clearInterval(enemyTimerAttackInterval);
+            }
+            else{
+                setEnemyTime(t => t - 0.1);
+            }
 
         }, 100)
 
         const enemyAttackInterval = setInterval(() => {
-            enemyAttack();
+            if(enemyHealth < 0){
+                clearInterval(enemyAttackInterval);
+            }
+            else{
+                enemyAttack();
+            }
+            
+            
             
         }, enemy.attackSpeed*1000)
 
@@ -227,12 +269,17 @@ function CombatPage({ enemyId }: ICombatPage) {
             clearInterval(enemyAttackInterval);
             clearInterval(enemySayInterval);
         }
-    }, [])
+    }, [isWin])
 
 
 
     return (
         <Page>
+            {
+                isWin
+                ? <WinCombatModal items={receivedItems} />
+                : null
+            }
             <Container>
                 <ContainerInner>
                 <Section>
@@ -295,7 +342,10 @@ function CombatPage({ enemyId }: ICombatPage) {
 
                     <Section>
 
-                        <Avatar image={enemy.avatar} />
+                        <Avatar 
+                            $image={enemy.avatar}
+                            width={'200px'} 
+                            height={'200px'}/>
                         <Title>
                             {
                                 enemy.title
@@ -447,28 +497,6 @@ const HealthLine = styled.progress`
 
     border-radius: 5px;
    }
-`
-
-interface IAvatarProps {
-    image: string;
-}
-
-const Avatar = styled.div<IAvatarProps>`
-    z-index: 2;
-    position: relative;
-    width: 200px;
-    height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background-image: url(${p => require('../../' + p.image)});
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    transition: 0.3s;
-
 `
 
 const Title = styled.p`

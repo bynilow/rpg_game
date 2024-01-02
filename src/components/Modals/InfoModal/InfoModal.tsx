@@ -8,6 +8,7 @@ import { IArea, IChangeInfo } from '../../../models/IArea';
 import { useEffect, useState } from 'react';
 import InfoArea from './InfoArea';
 import { getAreaBackground, getAreaColor, getItemBackground, getRareColor } from '../../../styles/backgrounds';
+import Avatar from '../../Avatar/Avatar';
 
 interface IInfoModal {
     area: IArea;
@@ -38,7 +39,10 @@ function InfoModal({area, closeModal, whatInfo, changeWhatInfo, itemId}:IInfoMod
             
             <CircleButton symbol='✕' click={() => closeModal()} />
             <Section>
-                <Avatar alt='' src={require('../../../'+area.avatar)} />
+                <Avatar 
+                    $image={area.avatar}
+                    width={'10vw'} 
+                    height={'10vw'} />
                 <Title>
                     "{area.title}"
                 </Title>
@@ -97,7 +101,10 @@ function InfoModal({area, closeModal, whatInfo, changeWhatInfo, itemId}:IInfoMod
                 <CircleButton symbol='✕' click={() => closeModal()} />
                 
                 <Section>
-                    <Avatar alt='' src={require('../../../'+item.avatar)} />
+                    <Avatar 
+                        $image={item.avatar}
+                        width={'80px'} 
+                        height={'80px'} />
                     <Title>
                         "{item.title}"
                     </Title>
@@ -212,15 +219,6 @@ const Section = styled.div`
     }
 `
 
-const Avatar = styled.img`
-    width: 10vw;
-    min-height: 10vw;
-    object-fit: contain;
-
-    transition: .3s;
-    box-sizing: border-box;
-`
-
 const Description = styled.p`
     font-size: 18px;
     margin: 0;
@@ -240,7 +238,11 @@ const Info = styled.div<IInfoProps>`
     position: absolute;
     width: 70vw;
     height: 80vh;
-    top: 10%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
     background-color: white;
     box-shadow: 0 0 10px #00000050;
     border-radius: 15px;

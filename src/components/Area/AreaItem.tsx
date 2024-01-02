@@ -4,6 +4,7 @@ import { stopMineItem, stopMoveToLocation } from '../../store/reducers/ActionCre
 import { IFullItem } from '../../models/IAreaItem';
 import { useRef, useState } from 'react';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../styles/backgrounds';
+import Avatar from '../Avatar/Avatar';
 
 
 interface IAreaItemProps {
@@ -58,23 +59,17 @@ function Area({ item, mineItem, index, miningId, setIsMiningId, clearIsMiningId 
     return (
         <AreaItemBlock 
             color={getItemBackground(item.rare)} 
-            hoveredColor={getItemHoveredBackground(item.rare)}
-            index={index} 
-            isMiningOther={(miningId !== item.idInArea && miningId !== '')} >
+            $hoveredColor={getItemHoveredBackground(item.rare)}
+            $index={index} 
+            $isMiningOther={(miningId !== item.idInArea && miningId !== '')} >
             <AreaItemBlockClickable onClick={e => onClickStartMining(e)} />
-            <Avatar image={item.avatar} isMiningOther={(miningId !== item.idInArea && miningId !== '')}>
-                {/* <AvatarImg alt="" src={require('../../'+item.avatar)} /> */}
-                {
-                    isMining
-                        ? <StopMiningCross id='stopminning' onClick={() => onClickStopMining()}>
-                            ✕
-                        </StopMiningCross>
-                        : null
-                }
-                {/* <StopMiningCross>
-                        ✘
-                    </StopMiningCross> */}
-            </Avatar>
+            <Avatar 
+                $image={require('../../'+item.avatar)} 
+                width={'90px'} 
+                height={'90px'}
+                $onClicked={() => onClickStopMining()} 
+                $isMiningOther={(miningId !== item.idInArea && miningId !== '')} />
+
             <Title>{item.title}</Title>
             <Timer>
                 {
@@ -85,7 +80,7 @@ function Area({ item, mineItem, index, miningId, setIsMiningId, clearIsMiningId 
             </Timer>
             <TimerLine 
                 color={getRareColor(item.rare)}
-                backgroundColor={getRareTimerBackgroundColor(item.rare)}
+                $backgroundColor={getRareTimerBackgroundColor(item.rare)}
                 max={item.timeToMining} 
                 value={isMining ? timeToMining : item.timeToMining} />
         </AreaItemBlock>
@@ -102,37 +97,6 @@ const AreaItemBlockClickable = styled.div`
     left: 0;
 `
 
-interface IAvatarProps{
-    image: string;
-    isMiningOther: boolean;
-}
-
-const Avatar = styled.div<IAvatarProps>`
-    z-index: 2;
-    position: relative;
-    width: 90px;
-    height: 90px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background-image: url(${p => require('../../' + p.image)});
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    
-    ${p => p.isMiningOther 
-        ? `width: 50px;
-        height: 50px;`
-        : null
-    }
-
-    transition: 0.3s;
-    &:hover{
-        transform: scale(1.1);
-    }
-`
-
 const Timer = styled.p`
     position: absolute;
     color: black;
@@ -143,7 +107,7 @@ const Timer = styled.p`
 
 interface ITimerLineProps{
     color: string;
-    backgroundColor: string;
+    $backgroundColor: string;
 }
 
 const TimerLine = styled.progress<ITimerLineProps>`
@@ -154,17 +118,17 @@ const TimerLine = styled.progress<ITimerLineProps>`
     height: 5px;
     border-radius: 5px;
     -webkit-appearance: none;
-   appearance: none;
+    appearance: none;
 
-   transition: 0.1s;
+    transition: 0.1s;
 
-   &::-webkit-progress-value {
-    background-color: ${p => p.color};
-    transition: 0.2s;
-   }
-   &::-webkit-progress-bar {
-    background-color: ${p => p.backgroundColor};
-   }
+    &::-webkit-progress-value {
+        background-color: ${p => p.color};
+        transition: 0.2s;
+    }
+    &::-webkit-progress-bar {
+        background-color: ${p => p.$backgroundColor};
+    }
 `
 
 const Title = styled.p`
@@ -205,9 +169,9 @@ const AreaItemBlockAnim = keyframes`
 
 interface IAreaItemBlockProps{
     color: string;
-    hoveredColor: string;
-    index: number;
-    isMiningOther: boolean;
+    $hoveredColor: string;
+    $index: number;
+    $isMiningOther: boolean;
     
 }
 
@@ -227,7 +191,7 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
     background: ${ p => p.color};
 
     ${
-        p => p.isMiningOther
+        p => p.$isMiningOther
             ? ` &::after{
                 position: absolute;
                 z-index: 99;
@@ -244,13 +208,13 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
 
     transform: scale(0) rotate(-45deg);
     animation: ${AreaItemBlockAnim} .5s ease;
-    animation-delay: ${p => p.index/3}s;
+    animation-delay: ${p => p.$index/3}s;
     animation-fill-mode: forwards;
     
     transition: 1s;
 
     &:hover ${Title} {
-        ${p => p.isMiningOther 
+        ${p => p.$isMiningOther 
             ? null 
             : `padding: 20px;`
         }
@@ -258,9 +222,9 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
 
     &:hover{
         ${
-            p => p.isMiningOther
+            p => p.$isMiningOther
                 ? null
-                : `background: ${p.hoveredColor};`
+                : `background: ${p.$hoveredColor};`
         }
     }
 `

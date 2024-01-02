@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import Avatar from '../Avatar/Avatar';
 
 interface ICombatText {
     isEnemyAttack: boolean;
@@ -33,12 +34,15 @@ function CombatText({
 
     return ( 
         <Block
-            isMissed={isMissed}
-            isCrit={isCrit}
-            isSay={isSay}
-            isBlocked={isBlocked}
-            isDodged={isDodged}>
-            <Avatar image={avatar} />
+            $isMissed={isMissed}
+            $isCrit={isCrit}
+            $isSay={isSay}
+            $isBlocked={isBlocked}
+            $isDodged={isDodged}>
+            <Avatar 
+                $image={avatar}
+                width={'70px'} 
+                height={'70px'} />
             <ActionBlock>
                 <Time>
                     {
@@ -138,54 +142,27 @@ const Text = styled.p`
     margin: 0;
 `
 
-interface IAvatarProps {
-    image: string;
-}
-
-const Avatar = styled.div<IAvatarProps>`
-    z-index: 2;
-    position: relative;
-    min-width: 70px;
-    min-height: 70px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    ${
-        p => p.image !== ''
-        ? `background-image: url(${require('../../' + p.image)});`
-        : `background: gray;`
-    }
-
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    transition: 0.3s;
-`
-
 interface IBlockProps {
-    isMissed: boolean;
-    isCrit: boolean;
-    isSay: boolean;
-    isDodged: boolean;
-    isBlocked: boolean;
+    $isMissed: boolean;
+    $isCrit: boolean;
+    $isSay: boolean;
+    $isDodged: boolean;
+    $isBlocked: boolean;
 }
 
 const Block = styled.div<IBlockProps>`
     border-radius: 5px;
     padding-bottom: 10px;
     border-bottom: 5px solid ${
-        p => p.isMissed
+        p => p.$isMissed
         ? '#58b15f'
-        : p.isCrit
+        : p.$isCrit
         ? '#c74d4d'
-        : p.isSay
+        : p.$isSay
         ? '#608fbb'
-        : p.isBlocked
+        : p.$isBlocked
         ? '#a35bc4'
-        : p.isDodged
+        : p.$isDodged
         ? '#e0de60'
         : '#979797'
     };

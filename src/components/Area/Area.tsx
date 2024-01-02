@@ -2,6 +2,7 @@ import styled, { keyframes } from 'styled-components'
 import { useAppDispatch } from '../../hooks/redux';
 import { stopMoveToLocation } from '../../store/reducers/ActionCreators';
 import { useEffect, useRef, useState } from 'react';
+import Avatar from '../Avatar/Avatar';
 
 interface IArea {
     title: string;
@@ -67,18 +68,17 @@ function Area({
         }, timeToMove*1000)
     }
     return (
-        <AreaBlock index={index} isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')}>
+        <AreaBlock 
+            $index={index} 
+            $isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')}>
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
-            <Avatar image={avatarUrl} isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')}>
-                {
-                    isMoving
-                        ? <StopMoveCross id='stopmove' onClick={() => onClickStopMove()}>
-                            ✕
-                        </StopMoveCross>
-                        : null
-                }
+            <Avatar 
+                $image={avatarUrl}
+                width={'80px'} 
+                height={'80px'}
+                $onClicked={() => onClickStopMove()} 
+                $isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')} />
                 
-            </Avatar>
             <Name>{title}</Name>
             <Timer>
                 {
@@ -106,38 +106,6 @@ const AreaBlockClickable = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-`
-
-interface IAvatarProps{
-    image: string;
-    isMovingOther: boolean;
-}
-
-const Avatar = styled.div<IAvatarProps>`
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-    width: 90px;
-    height: 90px;
-    /* box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 1); */
-    /* background-color: #A9A9A9; */
-    background-image: url(${p => require('../../' + p.image)});
-    background-size: cover;
-    border-radius: 50%;
-
-    ${p => p.isMovingOther 
-        ? `width: 50px;
-        height: 50px;`
-        : null
-    }
-
-    transition: 0.3s;
-
-    &:hover{
-        transform: scale(1);
-    }
 `
 
 const Timer = styled.p`
@@ -174,31 +142,10 @@ const Name = styled.p`
     transition: .1s;
 `
 
-const StopMoveCross = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 50px;
-    padding: 30px;
-    width: 50%;
-    height: 50%;
-    z-index: 99;
-    line-height: 0;
-    color: white;
-    background-color: #00000050;
-    border-radius: 50%;
-    transition: 0.1s;
-    box-sizing: border-box;
-
-    &:hover{
-        transform: scale(1.5);
-        background-color: #00000084;
-    }
-`
 
 interface IAreaBlockProps {
-    index: number;
-    isMovingOther: boolean;
+    $index: number;
+    $isMovingOther: boolean;
 }
 
 const AreaBlockAnim = keyframes`
@@ -225,12 +172,12 @@ const AreaBlock = styled.div<IAreaBlockProps>`
 
     transform: scale(0) rotate(-45deg);
     animation: ${AreaBlockAnim} 1s ease;
-    animation-delay: ${p => p.index/3}s;
+    animation-delay: ${p => p.$index/3}s;
     animation-fill-mode: forwards;
     transition: 0.1s;
 
     ${
-        p => p.isMovingOther
+        p => p.$isMovingOther
             ? `&::after{
                 position: absolute;
                 z-index: 99;
@@ -248,14 +195,14 @@ const AreaBlock = styled.div<IAreaBlockProps>`
     box-sizing: border-box;
 
     &:hover ${Name} {
-        ${p => p.isMovingOther 
+        ${p => p.$isMovingOther 
             ? null 
             : `padding: 20px;`
         }
     }
 
     &:hover{
-        ${p => p.isMovingOther 
+        ${p => p.$isMovingOther 
             ? null 
             : `background-color: #d8d8d8`
         }

@@ -5,14 +5,12 @@ import { IChangeInfo } from '../../../models/IArea';
 import { getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 
-interface IInfoItem {
+interface IWinCombatItem {
     id: string
-    countMin: number;
-    countMax: number;
-    changeWhatInfo: Function;
+    count: number;
 }
 
-function InfoItem({id, countMin, countMax, changeWhatInfo}:IInfoItem) {
+function WinCombatItem({id, count}:IWinCombatItem) {
 
     const {areaItems} = useAppSelector(state => state.userReducer);
 
@@ -20,25 +18,20 @@ function InfoItem({id, countMin, countMax, changeWhatInfo}:IInfoItem) {
 
     return ( 
         <Item 
-        color={getItemBackground(item.rare)}
-        $hoveredColor={getItemHoveredBackground(item.rare)} 
-        onClick={() => changeWhatInfo()}>
+            color={getItemBackground(item.rare)}
+            $hoveredColor={getItemHoveredBackground(item.rare)}>
             <Avatar 
                 $image={item.avatar}
-                width={'80px'} 
-                height={'80px'}  />
+                width={'100px'} 
+                height={'100px'} />
             <Info>
                 <Title>
                     {
                         item.title
-                    }
+                    } 
                 </Title>
                 <Count>
-                    {
-                        countMax !== countMin
-                            ? `Количество: ${countMin} - ${countMax}`
-                            : `Количество: ${countMax}`
-                    }
+                    Количество: {count}
                 </Count>
             </Info>
         </Item>
@@ -46,8 +39,11 @@ function InfoItem({id, countMin, countMax, changeWhatInfo}:IInfoItem) {
 }
 
 const Info = styled.div`
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     transition: .1s;
 `
 
@@ -68,12 +64,15 @@ interface IItemProps {
 
 const Item = styled.div<IItemProps>`
     
-    width: 100%;
-    height: 100px;
+    width: 170px;
+    height: 250px;
     box-shadow: 0 0 5px black;
     border-radius: 5px;
     padding: 10px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 10px;
     cursor: pointer;
     user-select: none;
@@ -93,4 +92,4 @@ const Item = styled.div<IItemProps>`
 
 `
 
-export default InfoItem;
+export default WinCombatItem;

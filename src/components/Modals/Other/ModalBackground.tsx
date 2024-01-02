@@ -1,12 +1,31 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
-function ModalBackground() {
+interface IModalBackground{
+    enableStartAnim?: boolean
+}
+
+function ModalBackground({enableStartAnim = false}: IModalBackground) {
     return ( 
-        <Background> </Background>
+        <Background startAnim={enableStartAnim}> </Background>
      );
 }
 
-const Background = styled.div`
+const StartAnim = keyframes`
+    0%{
+        background-color: rgba(0,0,0,0);
+        backdrop-filter: blur(5px);
+    }
+    100%{
+        background-color: #000000a6;
+        backdrop-filter: blur(5px);
+    }
+`
+
+interface IBackgroundProps {
+    startAnim: boolean
+}
+
+const Background = styled.div<IBackgroundProps>`
     position: absolute;
     z-index: 99;
     
@@ -17,6 +36,13 @@ const Background = styled.div`
 
     background-color: #0000006f;
     backdrop-filter: blur(5px);
+
+    animation: ${ p => p.startAnim ? StartAnim : null} 3s ease;
+    animation-fill-mode: forwards;
+
+    
+
+
 `
 
 export default ModalBackground;

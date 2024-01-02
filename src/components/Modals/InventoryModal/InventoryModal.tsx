@@ -425,9 +425,14 @@ const Bar = styled.div`
 const Inventory = styled.div`
     z-index: 9999;
     position: absolute;
+    
     width: 70vw;
     height: 90vh;
-    top: 5%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
     background-color: white;
     box-shadow: 0 0 10px #00000050;
     border-radius: 15px;

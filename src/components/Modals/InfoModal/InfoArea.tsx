@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useAppSelector } from '../../../hooks/redux';
 import { IArea, IChangeInfo } from '../../../models/IArea';
 import { getAreaBackground, getHoveredAreaBackground } from '../../../styles/backgrounds';
+import Avatar from '../../Avatar/Avatar';
 
 interface IInfoArea {
     areaId: string;
@@ -20,9 +21,12 @@ function InfoArea({areaId, countMin, countMax, changeWhatInfo}:IInfoArea) {
     return ( 
         <Area 
             color={getAreaBackground(area.color)}
-            hoveredColor={getHoveredAreaBackground(area.color)} 
+            $hoveredColor={getHoveredAreaBackground(area.color)} 
             onClick={() => changeWhatInfo()}>
-            <Avatar alt='' src={require('../../../'+area.avatar)} />
+            <Avatar 
+                $image={area.avatar}
+                width={'80px'} 
+                height={'80px'} />
             <Info>
                 <Title>
                     {
@@ -58,17 +62,9 @@ const Title = styled.p`
     transition: .1s;
 `
 
-const Avatar = styled.img`
-    width: 80px;
-    height: 80px;
-
-    transition: .3s;
-    box-sizing: border-box;
-`
-
 interface IAreaProps {
     color: string;
-    hoveredColor: string;
+    $hoveredColor: string;
 }
 
 const Area = styled.div<IAreaProps>`
@@ -93,7 +89,7 @@ const Area = styled.div<IAreaProps>`
     }
 
     &:hover{
-        background: ${p => p.hoveredColor}
+        background: ${p => p.$hoveredColor}
     }
 
 `
