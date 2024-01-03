@@ -1,49 +1,53 @@
-import styled, { keyframes } from 'styled-components'
-import ModalBackground from '../Other/ModalBackground';
-import CircleButton from '../../Buttons/CircleButton';
-import { useAppSelector } from '../../../hooks/redux';
-import { idText } from 'typescript';
-import { IArea, IChangeInfo } from '../../../models/IArea';
-import { useEffect, useState } from 'react';
-import { getAreaBackground, getAreaColor, getItemBackground, getRareColor } from '../../../styles/backgrounds';
-import WinCombatItem from './WinCombatItem';
+import styled, { keyframes } from 'styled-components';
 import { scrollBarX } from '../../../styles/scrollbars';
+import ModalBackground from '../Other/ModalBackground';
+import WinCombatItem from './WinCombatItem';
+import Modal from '../Modal';
 
-interface IWinCombatModal {
-    items: {
+interface IEndCombatModal {
+    $items: {
         id: string;
         count: number;
-    }[]
+    }[] | null,
+    $finishBattle: Function;
+    $isWin: boolean;
 }
 
-function WinCombatModal({items}: IWinCombatModal) {
+function EndCombatModal({ $items, $finishBattle, $isWin }: IEndCombatModal) {
 
     return (
-        <>
-            <ModalBackground enableStartAnim={true} />
-            <WinCombat>
-                <TextBlock>
-                    <Title>
-                        Победа!
-                    </Title>
-                    <ItemsText>
-                        Полученные предметы:
-                    </ItemsText>
-                </TextBlock>
-                <List>
+        <Modal $flexDirection='column'>
+            <TextBlock>
+                <Title>
                     {
-                        items.map(i => <WinCombatItem 
-                            key={i.id}
-                            count={i.count} 
-                            id={i.id} />)
+                        $isWin
+                            ? 'Победа!'
+                            : 'Проигрыш!'
                     }
-                </List>
-                <Button>
-                    ✔
-                </Button>
-            </WinCombat>
-
-        </>
+                </Title>
+                <ItemsText>
+                    {
+                        $isWin
+                            ? 'Полученные предметы:'
+                            : 'Враг оказался сильнее...'
+                    }
+                </ItemsText>
+            </TextBlock>
+            <List>
+                {
+                    $isWin
+                    ? $items!.map(i => <WinCombatItem
+                        key={i.id}
+                        count={i.count}
+                        id={i.id} />)
+                    : null
+                }
+                
+            </List>
+            <Button onClick={() => $finishBattle($isWin)}>
+                ✔
+            </Button>
+        </Modal>
     );
 }
 
@@ -51,31 +55,28 @@ const TextBlock = styled.div`
     text-align: center;
 `
 
-const EmptyItem = styled.div`
-    width: 170px;
-    height: 250px;
-`
-
 const Button = styled.div`
     font-size: 30px;
     color: white;
     border-radius: 50%;
-    height: 70px;
-    width: 70px;
+    height: 30px;
+    width: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    margin: 20px;
     background: #308d30;
     transition: .1s;
     user-select: none;
-    position: fixed;
-    bottom: 10%;
+    position: absolute;
+    margin: 20px auto;
+    right: 0;
+    left: 0;
+    bottom: 0;
     cursor: pointer;
 
     &:hover{
-        transform: scale(0.95);
+        transform: scale(0.9);
     }
 `
 
@@ -88,8 +89,7 @@ const List = styled.div`
     padding: 20px;
     overflow-y: auto;
 
-    ${
-        scrollBarX
+    ${scrollBarX
     }
     
 `
@@ -140,4 +140,4 @@ const WinCombat = styled.div`
     
 `
 
-export default WinCombatModal;
+export default EndCombatModal;

@@ -12,24 +12,21 @@ interface IAreaEnemyProps {
     $idInArea: string;
     $level: number;
     $index: number;
+    $onClickStartBattle: Function;
 }
 
-function AreaEnemy({ id, $idInArea, $level, $index }: IAreaEnemyProps) {
+function AreaEnemy({ id, $idInArea, $level, $index, $onClickStartBattle }: IAreaEnemyProps) {
 
     const {enemies} = useAppSelector(state => state.userReducer);
 
     const enemy = enemies.find(e => e.id === id)!;
-
-    const onClickStartBattle = (e:React.MouseEvent<HTMLDivElement>) => {
-        
-    }
 
     return (
         <AreaEnemyBlock 
             color={getEnemyBackground(enemy.type)} 
             $hoveredColor={getHoveredEnemyBackground(enemy.type)}
             $index={$index} >
-            <EnemyClickableBlock onClick={e => onClickStartBattle(e)} />
+            <EnemyClickableBlock onClick={() => $onClickStartBattle()} />
             <Avatar 
                 $image={enemy.avatar} 
                 width={'90px'} 

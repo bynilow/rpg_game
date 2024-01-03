@@ -31,8 +31,6 @@ function Area({
 
     const dispatch = useAppDispatch();
 
-    console.log(title, avatarUrl);
-
     const [isMoving, setIsMoving] = useState(false);
     const isMovingRef = useRef(isMoving);
     isMovingRef.current = isMoving;

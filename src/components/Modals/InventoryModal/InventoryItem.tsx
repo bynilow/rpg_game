@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { IItemInventory } from '../../../models/IInventory';
+import Avatar from '../../Avatar/Avatar';
 
 
 function InventoryItem({item, count}:IItemInventory) {
@@ -19,9 +20,7 @@ function InventoryItem({item, count}:IItemInventory) {
                     Выбросить
                 </ButtonAction>
             </ActionsModal>
-            <Icon>
-                <ImgIcon alt='' src={require('../../../'+item.avatar)} />
-            </Icon>
+            <Avatar $image={item.avatar} width={'100%'} height={'120px'}  />
             <Title>
                 {
                     item.title
@@ -102,20 +101,6 @@ const Count = styled.div`
 
 const Title = styled.p`
     margin: 5px;
-`
-
-const ImgIcon = styled.img`
-    width: 90%;
-    
-`
-
-const Icon = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: white;
-    width: 150px;
-    height: 150px;
 `
 
 interface IItemProps {

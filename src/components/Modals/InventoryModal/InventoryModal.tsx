@@ -1,11 +1,12 @@
-import styled, { keyframes } from 'styled-components'
-import InventoryItem from './InventoryItem';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks/redux';
 import { rareList } from '../../../models/IAreaItem';
-import CircleButton from '../../Buttons/CircleButton';
-import ModalBackground from '../Other/ModalBackground';
 import { scrollBarX } from '../../../styles/scrollbars';
+import CircleButton from '../../Buttons/CircleButton';
+import Modal from '../Modal';
+import ModalBackground from '../Other/ModalBackground';
+import InventoryItem from './InventoryItem';
 
 interface IInventoryModal {
     closeModal: Function;
@@ -74,7 +75,7 @@ function InventoryModal({closeModal}:IInventoryModal) {
     return (
         <>
             <ModalBackground />
-            <Inventory>
+            <Modal $flexDirection={'column'} >
                 <CircleButton click={() => closeModal()} symbol='✕' />
                 <InventoryText>Инвентарь</InventoryText>
                 <Bar>
@@ -277,7 +278,7 @@ function InventoryModal({closeModal}:IInventoryModal) {
                         </ItemsList>
                         : <EmptyText>Инвентарь пуст...</EmptyText>
                 }
-            </Inventory>
+            </Modal>
         </>
 
     );
@@ -415,23 +416,6 @@ const InputName = styled.input`
 const Bar = styled.div`
     display: flex;
     gap: 10px;
-    margin: 20px;
-`
-
-const Inventory = styled.div`
-    z-index: 9999;
-    position: absolute;
-    
-    width: 70vw;
-    height: 90vh;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    background-color: white;
-    box-shadow: 0 0 10px #00000050;
-    border-radius: 15px;
 `
 
 const EmptyItem = styled.div`
@@ -443,7 +427,6 @@ const EmptyItem = styled.div`
 const ItemsList = styled.div`
     display: flex;
     height: 70%;
-    margin: 10px;
     justify-content: space-between;
     flex-wrap: wrap;
     overflow-y: scroll;
@@ -456,7 +439,6 @@ const ItemsList = styled.div`
 
 const InventoryText = styled.p`
     font-size: 20px;
-    margin: 20px;
 `
 
 export default InventoryModal;

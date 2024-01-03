@@ -2,7 +2,10 @@ import { IFullItem } from "./IAreaItem";
 
 export type IEnemyType = 'enemy' | 'neutral' | 'boss'
 
-
+export interface IEnemyDead {
+    levelId: string;
+    enemyIdInArea: string;
+}
 
 interface IEnemyLoot{
     id: string,
@@ -30,19 +33,18 @@ export interface IEnemy{
     description: string;
     avatar: string;
     level: number;
-    currentAttackTime: number;
     attackSpeed: number;
     damage: number;
     critDamageMultiplier: number;
     critChance: number;
     maxHealth: number;
-    health: number;
     dodgeChance: number;
     blockingChance: number;
     blockingMultiplier: number;
     missChance: number;
     possibleLoot: IEnemyLoot[];
     actionText: IActionTexts;
+    baseCountXP: number;
 }
 
 export interface IAreaEnemy{

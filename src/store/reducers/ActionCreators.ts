@@ -2,9 +2,11 @@ import axios from "axios";
 import { AppDispatch } from "../store";
 import { gameSlice } from "./GameSlice";
 import { ILocationToMove } from "../../models/IArea";
-import { IFullItem, IAreaItem } from "../../models/IAreaItem";
+import { IFullItem, IAreaItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { useAppSelector } from "../../hooks/redux";
 import { IItemInventory } from "../../models/IInventory";
+import { IEnemyDead } from "../../models/IEnemy";
+import { IPlayer } from "../../models/IPlayer";
 
 interface IResult {
     results: any[]
@@ -80,7 +82,7 @@ export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispat
     }
 }
 
-export const mineItem = (miningItem: IFullItem) => async (dispatch: AppDispatch) => {
+export const mineItem = (miningItem: IFullItemWithCount) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.mineItem(miningItem));
         dispatch(gameSlice.actions.addItemToInventory(miningItem));
@@ -112,10 +114,18 @@ export const setAreasFromStorage = () => async (dispatch: AppDispatch) => {
     }
 }
 
-export const addItemToInventory = (item:IFullItem) => async (dispatch: AppDispatch) => {
+export const addItemToInventory = (item:IFullItemWithCount) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.addItemToInventory(item));
-        
+    }
+    catch{
+
+    }
+}
+
+export const addItemsToInventory = (items:IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.addItemsToInventory(items));
     }
     catch{
 
@@ -132,4 +142,44 @@ export const setInventoryFromStorage = () => async (dispatch: AppDispatch) => {
 
     }
 }
+
+export const setDeadEnemy = ({...enemy}: IEnemyDead) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.setEnemyDead(enemy));
+    }
+    catch{
+
+    }
+}
+
+export const setPlayerFromStorage = () => async (dispatch: AppDispatch) => {
+    try{
+        const player = JSON.parse(localStorage.player);
+        dispatch(gameSlice.actions.setPlayerFromStorage(player));
+    }
+    catch{
+
+    }
+}
+
+export const setPlayer = (player: IPlayer) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.setPlayer(player));
+    }
+    catch{
+
+    }
+}
+
+export const addXP = (xp: number) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.addXP(xp));
+    }
+    catch{
+
+    }
+}
+
+
+
 

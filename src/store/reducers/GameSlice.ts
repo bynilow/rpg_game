@@ -1,8 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IFullItem, IAreaItem } from "../../models/IAreaItem";
+import { IFullItem, IAreaItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { IPath, IArea, ILocationToMove, IAviablePath } from "../../models/IArea";
 import { IInventory, IItemInventory } from "../../models/IInventory";
-import { IEnemy, IEnemyType } from "../../models/IEnemy";
+import { IAreaEnemy, IEnemy, IEnemyDead, IEnemyType } from "../../models/IEnemy";
+import { IPlayer } from "../../models/IPlayer";
 
 
 
@@ -20,6 +21,7 @@ interface GameSlice {
     currentAreaToMove: ILocationToMove;
     inventory: IItemInventory[];
     coins: number;
+    player: IPlayer;
 }
 
 interface IUpdateAreaItems {
@@ -80,18 +82,17 @@ const initialState: GameSlice = {
             "title": "Разбойник с кинжалом",
             "description": "Разбойники с кинжалами обладают высокой скоростью и подвижностью, что позволяет им быстро перемещаться и избегать вражеских атак. Они также обладают отличным чувством равновесия и мастерством в уклонении, что помогает им избегать ловушек и неожиданных атак.",
             "avatar": "icons/enemies/bandit.png",
+            "baseCountXP": 15,
             "level": 1,
             "attackSpeed": 8,
-            "currentAttackTime": 8,
-            "damage": 5,
+            "damage": 1,
             "critDamageMultiplier": 1.3,
-            "critChance": 15,
+            "critChance": 4,
             "maxHealth": 70,
-            "health": 70,
-            "dodgeChance": 15,
-            "blockingChance": 20,
+            "dodgeChance": 4,
+            "blockingChance": 5,
             "blockingMultiplier": 2.5,
-            "missChance": 10,
+            "missChance": 7,
             "type": "enemy",
             "possibleLoot": [
                 {
@@ -151,7 +152,8 @@ const initialState: GameSlice = {
             "type": "other",
             "rare": "common",
             "dateReceiving": "",
-            "cost": 1
+            "cost": 1,
+            "baseCountXP": 1
         },
         {
             "id": "birch_tree",
@@ -163,7 +165,8 @@ const initialState: GameSlice = {
             "type": "tree",
             "rare": "common",
             "dateReceiving": "",
-            "cost": 3
+            "cost": 3,
+            "baseCountXP": 3
         },
         {
             "id": "oak_tree",
@@ -175,7 +178,8 @@ const initialState: GameSlice = {
             "type": "tree",
             "rare": "uncommon",
             "dateReceiving": "",
-            "cost": 7
+            "cost": 7,
+            "baseCountXP": 7.5
         },
         {
             "id": "willow_tree",
@@ -187,7 +191,8 @@ const initialState: GameSlice = {
             "type": "tree",
             "rare": "rare",
             "dateReceiving": "",
-            "cost": 18
+            "cost": 18,
+            "baseCountXP": 18.7
         },
         {
             "id": "cedar_tree",
@@ -199,7 +204,8 @@ const initialState: GameSlice = {
             "type": "tree",
             "rare": "mythical",
             "dateReceiving": "",
-            "cost": 35
+            "cost": 35,
+            "baseCountXP": 46.8
         },
         {
             "id": "teak_tree",
@@ -211,7 +217,8 @@ const initialState: GameSlice = {
             "type": "tree",
             "rare": "legendary",
             "dateReceiving": "",
-            "cost": 70
+            "cost": 70,
+            "baseCountXP": 117.1
         },
         {
             "id": "iron_ore",
@@ -223,7 +230,8 @@ const initialState: GameSlice = {
             "type": "ore",
             "rare": "common",
             "dateReceiving": "",
-            "cost": 5
+            "cost": 5,
+            "baseCountXP": 5
         },
         {
             "id": "tungsten_ore",
@@ -235,7 +243,8 @@ const initialState: GameSlice = {
             "type": "ore",
             "rare": "uncommon",
             "dateReceiving": "",
-            "cost": 13
+            "cost": 13,
+            "baseCountXP": 11.5
         },
         {
             "id": "platinum_ore",
@@ -247,7 +256,8 @@ const initialState: GameSlice = {
             "type": "ore",
             "rare": "rare",
             "dateReceiving": "",
-            "cost": 34
+            "cost": 34,
+            "baseCountXP": 26.4
         },
         {
             "id": "titanium_ore",
@@ -259,7 +269,8 @@ const initialState: GameSlice = {
             "type": "ore",
             "rare": "mythical",
             "dateReceiving": "",
-            "cost": 65
+            "cost": 65,
+            "baseCountXP": 60.8
         },
         {
             "id": "adamantite_ore",
@@ -271,7 +282,8 @@ const initialState: GameSlice = {
             "type": "ore",
             "rare": "legendary",
             "dateReceiving": "",
-            "cost": 93
+            "cost": 93,
+            "baseCountXP": 139.9
         },
         {
             "id": "wool",
@@ -283,7 +295,8 @@ const initialState: GameSlice = {
             "type": "materials",
             "rare": "common",
             "dateReceiving": "",
-            "cost": 8
+            "cost": 8,
+            "baseCountXP": 1
         },
         {
             "id": "bottle",
@@ -295,7 +308,8 @@ const initialState: GameSlice = {
             "type": "other",
             "rare": "common",
             "dateReceiving": "",
-            "cost": 3
+            "cost": 3,
+            "baseCountXP": 1
         }
     ],
     currentAreaToMove: {
@@ -305,7 +319,36 @@ const initialState: GameSlice = {
     currentAreaItem: {},
     currentAreaItemMiningTime: 0,
     inventory: [],
-    coins: 0
+    coins: 0,
+    player: {
+        title: 'peesoos',
+        avatar: '',
+        level: 1,
+        currentXP: 0,
+        maxHealth: 150,
+        health: 150,
+        attackSpeed: 3,
+        currentAttackTime: 3,
+        damage: 200,
+        critDamageMultiplier: 1.5,
+        critChance: 3,
+        dodgeChance: 5,
+        blockingChance: 5,
+        blockingMultiplier: 1.5,
+        missChance: 10,
+        actionText: {
+            combatText: [
+                "Сжимает свой кулак и бьет #name прямо по лицу нанеся #damage урона."
+            ],
+            communicationText: [""],
+            critDamageText: "Глубоко вдохнув и ударив кулаком по #name попал в глаз нанеся критические #damage урона!",
+            missText: "Рассек воздух своим кулаком, не нанеся никакого урона.",
+            dodgeText: "#name Применяет уловку и уклоняется от удара.",
+            failedBlockingText: "Блок не удался, и удар #name наносит #damage! Это было больно...",
+            successBlockingCritText: "Совершенное владение щитом оказывает эффект! #name блокирует критический урон и получает всего #damage урона!",
+            successBlockingText: "Совершенное владение щитом оказывает эффект! #name получает всего #damage урона!"
+        }
+    }
 }
 
 export const gameSlice = createSlice({
@@ -314,13 +357,10 @@ export const gameSlice = createSlice({
     reducers: {
         goLevel(state, action: PayloadAction<string>){
             state.currentLocationId = state.areas.find(p => p.id === action.payload)!.id;
-            // state.currentAreaToMove.time = 0;
         },
         getAvailablePaths(state, action: PayloadAction<string>){
             const levelId = action.payload;
-            // if(state.currentAreaToMove.locationId !== ''){
-            //     state.availablePaths = state.paths.filter(p => (p.pathA+' '+p.pathB).includes(levelId));
-            // }
+
             const paths:IAviablePath[] = state.paths.filter(p => (p.pathA+' '+p.pathB).includes(levelId))
                 .map(i => ({
                     pathId: i.pathA !== levelId ? i.pathA : i.pathB,
@@ -381,13 +421,8 @@ export const gameSlice = createSlice({
         },
         setAreasFromStorage(state){
             state.areas = JSON.parse(localStorage.areas);
-            // if(JSON.stringify(state.currentLocation) !== localStorage.areas[0]){
-            //     state.currentLocation = JSON.parse(localStorage.areas)[0];
-            //     console.log("TRUE")
-            //     console.log(JSON.parse(localStorage.areas)[0])
-            // }
         },
-        addItemToInventory(state, action: PayloadAction<IFullItem>){
+        addItemToInventory(state, action: PayloadAction<IFullItemWithCount>){
             const foundedItemIndex = state.inventory.findIndex(i => i.item.id === action.payload.id);
             const date = new Date().toISOString();
             if(foundedItemIndex !== -1){
@@ -402,11 +437,65 @@ export const gameSlice = createSlice({
             }
             localStorage.inventory = JSON.stringify(state.inventory);
         },
+        addItemsToInventory(state, action: PayloadAction<IFullItemWithCount[]>){
+            const date = new Date().toISOString();
+            const items = action.payload;
+
+            items.forEach( i => {
+                if( i.id === 'coin'){
+                    state.coins += i.count;
+                }
+                else {
+                    const foundedItemIndex = state.inventory.findIndex(si => si.item.id === i.id);
+                    if (foundedItemIndex !== -1) {
+                        state.inventory[foundedItemIndex].count += i.count;
+                        state.inventory[foundedItemIndex].item.dateReceiving = date;
+                    }
+                    else {
+                        state.inventory.push({
+                            item: { ...i, dateReceiving: date },
+                            count: i.count
+                        })
+                    }
+                }
+            })
+            
+            localStorage.inventory = JSON.stringify(state.inventory);
+        },
         setInventory(state, action: PayloadAction<IItemInventory[]>){
             state.inventory = action.payload;
+        },
+        setEnemyDead(state, action: PayloadAction<IEnemyDead>) {
+            const enemyIdInArea = action.payload.enemyIdInArea;
+            const foundIndexArea = state.areas.findIndex(a => a.id === action.payload.levelId);
+            const foundAreaEnemies = state.areas[foundIndexArea].currentEnemies;
+            state.areas[foundIndexArea].currentEnemies =
+                foundAreaEnemies.filter(e => e.idInArea !== enemyIdInArea);
+
+            localStorage.areas = JSON.stringify(state.areas);
+        },
+        setPlayerFromStorage(state, action: PayloadAction<IPlayer>) {
+            state.player = action.payload;
+        },
+        setPlayer(state, action: PayloadAction<IPlayer>) {
+            state.player = action.payload;
+
+            localStorage.player = JSON.stringify(state.player);
+        },
+        addXP(state, action: PayloadAction<number>){
+            const currentXP = state.player.currentXP;
+            const needXP = (2.25)**(state.player.level - 1) + 10;
+            if(currentXP + action.payload >= needXP){
+                state.player.level += 1;
+                state.player.currentXP = currentXP + action.payload - needXP; 
+            }
+            else{
+                state.player.currentXP += action.payload;
+            }
+
+            localStorage.player = JSON.stringify(state.player);
         }
-
-
+        
     }
 })
 

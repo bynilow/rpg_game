@@ -85,7 +85,7 @@ const Item = styled.div<IItemProps>`
     }
 
     &:hover{
-        background: ${p => p.$hoveredColor}
+        background: ${p => p.$hoveredColor};
     }
 
 `

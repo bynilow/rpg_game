@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import s from './app.module.css'
 import MapCreatorPage from './components/MapCreator/MapCreatorPage';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
-import { getAvailablePaths, goLevel, mineItem, setAreasFromStorage, setInventoryFromStorage, setLocationToMove, updateAreaItems } from './store/reducers/ActionCreators';
+import { addXP, getAvailablePaths, goLevel, mineItem, setAreasFromStorage, setDeadEnemy, setInventoryFromStorage, setLocationToMove, setPlayerFromStorage, updateAreaItems } from './store/reducers/ActionCreators';
 import { IPath, IArea, IAviablePath, IChangeInfo } from './models/IArea';
 import Area from './components/Area/Area';
 import styled, { createGlobalStyle, keyframes } from 'styled-components'
@@ -16,6 +16,7 @@ import Container from './components/Container/Container';
 import Header from './components/Header/Header';
 import { scrollBarX } from './styles/scrollbars';
 import AreaEnemy from './components/Area/AreaEnemy';
+import { IAreaCurrentEnemy } from './models/IEnemy';
 
 
 function App() {
@@ -315,7 +316,8 @@ function App() {
   }
 
   const onClickItem = (miningItem: IFullItem) => {
-    dispatch(mineItem(miningItem));
+    dispatch(mineItem({...miningItem, count: 1}));
+    dispatch(addXP(miningItem.baseCountXP));
   }
 
   const getNameAreaById = (lvlId: string) => {
@@ -371,6 +373,7 @@ function App() {
     setIsInfoOpen(false);
     setInfoArea(currentLocation);
     setInfoItemId('');
+    setInfoEnemyId('');
     setWhatInfo('area');
   }
 
@@ -382,6 +385,7 @@ function App() {
     if (currentLocation) {
       dispatch(getAvailablePaths(currentLocation.id));
       dispatch(setInventoryFromStorage());
+      dispatch(setPlayerFromStorage());
     }
 
     if (nextRespawnAreaItems.getTime() < (new Date()).getTime()) {
@@ -393,9 +397,27 @@ function App() {
     }
   }, [areas, currentLocation, currentLocationId])
 
-  if (false) {
+  const [isBattle, setIsBattle] = useState(false);
+  const [battleEnemy, setBattleEnemy] = useState<IAreaCurrentEnemy | null>();
+  
+  const onClickStartBattle = ({...enemy}:IAreaCurrentEnemy) => {
+    setBattleEnemy(enemy);
+    setIsBattle(true);
+  }
+
+  const onFinishBattle = (isWin: boolean) => {
+    setBattleEnemy(null);
+    setIsBattle(false);
+  }
+
+  if (isBattle) {
     return (
-      <CombatPage enemyId={'bandit'} />
+      <CombatPage 
+        $currentLocationId={currentLocationId}
+        $enemyId={battleEnemy!.id} 
+        $enemyIdInArea={battleEnemy!.idInArea}
+        $level={battleEnemy!.level} 
+        $finishBattle={(isWin: boolean) => onFinishBattle(isWin)} />
     )
   }
 
@@ -419,8 +441,7 @@ function App() {
                   enemyId={infoEnemyId}
                   closeModal={() => onClickCloseModalInfo()}
                   whatInfo={whatInfo}
-                  changeWhatInfo={(info: IChangeInfo) =>
-                  onChangeInfo(info)} />
+                  changeWhatInfo={(info: IChangeInfo) => onChangeInfo(info)} />
               : null
           }
 
@@ -477,21 +498,24 @@ function App() {
                   </PlaceBlock>
 
                   <EmeniesBlock
-                    $update={currentLocation.currentEnemies.length}
+                    $update={currentLocation.currentEnemies ? currentLocation.currentEnemies.length : 0}
                     $isBlocked={miningItemId !== '' || moveAreaId !== ''}>
-                    <NameBlock>Монстры: </NameBlock>
+                    <NameBlock>Враги: </NameBlock>
                     <DescriptionText>
                       ⟳ {nextRespawnAreaEnemies.toLocaleString()}
                     </DescriptionText>
                     <LevelsList >
                       {
-                        currentLocation.currentEnemies.map((e, ind) => 
+                        currentLocation.currentEnemies
+                          ? currentLocation.currentEnemies.map((e, ind) => 
                           <AreaEnemy 
                             key={e.idInArea}
-                            $idInArea={e.idInArea}
                             id={e.id}
+                            $idInArea={e.idInArea}
+                            $onClickStartBattle={() => onClickStartBattle(e)}
                             $index={ind}
                             $level={e.level} />)
+                          : null
                       }
                     </LevelsList>
                   </EmeniesBlock>

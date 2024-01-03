@@ -40,5 +40,5 @@ export interface IChangeInfo {
     area?: IArea;
     itemId?: string;
     enemyId?: string;
-    whatInfo: string;
+    whatInfo: 'area' | 'item' | 'enemy';
   }
