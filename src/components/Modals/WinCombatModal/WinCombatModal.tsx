@@ -7,6 +7,7 @@ import { IArea, IChangeInfo } from '../../../models/IArea';
 import { useEffect, useState } from 'react';
 import { getAreaBackground, getAreaColor, getItemBackground, getRareColor } from '../../../styles/backgrounds';
 import WinCombatItem from './WinCombatItem';
+import { scrollBarX } from '../../../styles/scrollbars';
 
 interface IWinCombatModal {
     items: {
@@ -66,7 +67,6 @@ const Button = styled.div`
     align-items: center;
     padding: 20px;
     margin: 20px;
-    box-sizing: border-box;
     background: #308d30;
     transition: .1s;
     user-select: none;
@@ -88,20 +88,8 @@ const List = styled.div`
     padding: 20px;
     overflow-y: auto;
 
-    &::-webkit-scrollbar{
-        width: 5px;
-        border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: #d4d4d4; 
-        border-radius: 10px;
-    }
-    &::-webkit-scrollbar-thumb {
-        margin: 10px;
-        width: 20px;
-        background-color: #858585;    
-        border-radius: 10px;       
+    ${
+        scrollBarX
     }
     
 `
@@ -134,7 +122,6 @@ const WinCombat = styled.div`
     width: 70vw;
     height: 80vh;
     padding: 20px;
-    box-sizing: border-box;
     top: 10%;
     background-color: white;
     box-shadow: 0 0 10px #00000050;

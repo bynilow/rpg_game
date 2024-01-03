@@ -170,7 +170,6 @@ const Block = styled.div<IBlockProps>`
     display: flex;
     align-items: start;
     gap: 10px;
-    box-sizing: border-box;
 `
 
 export default CombatText;

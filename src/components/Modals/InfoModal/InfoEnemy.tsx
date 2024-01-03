@@ -2,58 +2,85 @@ import { useState } from 'react';
 import styled from 'styled-components'
 import { useAppSelector } from '../../../hooks/redux';
 import { IChangeInfo } from '../../../models/IArea';
-import { getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
+import { getEnemyBackground, getHoveredEnemyBackground, getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 
-interface IInfoItem {
+interface IEnemyInfo {
     id: string
     $countMin: number;
     $countMax: number;
+    $levelMin?: number;
+    $levelMax?: number;
+    $spawnChance?: number;
     $dropChance?: number;
     $changeWhatInfo: Function;
 }
 
-function InfoItem({id, $countMin, $countMax, $changeWhatInfo, $dropChance}:IInfoItem) {
+function InfoEnemy({
+    id, 
+    $countMin, 
+    $countMax, 
+    $changeWhatInfo, 
+    $spawnChance, 
+    $dropChance,
+    $levelMin, 
+    $levelMax }:IEnemyInfo) {
 
-    const {areaItems} = useAppSelector(state => state.userReducer);
+    const {enemies} = useAppSelector(state => state.userReducer);
 
-    const item = areaItems.find(i => i.id === id)!;
+    const enemy = enemies.find(e => e.id === id)!;
 
     return ( 
-        <Item 
-        color={getItemBackground(item.rare)}
-        $hoveredColor={getItemHoveredBackground(item.rare)} 
-        onClick={() => $changeWhatInfo()}>
+        <Enemy 
+            color={getEnemyBackground(enemy.type)}
+            $hoveredColor={getHoveredEnemyBackground(enemy.type)} 
+            onClick={() => $changeWhatInfo()}>
             <Avatar 
-                $image={item.avatar}
+                $image={enemy.avatar}
                 width={'80px'} 
                 height={'80px'}  />
             <Info>
                 <Title>
                     {
-                        item.title
+                        enemy.title
                     }
                 </Title>
                 <About>
                     <AboutText>
                         {
-                            $dropChance
-                                ? `Шанс дропа: ${$dropChance}%`
+                            $levelMax
+                                ? $levelMin !== $levelMax
+                                    ? `УР: ${$levelMin} - ${$levelMax}`
+                                    : `УР: ${$levelMax}`
                                 : null
                         }
+
                     </AboutText>
                     <AboutText>
+                        Шанс {
+                            $spawnChance
+                                ? 'спавна: '+ $spawnChance
+                                : $dropChance
+                                    ? 'дропа: '+ $dropChance
+                                    : null
+                        } %
+                    </AboutText>
+                    <Count>
                         {
                             $countMax !== $countMin
                                 ? `Количество: ${$countMin} - ${$countMax}`
                                 : `Количество: ${$countMax}`
                         }
-                    </AboutText>
+                    </Count>
                 </About>
             </Info>
-        </Item>
+        </Enemy>
      );
 }
+
+const AboutText = styled.p`
+    
+`
 
 const About = styled.div`
     display: flex;
@@ -68,7 +95,7 @@ const Info = styled.div`
     transition: .1s;
 `
 
-const AboutText = styled.p`
+const Count = styled.p`
     margin: 0;
 `
 
@@ -78,15 +105,15 @@ const Title = styled.p`
     transition: .1s;
 `
 
-interface IItemProps {
+interface IEnemyProps {
     color: string;
     $hoveredColor: string;
 }
 
-const Item = styled.div<IItemProps>`
+const Enemy = styled.div<IEnemyProps>`
     
     width: 100%;
-    min-height: 70px;
+    min-height: 100px;
     height: auto;
     box-shadow: 0 0 5px black;
     border-radius: 5px;
@@ -107,4 +134,4 @@ const Item = styled.div<IItemProps>`
 
 `
 
-export default InfoItem;
+export default InfoEnemy;

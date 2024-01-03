@@ -4,30 +4,33 @@ interface IAvatar{
     $image: string;
     width: string;
     height: string;
+    $isDoSomething?: boolean;
     $isMovingOther?: boolean;
     $isMiningOther?: boolean;
     $onClicked?: Function;
+    $isCircle?: boolean;
 }
 
 function Avatar({
     $image, 
     width = '90px', 
     height = '90px', 
+    $isDoSomething,
     $isMovingOther, 
     $isMiningOther, 
-    $onClicked = () => null} : IAvatar) {
-    
-    console.log($image)
-    
+    $onClicked = () => null,
+    $isCircle} : IAvatar) {
+
     return ( 
         <Block 
             $image={$image}
             width={width}
             height={height}
             $isMovingOther={$isMovingOther}
-            $isMiningOther={$isMiningOther}>
+            $isMiningOther={$isMiningOther}
+            $isCircle={$isCircle}>
             {
-                $isMovingOther || $isMiningOther
+                $isDoSomething
                 ? <StopAction onClick={() => $onClicked()}>
                     ✕
                 </StopAction>
@@ -51,7 +54,6 @@ const StopAction = styled.div`
     background-color: #00000050;
     border-radius: 50%;
     transition: 0.1s;
-    box-sizing: border-box;
 
     &:hover{
         transform: scale(1.5);
@@ -59,19 +61,25 @@ const StopAction = styled.div`
     }
 `
 
+///${ p => `url( ${require(p.$image)} )` }
+
 const Block = styled.div<IAvatar>`
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2;
-    width: ${p => p.width};
-    height: ${p => p.height};
+    min-width: ${p => p.width};
+    min-height: ${p => p.height};
+    max-width: ${p => p.width};
+    max-height: ${p => p.height};
 
-    background-image: url(${p => require(p.$image)});
-    background-size: cover;
-    border-radius: 50%;
-
+    background-image: ${ p => `url( ${ require('../../'+p.$image) } )` };
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: ${p => p.$isCircle ? '50%' : '0'};
+    
     ${p => p.$isMovingOther || p.$isMiningOther
         ? `width: 50px;
         height: 50px;`

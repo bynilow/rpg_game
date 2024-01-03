@@ -5,6 +5,7 @@ import { useAppSelector } from '../../../hooks/redux';
 import { rareList } from '../../../models/IAreaItem';
 import CircleButton from '../../Buttons/CircleButton';
 import ModalBackground from '../Other/ModalBackground';
+import { scrollBarX } from '../../../styles/scrollbars';
 
 interface IInventoryModal {
     closeModal: Function;
@@ -292,7 +293,6 @@ const ReverseButton = styled.div`
     border-radius: 5px;
     border: 1px solid black;
     box-shadow: 0 0 5px #0000005a;
-    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -331,7 +331,6 @@ const DropdownOption = styled.div<IDropdownOptionProps>`
     cursor: pointer;
     transition: 0.1s;
     border-bottom: ${p => p.isSelected ? '1px solid black;' : 'none;'};
-    box-sizing: border-box;
 
     &:hover{
         padding-left: 20px;
@@ -354,9 +353,7 @@ const DropdownOptions = styled.div`
     
     padding: 5px;
     width: 100%;
-    top: 100%;
-    box-sizing: border-box;
-    
+    top: 100%;    
 `
 
 const SelectDropdown = styled.div`
@@ -413,7 +410,6 @@ const InputName = styled.input`
     border-radius: 5px;
     border: 1px solid black;
     box-shadow: 0 0 5px #0000005a;
-    box-sizing: border-box;
 `
 
 const Bar = styled.div`
@@ -453,21 +449,8 @@ const ItemsList = styled.div`
     overflow-y: scroll;
     overflow-x: hidden;
 
-    &::-webkit-scrollbar{
-        
-        width: 10px;
-        border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background: #d4d4d4; 
-        border-radius: 10px;
-    }
-    &::-webkit-scrollbar-thumb {
-        margin: 10px;
-        width: 20px;
-        background-color: #858585;    
-        border-radius: 10px;       
+    ${
+        scrollBarX
     }
 `
 

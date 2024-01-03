@@ -64,9 +64,10 @@ function Area({ item, mineItem, index, miningId, setIsMiningId, clearIsMiningId 
             $isMiningOther={(miningId !== item.idInArea && miningId !== '')} >
             <AreaItemBlockClickable onClick={e => onClickStartMining(e)} />
             <Avatar 
-                $image={require('../../'+item.avatar)} 
+                $image={item.avatar} 
                 width={'90px'} 
                 height={'90px'}
+                $isDoSomething={isMining}
                 $onClicked={() => onClickStopMining()} 
                 $isMiningOther={(miningId !== item.idInArea && miningId !== '')} />
 
@@ -99,7 +100,7 @@ const AreaItemBlockClickable = styled.div`
 
 const Timer = styled.p`
     position: absolute;
-    color: black;
+    color: #8b8b8b;
     bottom: 0;
     right: 0;
     margin: 10px;
@@ -150,7 +151,6 @@ const StopMiningCross = styled.div`
     background-color: #00000050;
     border-radius: 50%;
     transition: 0.1s;
-    box-sizing: border-box;
 
     &:hover{
         transform: scale(1.5);
@@ -181,8 +181,8 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
     padding: 20px;
     border-radius: 5px 5px 0 0;
-    width: 350px;
-    height: 30px;
+    width: 100%;
+    height: 70px;
     display: flex;
     gap: 20px;
     align-items: center;

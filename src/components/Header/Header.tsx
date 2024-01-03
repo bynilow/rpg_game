@@ -37,8 +37,8 @@ const Button = styled.div`
     align-items: center;
     transition: .1s;
     background-color: #ffffff;
+    box-shadow: 0 0 5px black;
     border-radius: 10px;
-    box-sizing: border-box;
     &:hover{
         transform: scale(0.95);
         background-color: #cecece;
@@ -51,7 +51,6 @@ const ButtonsBlock = styled.div`
     height: 100%;
     gap: 10px;
     padding: 5px;
-    box-sizing: border-box;
 `
 
 const ContainerInner = styled.div`
@@ -71,13 +70,11 @@ const GameName = styled.p`
 `
 
 const Block = styled.div`
-    position: fixed;
     top: 0;
     left: 0;
+    margin-bottom: 20px;
     width: 100vw;
-    height: 50px;
-
-    box-sizing: border-box;
+    min-height: 50px;
     
     display: flex;
     justify-content: center;

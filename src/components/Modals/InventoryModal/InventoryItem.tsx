@@ -63,7 +63,6 @@ const ButtonAction = styled.div<ButtonProps>`
     width: 100%;
     padding: 5px;
     transition: 0.1s;
-    box-sizing: border-box;
 
     &:hover{
         ${
@@ -90,7 +89,6 @@ const ActionsModal = styled.div`
     gap: 5px;
     flex-direction: column;
     justify-content: space-between;
-    box-sizing: border-box;
     transition: 0.3s;
 `
 

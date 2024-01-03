@@ -34,8 +34,7 @@ const Button = styled.div`
   align-items: center;
   transition: 0.1s;
   cursor: pointer;
-  box-sizing: border-box;
-
+  
   &:hover{
     transform: scale(0.95);
     background: #c9c9c9;

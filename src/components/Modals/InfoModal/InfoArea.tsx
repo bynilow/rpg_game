@@ -48,7 +48,8 @@ function InfoArea({areaId, countMin, countMax, changeWhatInfo}:IInfoArea) {
 const Info = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    justify-content: space-between;
+    height: 100%;
     transition: .1s;
 `
 
@@ -70,11 +71,12 @@ interface IAreaProps {
 const Area = styled.div<IAreaProps>`
     
     width: 100%;
-    height: 100px;
+    height: 90px;
     box-shadow: 0 0 5px black;
     border-radius: 5px;
     padding: 10px;
     display: flex;
+    align-items: center;
     gap: 10px;
     cursor: pointer;
     user-select: none;
@@ -82,14 +84,9 @@ const Area = styled.div<IAreaProps>`
 
     background: ${p => p.color};
 
-    box-sizing: border-box;
-
-    &:hover ${Info} {
-        padding: 0 10px;
-    }
-
     &:hover{
-        background: ${p => p.$hoveredColor}
+        background: ${p => p.$hoveredColor};
+        transform: scale(0.97);
     }
 
 `

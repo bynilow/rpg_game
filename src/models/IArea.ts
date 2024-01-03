@@ -1,15 +1,19 @@
 import { IFullItem, IAreaItem } from "./IAreaItem";
-import { IEnemy } from "./IEnemy";
+import { IAreaCurrentEnemy, IAreaEnemy, IEnemy } from "./IEnemy";
+
+export type IAreaColor = 'green' | 'yellow' | 'red'
+
 
 export interface IArea {
     id: string;
+    color: IAreaColor;
     avatar: string;
     title: string;
-    color: string;
     description: string;
     areaItems: IAreaItem[];
     currentAreaItems: IFullItem[];
-    enemies: IEnemy[];
+    enemies: IAreaEnemy[];
+    currentEnemies: IAreaCurrentEnemy[];
     timeToRespawnAreaItems: number;
     timeToRespawnAreaEnemies: number;
     lastRespawnAreaItems: string;
@@ -35,5 +39,6 @@ export interface ILocationToMove {
 export interface IChangeInfo {
     area?: IArea;
     itemId?: string;
+    enemyId?: string;
     whatInfo: string;
   }

@@ -18,7 +18,6 @@ function Container({children}: IContainer) {
 const Block = styled.div`
   width: 90%;
   height: 100%;
-  box-sizing: border-box;
   transition: 1s;
 `
 

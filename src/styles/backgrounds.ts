@@ -1,8 +1,12 @@
+import { IAreaColor } from "../models/IArea";
+import { IRare } from "../models/IAreaItem";
+import { IEnemyType } from "../models/IEnemy";
 
 const baseBackgroundColor = '#fff';
 const baseHoveredBackgroundColor = '#e6e6e6';
 
-export const getItemBackground = (rare: string) => {
+
+export const getItemBackground = (rare: IRare) => {
     switch (rare) {
         case 'common':
             return `linear-gradient(225deg, ${baseBackgroundColor} 95%, #a4a4ab 95%)`
@@ -19,7 +23,7 @@ export const getItemBackground = (rare: string) => {
     }
 }
 
-export const getItemHoveredBackground = (rare: string) => {
+export const getItemHoveredBackground = (rare: IRare) => {
     switch (rare) {
         case 'common':
             return `linear-gradient(225deg, ${baseHoveredBackgroundColor} 95%, #a4a4ab 95%)`
@@ -36,7 +40,7 @@ export const getItemHoveredBackground = (rare: string) => {
     }
 }
 
-export const getRareColor = (rare: string) => {
+export const getRareColor = (rare: IRare) => {
     switch (rare) {
         case 'common':
             return `#a4a4ab`
@@ -53,7 +57,7 @@ export const getRareColor = (rare: string) => {
     }
 }
 
-export const getRareTimerBackgroundColor = (rare: string) => {
+export const getRareTimerBackgroundColor = (rare: IRare) => {
     switch (rare) {
         case 'common':
             return `#7a7a80`
@@ -70,7 +74,7 @@ export const getRareTimerBackgroundColor = (rare: string) => {
     }
 }
 
-export const getAreaBackground = (color: string) => {
+export const getAreaBackground = (color: IAreaColor) => {
     switch (color) {
         case 'green':
             return `linear-gradient(225deg, ${baseBackgroundColor} 95%, #51973f 95%)`
@@ -83,7 +87,7 @@ export const getAreaBackground = (color: string) => {
     }
 }
 
-export const getHoveredAreaBackground = (color: string) => {
+export const getHoveredAreaBackground = (color: IAreaColor) => {
     switch (color) {
         case 'green':
             return `linear-gradient(225deg, ${baseHoveredBackgroundColor} 95%, #51973f 95%)`
@@ -96,7 +100,7 @@ export const getHoveredAreaBackground = (color: string) => {
     }
 }
 
-export const getAreaColor = (color: string) => {
+export const getAreaColor = (color: IAreaColor) => {
     switch (color) {
         case 'green':
             return `#51973f`
@@ -104,6 +108,46 @@ export const getAreaColor = (color: string) => {
             return `#b9ae4b`
         case 'red':
             return `#cd4d4d`
+        default:
+            return ``
+    }
+}
+
+
+export const getEnemyBackground = (type: IEnemyType) => {
+    switch (type) {
+        case 'enemy':
+            return `linear-gradient(225deg, ${baseBackgroundColor} 95%, #b6b6b6 95%)`
+        case 'neutral':
+            return `linear-gradient(225deg, ${baseBackgroundColor} 95%, #70b5d1 95%)`
+        case 'boss':
+            return `linear-gradient(225deg, ${baseBackgroundColor} 95%, #cf6060 95%)`
+        default:
+            return ``
+    }
+}
+
+export const getHoveredEnemyBackground = (type: IEnemyType) => {
+    switch (type) {
+        case 'enemy':
+            return `linear-gradient(225deg, ${baseHoveredBackgroundColor} 95%, #b6b6b6 95%)`
+        case 'neutral':
+            return `linear-gradient(225deg, ${baseHoveredBackgroundColor} 95%, #70b5d1 95%)`
+        case 'boss':
+            return `linear-gradient(225deg, ${baseHoveredBackgroundColor} 95%, #cf6060 95%)`
+        default:
+            return ``
+    }
+}
+
+export const getEnemyColor = (type: IEnemyType) => {
+    switch (type) {
+        case 'enemy':
+            return `#b6b6b6`
+        case 'neutral':
+            return `#70b5d1`
+        case 'boss':
+            return `#cf6060`
         default:
             return ``
     }

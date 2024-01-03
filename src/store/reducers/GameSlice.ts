@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IFullItem, IAreaItem } from "../../models/IAreaItem";
 import { IPath, IArea, ILocationToMove, IAviablePath } from "../../models/IArea";
 import { IInventory, IItemInventory } from "../../models/IInventory";
-import { IEnemy } from "../../models/IEnemy";
+import { IEnemy, IEnemyType } from "../../models/IEnemy";
 
 
 
@@ -79,7 +79,7 @@ const initialState: GameSlice = {
             "idInArea": "",
             "title": "Разбойник с кинжалом",
             "description": "Разбойники с кинжалами обладают высокой скоростью и подвижностью, что позволяет им быстро перемещаться и избегать вражеских атак. Они также обладают отличным чувством равновесия и мастерством в уклонении, что помогает им избегать ловушек и неожиданных атак.",
-            "avatar": "app/src/icons/enemies/bandit.png",
+            "avatar": "icons/enemies/bandit.png",
             "level": 1,
             "attackSpeed": 8,
             "currentAttackTime": 8,
@@ -92,6 +92,7 @@ const initialState: GameSlice = {
             "blockingChance": 20,
             "blockingMultiplier": 2.5,
             "missChance": 10,
+            "type": "enemy",
             "possibleLoot": [
                 {
                     "id": "coin",
@@ -110,6 +111,12 @@ const initialState: GameSlice = {
                     "countMin": 1,
                     "countMax": 2,
                     "dropChance": 30
+                },
+                {
+                    "id": "birch_tree",
+                    "countMin": 1,
+                    "countMax": 1,
+                    "dropChance": 10
                 }
             ],
             "actionText": {
@@ -138,7 +145,7 @@ const initialState: GameSlice = {
             "id": "coin",
             "idInArea": "",
             "title": "Монета",
-            "avatar": "app/src/icons/items/other/coin.png",
+            "avatar": "icons/items/other/coin.png",
             "description": "Золотая монетка.",
             "timeToMining": 0,
             "type": "other",
@@ -150,7 +157,7 @@ const initialState: GameSlice = {
             "id": "birch_tree",
             "idInArea": "",
             "title": "Обычная Береза",
-            "avatar": "app/src/icons/items/tree/birch_tree.png",
+            "avatar": "icons/items/tree/birch_tree.png",
             "description": "Обычная Береза, растущая в лесу. Ее ствол высокий и прямой, а листья светло-зеленые и деликатные. Она служит великолепным источником древесины для строительства или ремонта.",
             "timeToMining": 7.0,
             "type": "tree",
@@ -162,7 +169,7 @@ const initialState: GameSlice = {
             "id": "oak_tree",
             "idInArea": "",
             "title": "Крепкий Дуб",
-            "avatar": "app/src/icons/items/tree/oak_tree.png",
+            "avatar": "icons/items/tree/oak_tree.png",
             "description": "Могучий крепкий Дуб, растущий где-то в дремучем лесу. Его ствол густой и отлично служит для создания прочных и надежных предметов. Листья дуба крупные и густые, создавая плотную тень под его кроной.",
             "timeToMining": 10.0,
             "type": "tree",
@@ -174,7 +181,7 @@ const initialState: GameSlice = {
             "id": "willow_tree",
             "idInArea": "",
             "title": "Плакучая Ива",
-            "avatar": "app/src/icons/items/tree/willow_tree.png",
+            "avatar": "icons/items/tree/willow_tree.png",
             "description": "Ветви Плакучей Ивы создают глубокую и таинственную атмосферу. Листья ивы светло-зеленые и изящные, словно особенные пряди мягкого платья.",
             "timeToMining": 16.0,
             "type": "tree",
@@ -186,7 +193,7 @@ const initialState: GameSlice = {
             "id": "cedar_tree",
             "idInArea": "",
             "title": "Вечнозеленый Кедр",
-            "avatar": "app/src/icons/items/tree/cedar_tree.png",
+            "avatar": "icons/items/tree/cedar_tree.png",
             "description": "Могучий Вечнозеленый Кедр. Его ствол глубокого коричневого цвета и способен выдерживать сильные ветры и морозы. Кедр имеет густую хвою, которая всегда остается зеленой, даже в самые суровые времена.",
             "timeToMining": 20.0,
             "type": "tree",
@@ -198,7 +205,7 @@ const initialState: GameSlice = {
             "id": "teak_tree",
             "idInArea": "",
             "title": "Долговечный Тик",
-            "avatar": "app/src/icons/items/tree/teak_tree.png",
+            "avatar": "icons/items/tree/teak_tree.png",
             "description": "Долговечный Тик, найти который практически невозможно. Его ствол экстраординарно прочный и способен выдержать даже самые страшные бури. Листья тика тонкие и опадают лишь раз в несколько лет, создавая ощущение вечной зелени.",
             "timeToMining": 26.0,
             "type": "tree",
@@ -210,7 +217,7 @@ const initialState: GameSlice = {
             "id": "iron_ore",
             "idInArea": "",
             "title": "Железная руда",
-            "avatar": "app/src/icons/items/ores/iron_ore.png",
+            "avatar": "icons/items/ores/iron_ore.png",
             "description": "Обычный кусок породы, наполненный железом. Встречается повсеместно и является основным материалом для создания прочных и надежных предметов.",
             "timeToMining": 8.0,
             "type": "ore",
@@ -222,7 +229,7 @@ const initialState: GameSlice = {
             "id": "tungsten_ore",
             "idInArea": "",
             "title": "Вольфрамовая руда",
-            "avatar": "app/src/icons/items/ores/tungsten_ore.png",
+            "avatar": "icons/items/ores/tungsten_ore.png",
             "description": "Необычный минерал, добытый в глубинах земли. Известна своей высокой плотностью и прочностью. Широко используется для создания оружия и брони, обладающих улучшенными по сравнению с предметами из железа характеристиками.",
             "timeToMining": 14.0,
             "type": "ore",
@@ -234,7 +241,7 @@ const initialState: GameSlice = {
             "id": "platinum_ore",
             "idInArea": "",
             "title": "Платиновая руда",
-            "avatar": "app/src/icons/items/ores/platinum_ore.png",
+            "avatar": "icons/items/ores/platinum_ore.png",
             "description": "Редкая руда с благородным блеском. Из нее изготавливаются предметы высочайшего качества, используемые главными обладателями силы и богатства. Благодаря своей прочности и эстетичности, платина стала символом роскоши.",
             "timeToMining": 21.0,
             "type": "ore",
@@ -246,7 +253,7 @@ const initialState: GameSlice = {
             "id": "titanium_ore",
             "idInArea": "",
             "title": "Титановая руда",
-            "avatar": "app/src/icons/items/ores/titanium_ore.png",
+            "avatar": "icons/items/ores/titanium_ore.png",
             "description": "Мифическая руда, драгоценность для всего цивилизованного мира. Обладает невероятной прочностью и легкостью, что делает ее идеальной для создания предметов около легендарного качества. Лишь немногие мастера способны воплотить в жизнь потенциал этой руды.",
             "timeToMining": 26.0,
             "type": "ore",
@@ -258,7 +265,7 @@ const initialState: GameSlice = {
             "id": "adamantite_ore",
             "idInArea": "",
             "title": "Адамантитовая руда",
-            "avatar": "app/src/icons/items/ores/adamantite_ore.png",
+            "avatar": "icons/items/ores/adamantite_ore.png",
             "description": "Легендарная руда, которая считается самым редким и ценным материалом в мире. Покоится на границе человеческого понимания о прочности и обладает сверхъестественной износостойкостью. Из нее можно создать оружие или броню, способные выдержать самые сильные и суровые испытания.",
             "timeToMining": 31.0,
             "type": "ore",
@@ -270,7 +277,7 @@ const initialState: GameSlice = {
             "id": "wool",
             "idInArea": "",
             "title": "Шерсть",
-            "avatar": "app/src/icons/items/materials/wool.png",
+            "avatar": "icons/items/materials/wool.png",
             "description": "Шерсть - это натуральное волокно, получаемое от различных животных. Это мягкое, теплое и уютное волокно, которое используется для изготовления широкого спектра предметов.",
             "timeToMining": 0,
             "type": "materials",
@@ -282,7 +289,7 @@ const initialState: GameSlice = {
             "id": "bottle",
             "idInArea": "",
             "title": "Бутылка",
-            "avatar": "app/src/icons/items/other/bottle.png",
+            "avatar": "icons/items/other/bottle.png",
             "description": "Предмет, который обычно используется для хранения и транспортировки различных жидкостей.",
             "timeToMining": 0,
             "type": "other",

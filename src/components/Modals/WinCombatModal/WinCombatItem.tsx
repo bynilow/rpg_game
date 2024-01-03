@@ -80,8 +80,6 @@ const Item = styled.div<IItemProps>`
 
     background: ${p => p.color};
 
-    box-sizing: border-box;
-
     &:hover ${Info} {
         padding: 0 10px;
     }

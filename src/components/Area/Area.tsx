@@ -74,9 +74,10 @@ function Area({
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
             <Avatar 
                 $image={avatarUrl}
-                width={'80px'} 
-                height={'80px'}
+                width={'90px'} 
+                height={'90px'}
                 $onClicked={() => onClickStopMove()} 
+                $isDoSomething={isMoving}
                 $isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')} />
                 
             <Name>{title}</Name>
@@ -191,8 +192,6 @@ const AreaBlock = styled.div<IAreaBlockProps>`
             };`
             : null
     }
-
-    box-sizing: border-box;
 
     &:hover ${Name} {
         ${p => p.$isMovingOther 

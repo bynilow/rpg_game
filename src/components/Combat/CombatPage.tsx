@@ -6,6 +6,7 @@ import CombatText from './CombatText';
 import { IActionTexts, IEnemy } from '../../models/IEnemy';
 import WinCombatModal from '../Modals/WinCombatModal/WinCombatModal';
 import Avatar from '../Avatar/Avatar';
+import { scrollBarX } from '../../styles/scrollbars';
 
 interface ICombatPage {
     enemyId: string;
@@ -396,7 +397,6 @@ const Button = styled.div`
     border-radius: 5px;
     cursor: pointer;
     user-select: none;
-    box-sizing: border-box;
     transition: .1s;
 
     &:hover{
@@ -453,7 +453,6 @@ const ContainerInner = styled.div`
     display: flex;
     gap: 30px;
     justify-content: space-between;
-    box-sizing: border-box;
 `
 
 const AttackLine = styled.progress`
@@ -514,24 +513,12 @@ const Section = styled.div`
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
     gap: 10px;
     border-radius: 5px;
     box-shadow: 0 0 5px black;
 
-    &::-webkit-scrollbar{
-        width: 5px;
-        border-radius: 10px;
-    }
-    &::-webkit-scrollbar-track {
-        background: #d4d4d4; 
-        border-radius: 10px;
-    }
-    &::-webkit-scrollbar-thumb {
-        margin: 10px;
-        width: 20px;
-        background-color: #858585;    
-        border-radius: 10px;       
+    ${
+        scrollBarX
     }
 `
 

@@ -1,5 +1,9 @@
 import { IFullItem } from "./IAreaItem";
 
+export type IEnemyType = 'enemy' | 'neutral' | 'boss'
+
+
+
 interface IEnemyLoot{
     id: string,
     countMin: number;
@@ -20,6 +24,7 @@ export interface IActionTexts {
 
 export interface IEnemy{
     id: string;
+    type: IEnemyType;
     idInArea: string;
     title: string;
     description: string;
@@ -38,4 +43,19 @@ export interface IEnemy{
     missChance: number;
     possibleLoot: IEnemyLoot[];
     actionText: IActionTexts;
+}
+
+export interface IAreaEnemy{
+    id: string;
+    levelMin: number;
+    levelMax: number;
+    countMin: number;
+    countMax: number;
+    spawnChance: number;
+}
+
+export interface IAreaCurrentEnemy{
+    id: string;
+    idInArea: string;
+    level: number;
 }
