@@ -1,10 +1,10 @@
 import styled, { keyframes } from 'styled-components'
-import { useAppDispatch } from '../../hooks/redux';
-import { stopMineItem, stopMoveToLocation } from '../../store/reducers/ActionCreators';
-import { IFullItem } from '../../models/IAreaItem';
+import { useAppDispatch } from '../../../hooks/redux';
+import { stopMineItem, stopMoveToLocation } from '../../../store/reducers/ActionCreators';
+import { IFullItem } from '../../../models/IAreaItem';
 import { useRef, useState } from 'react';
-import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../styles/backgrounds';
-import Avatar from '../Avatar/Avatar';
+import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
+import Avatar from '../../Avatar/Avatar';
 
 
 interface IAreaItemProps {

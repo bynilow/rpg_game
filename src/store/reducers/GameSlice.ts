@@ -1,13 +1,39 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IFullItem, IAreaItem, IFullItemWithCount } from "../../models/IAreaItem";
-import { IPath, IArea, ILocationToMove, IAviablePath } from "../../models/IArea";
-import { IInventory, IItemInventory } from "../../models/IInventory";
-import { IAreaEnemy, IEnemy, IEnemyDead, IEnemyType } from "../../models/IEnemy";
-import { IPlayer } from "../../models/IPlayer";
+import { IArea, IAviablePath, ILocationToMove, IPath } from "../../models/IArea";
+import { IFullItem, IFullItemWithCount } from "../../models/IAreaItem";
+import { IAreaCurrentEnemy, IEnemy, IEnemyDead } from "../../models/IEnemy";
+import { IItemInventory } from "../../models/IInventory";
+import { IPlayer, IPlayerBaseStats } from "../../models/IPlayer";
 
 
 
+const baseStats: IPlayerBaseStats = {
+    baseDamage: 200,
+    damageMultiplier: 1,
+    critDamageMultiplier: 1.5,
+    critChance: 3,
+    oreSpeedMiningMultiplier: 1,
+    oreDoubleLootPercentChance: 0,
+    treeSpeedMiningMultiplier: 1,
+    treeDoubleLootPercentChance: 0,
+    capacity: 150,
 
+    blockingChancePercent: 3,
+    blockingMultiplier: 1.5,
+    dodgePercentChance: 3,
+    missPercentChance: 5,
+    movementSpeed: 0,
+    attackSpeed: 5,
+    baseHealth: 150,
+    maxHealthMultiplier: 1,
+    healthRegenerationMultiplier: 1, 
+
+    experienceMultiplier: 1,
+    craftSpeedMultiplier: 1,
+    craftDoubleLootPercentChance: 0,
+    buyPricePercent: 0,
+    sellPricePercent: 0
+}
 
 interface GameSlice {
     currentLocationId: string;
@@ -20,8 +46,9 @@ interface GameSlice {
     currentAreaItemMiningTime: number;
     currentAreaToMove: ILocationToMove;
     inventory: IItemInventory[];
-    coins: number;
     player: IPlayer;
+    playerCurrentStats: IPlayerBaseStats;
+    playerSkillsLevel: IPlayerBaseStats;
 }
 
 interface IUpdateAreaItems {
@@ -31,6 +58,12 @@ interface IUpdateAreaItems {
         id: string;
         count: number
     }[];
+}
+
+interface IUpdateAreaEnemies {
+    enemies: IAreaCurrentEnemy[];
+    levelId: string;
+    date: string;
 }
 
 const initialState: GameSlice = {
@@ -85,7 +118,7 @@ const initialState: GameSlice = {
             "baseCountXP": 15,
             "level": 1,
             "attackSpeed": 8,
-            "damage": 1,
+            "damage": 3,
             "critDamageMultiplier": 1.3,
             "critChance": 4,
             "maxHealth": 70,
@@ -319,23 +352,13 @@ const initialState: GameSlice = {
     currentAreaItem: {},
     currentAreaItemMiningTime: 0,
     inventory: [],
-    coins: 0,
     player: {
         title: 'peesoos',
+        health: 150,
         avatar: '',
+        coins: 0,
         level: 1,
         currentXP: 0,
-        maxHealth: 150,
-        health: 150,
-        attackSpeed: 3,
-        currentAttackTime: 3,
-        damage: 200,
-        critDamageMultiplier: 1.5,
-        critChance: 3,
-        dodgeChance: 5,
-        blockingChance: 5,
-        blockingMultiplier: 1.5,
-        missChance: 10,
         actionText: {
             combatText: [
                 "Сжимает свой кулак и бьет #name прямо по лицу нанеся #damage урона."
@@ -348,6 +371,34 @@ const initialState: GameSlice = {
             successBlockingCritText: "Совершенное владение щитом оказывает эффект! #name блокирует критический урон и получает всего #damage урона!",
             successBlockingText: "Совершенное владение щитом оказывает эффект! #name получает всего #damage урона!"
         }
+    },
+    playerCurrentStats: baseStats,
+    playerSkillsLevel: {
+        baseDamage: 1,
+        damageMultiplier: 1,
+        critDamageMultiplier: 1,
+        critChance: 1,
+        oreSpeedMiningMultiplier: 1,
+        oreDoubleLootPercentChance: 1,
+        treeSpeedMiningMultiplier: 1,
+        treeDoubleLootPercentChance: 1,
+        capacity: 1,
+
+        blockingChancePercent: 1,
+        blockingMultiplier: 1,
+        dodgePercentChance: 1,
+        missPercentChance: 1,
+        movementSpeed: 1,
+        attackSpeed: 1,
+        baseHealth: 150,
+        maxHealthMultiplier: 1,
+        healthRegenerationMultiplier: 1,
+
+        experienceMultiplier: 1,
+        craftSpeedMultiplier: 1,
+        craftDoubleLootPercentChance: 1,
+        buyPricePercent: 1,
+        sellPricePercent: 1
     }
 }
 
@@ -404,6 +455,24 @@ export const gameSlice = createSlice({
 
             localStorage.areas = JSON.stringify(state.areas);
         },
+        updateAreaEnemies(state, action: PayloadAction<IUpdateAreaEnemies>){
+            const payloadEnemies = action.payload.enemies;
+            const payloadDate = action.payload.date;
+            const payloadLevelId = payloadEnemies[0].levelId;
+
+            const foundedIndex = state.areas.findIndex(e => e.id === payloadLevelId);
+
+            state.areas[foundedIndex].lastRespawnAreaEnemies = payloadDate;            
+
+            let enemies: IAreaCurrentEnemy[] = [];
+            payloadEnemies.forEach((e) => {
+                enemies.push(e);
+            });
+
+            state.areas[foundedIndex].currentEnemies = enemies!;
+
+            localStorage.areas = JSON.stringify(state.areas);
+        },
         mineItem(state, action: PayloadAction<IFullItem>){
             const indexLevel = state.areas.findIndex(i => i.id === state.currentLocationId);
             const currentAreaItems = state.areas[indexLevel].currentAreaItems;
@@ -443,7 +512,7 @@ export const gameSlice = createSlice({
 
             items.forEach( i => {
                 if( i.id === 'coin'){
-                    state.coins += i.count;
+                    state.player.coins += i.count;
                 }
                 else {
                     const foundedItemIndex = state.inventory.findIndex(si => si.item.id === i.id);
@@ -461,6 +530,7 @@ export const gameSlice = createSlice({
             })
             
             localStorage.inventory = JSON.stringify(state.inventory);
+            localStorage.player = JSON.stringify(state.player);
         },
         setInventory(state, action: PayloadAction<IItemInventory[]>){
             state.inventory = action.payload;
@@ -483,15 +553,18 @@ export const gameSlice = createSlice({
             localStorage.player = JSON.stringify(state.player);
         },
         addXP(state, action: PayloadAction<number>){
-            const currentXP = state.player.currentXP;
-            const needXP = (2.25)**(state.player.level - 1) + 10;
-            if(currentXP + action.payload >= needXP){
+            let gainedXP = action.payload;
+            let currentXP = state.player.currentXP + gainedXP;
+            let needXP = (state.player.level ** 2.7) + 10;
+
+            while (gainedXP >= needXP) {
                 state.player.level += 1;
-                state.player.currentXP = currentXP + action.payload - needXP; 
+                gainedXP -= needXP;
+                needXP = (state.player.level ** 2.7) + 10;
+                console.log(state.player.level, gainedXP)
             }
-            else{
-                state.player.currentXP += action.payload;
-            }
+
+            state.player.currentXP = gainedXP;
 
             localStorage.player = JSON.stringify(state.player);
         }

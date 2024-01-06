@@ -17,6 +17,7 @@ function CircleButton({symbol, click}:CircleButtonProps) {
 
 const Button = styled.div`
   position: absolute;
+  z-index: 9;
   top: 0;
   right: 0;
   width: 30px;
@@ -34,6 +35,7 @@ const Button = styled.div`
   align-items: center;
   transition: 0.1s;
   cursor: pointer;
+  user-select: none;
   
   &:hover{
     transform: scale(0.95);

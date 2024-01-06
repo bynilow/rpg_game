@@ -60,4 +60,5 @@ export interface IAreaCurrentEnemy{
     id: string;
     idInArea: string;
     level: number;
+    levelId: string;
 }

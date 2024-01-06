@@ -5,7 +5,7 @@ import { ILocationToMove } from "../../models/IArea";
 import { IFullItem, IAreaItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { useAppSelector } from "../../hooks/redux";
 import { IItemInventory } from "../../models/IInventory";
-import { IEnemyDead } from "../../models/IEnemy";
+import { IAreaCurrentEnemy, IAreaEnemy, IEnemyDead } from "../../models/IEnemy";
 import { IPlayer } from "../../models/IPlayer";
 
 interface IResult {
@@ -18,7 +18,18 @@ interface IUpdateAreaItems {
     itemsToUpdate: IAreaItem[];
 }
 
-const getRandomNumber = (min:number, max:number) => Math.round(Math.random() * max + min);
+interface IUpdateAreaEnemies {
+    enemies: IAreaEnemy[];
+    levelId: string;
+}
+
+const getRandomNumber = (min:number, max:number) => Math.floor(Math.random() * max + min);
+
+const getChance = (chance: number) => {
+    const randomNumber = Math.round(Math.random()*100); 
+    if (randomNumber <= chance) return true
+    else return false
+}
 
 export const goLevel = (levelId:string) => async (dispatch: AppDispatch) => {
     try{
@@ -82,6 +93,44 @@ export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispat
     }
 }
 
+export const updateAreaEnemies = (updatedLevel: IUpdateAreaEnemies) => async (dispatch: AppDispatch) => {
+    try{
+        interface IEnemiesData{
+            date: string;
+            enemies: IAreaCurrentEnemy[];
+            levelId: string;
+        }
+        let enemiesData:IEnemiesData = {
+            date: new Date().toISOString(),
+            enemies: [],
+            levelId: updatedLevel.levelId
+        };
+
+        let enemies: IAreaCurrentEnemy[] = [];
+
+        updatedLevel.enemies.forEach((e, ind) => {
+            const count = getRandomNumber(e.countMin, e.countMax);
+            const isSpawned = getChance(e.spawnChance);
+            if (isSpawned) {
+                for(let j = 0; j <= count; j++){
+                    enemies.push({
+                        id: e.id,
+                        idInArea: e.id + j,
+                        level: getRandomNumber(e.levelMin, e.levelMax),
+                        levelId: enemiesData.levelId
+                    })
+                }
+            }
+        });
+        enemiesData.enemies = enemies;
+        dispatch(gameSlice.actions.updateAreaEnemies(enemiesData));
+        
+    }
+    catch{
+
+    }
+}
+
 export const mineItem = (miningItem: IFullItemWithCount) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.mineItem(miningItem));
@@ -107,7 +156,6 @@ export const stopMineItem = () => async (dispatch: AppDispatch) => {
 export const setAreasFromStorage = () => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.setAreasFromStorage());
-        
     }
     catch{
 
@@ -135,7 +183,6 @@ export const addItemsToInventory = (items:IFullItemWithCount[]) => async (dispat
 export const setInventoryFromStorage = () => async (dispatch: AppDispatch) => {
     try{
         const items = JSON.parse(localStorage.inventory);
-        dispatch(gameSlice.actions.setInventory(items));
         
     }
     catch{

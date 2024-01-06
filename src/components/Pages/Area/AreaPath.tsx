@@ -1,8 +1,8 @@
 import styled, { keyframes } from 'styled-components'
-import { useAppDispatch } from '../../hooks/redux';
-import { stopMoveToLocation } from '../../store/reducers/ActionCreators';
+import { useAppDispatch } from '../../../hooks/redux';
+import { stopMoveToLocation } from '../../../store/reducers/ActionCreators';
 import { useEffect, useRef, useState } from 'react';
-import Avatar from '../Avatar/Avatar';
+import Avatar from '../../Avatar/Avatar';
 
 interface IArea {
     title: string;
@@ -18,7 +18,7 @@ interface IArea {
 
 
 
-function Area({ 
+function AreaPath({ 
     title, 
     timeToMove, 
     goLevel, 
@@ -66,7 +66,7 @@ function Area({
         }, timeToMove*1000)
     }
     return (
-        <AreaBlock 
+        <Area
             $index={index} 
             $isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')}>
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
@@ -87,17 +87,9 @@ function Area({
                 }
             </Timer>
             <TimerLine max={timeToMove} value={isMoving ? currentTimeToMove : timeToMove} />
-        </AreaBlock>
+        </Area>
     );
 }
-
-const AvatarImg = styled.img`
-    width: 120%;
-    top: -10%;
-    left: -10%;
-    position: absolute;
-    z-index: 1;
-`
 
 const AreaBlockClickable = styled.div`
     width: 100%;
@@ -156,7 +148,7 @@ const AreaBlockAnim = keyframes`
     }
 `
 
-const AreaBlock = styled.div<IAreaBlockProps>`
+const Area = styled.div<IAreaBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
     background-color: white;
     padding: 20px;
@@ -206,4 +198,4 @@ const AreaBlock = styled.div<IAreaBlockProps>`
     }
 `
 
-export default Area;
+export default AreaPath;

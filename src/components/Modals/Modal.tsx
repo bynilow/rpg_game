@@ -1,25 +1,70 @@
-import styled from 'styled-components';
-import React from 'react';
+import styled, { keyframes } from 'styled-components';
+import React, { useEffect, useState } from 'react';
 import ModalBackground from './Other/ModalBackground';
+import CircleButton from '../Buttons/CircleButton';
 
 interface IModal {
     color?: string;
     $flexDirection: 'row' | 'column';
     $alignItems?: '';
+    $isCloseButton?: boolean;
+    $isEnableAnims?: boolean;
+    $closeButtonFunction?: Function;
     children: React.ReactNode;
 }
 
-function Modal({ color = 'white', children, $flexDirection, $alignItems = '' }: IModal) {
+function Modal({ 
+    color = 'white', 
+    children, 
+    $flexDirection, 
+    $alignItems = '', 
+    $isEnableAnims = true,
+    $isCloseButton,
+    $closeButtonFunction }: IModal) {
+
+    const [isOpenAnim, setIsOpenAnim] = useState(true);
+    const [isCloseAnim, setIsCloseAnim] = useState(false);
+
+    setTimeout(() => {
+        setIsOpenAnim(false);
+    }, 1000)
+
+    const onClickCloseButton = () => {
+        setIsCloseAnim(true);
+        setTimeout(() => {
+            if(typeof $closeButtonFunction !== 'undefined') $closeButtonFunction() 
+        }, 470)
+    }
+    
+    console.log(children?.toString())
+
+    useEffect(() => {
+
+    }, [])
+
     return (
         <>
-            <ModalBackground />
-            <ModalBlock 
-                color={color} 
-                $flexDirection={$flexDirection} 
-                $alignItems={$alignItems}>
-            {
-                children
-            }
+            <ModalBackground
+                $isEnableAnims
+                $closeAnim={isCloseAnim} />
+            <ModalBlock
+                key={isCloseAnim ? 'close' : 'none'}
+                color={color}
+                $flexDirection={$flexDirection}
+                $alignItems={$alignItems}
+                $isEnableAnims={$isEnableAnims}
+                $isOpenAnim={isOpenAnim}
+                $isCloseAnim={isCloseAnim} >
+
+                {
+                    $isCloseButton
+                        ? <CircleButton symbol='✕' click={() => onClickCloseButton()} />
+                        : null
+                }
+                
+                {
+                    children
+                }
             </ModalBlock>
         </>
     );
@@ -29,7 +74,21 @@ interface IModalBlockProps{
     color: string;
     $flexDirection: 'row' | 'column';
     $alignItems: string;
+    $isEnableAnims: boolean;
+    $isOpenAnim: boolean;
+    $isCloseAnim: boolean;
 }
+
+const ModalBlockAnim = keyframes`
+    from{
+        transform: translateY(10vh);
+        opacity: 0;
+    }
+    to{
+        transform: translateY(0);
+        opacity: 1;
+    }
+`
 
 const ModalBlock = styled.div<IModalBlockProps>`
     z-index: 9999;
@@ -50,6 +109,14 @@ const ModalBlock = styled.div<IModalBlockProps>`
     justify-content: ${ p => p.$flexDirection === 'row' ? 'space-around' : null };
     align-items: ${ p => p.$alignItems };
     gap: 20px;
+
+
+    animation: ${p => p.$isEnableAnims ? ModalBlockAnim : null} 0.5s ease;
+    animation-direction: ${ 
+            p => p.$isCloseAnim
+                ? 'reverse' 
+                : 'normal' };
+    
 
     transition: .1s;
 

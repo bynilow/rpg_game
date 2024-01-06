@@ -1,20 +1,39 @@
 import { IActionTexts } from "./IEnemy";
 
-export interface IPlayer {
-    title: string;
-    avatar: string;
-    maxHealth: number;
-    health: number;
-    attackSpeed: number;
-    currentAttackTime: number;
-    damage: number;
+export interface IPlayerBaseStats{
+    baseDamage: number;
+    damageMultiplier: number;
     critDamageMultiplier: number;
     critChance: number;
-    dodgeChance: number;
-    blockingChance: number;
+    oreSpeedMiningMultiplier: number;
+    oreDoubleLootPercentChance: number;
+    treeSpeedMiningMultiplier: number;
+    treeDoubleLootPercentChance: number;
+    capacity: number;
+
+    blockingChancePercent: number;
     blockingMultiplier: number;
-    missChance: number;
+    dodgePercentChance: number;
+    missPercentChance: number;
+    movementSpeed: number;
+    attackSpeed: number;
+    baseHealth: number;
+    maxHealthMultiplier: number;
+    healthRegenerationMultiplier: number; 
+
+    experienceMultiplier: number;
+    craftSpeedMultiplier: number;
+    craftDoubleLootPercentChance: number;
+    buyPricePercent: number;
+    sellPricePercent: number;
+}
+
+export interface IPlayer{
+    title: string;
+    avatar: string;
+    health: number;
     actionText: IActionTexts;
     level: number;
     currentXP: number;
+    coins: number;
 }

@@ -9,10 +9,9 @@ interface IHeader{
 
 function Header({openInventory}: IHeader) {
 
-    const {coins, player} = useAppSelector(state => state.userReducer);
+    const {player, playerCurrentStats} = useAppSelector(state => state.userReducer);
 
-    const needXP = (2.25)**(player.level - 1) + 10;
-    console.log(needXP)
+    const needXP = (player.level ** 2.7) + 10;
 
     return ( 
         <Block>
@@ -37,7 +36,7 @@ function Header({openInventory}: IHeader) {
                                 }
                             </LineText>
                         </LineBlock>
-                        <LineBlock>
+                        {/* <LineBlock>
                             <EnergyLine max={100} value={35} />
                             <LineText>
                                 {
@@ -46,20 +45,20 @@ function Header({openInventory}: IHeader) {
                                         : `${122} / ${45}`
                                 }
                             </LineText>
-                        </LineBlock>
+                        </LineBlock> */}
                         <LineBlock>
-                            <HealthLine max={player.maxHealth} value={player.health} />
+                            <HealthLine max={playerCurrentStats.baseHealth} value={player.health} />
                             <LineText>
                                 {
-                                    player.maxHealth.toString().length >= 4
-                                        ? `${(player.maxHealth/1000).toFixed(1)}k / ${(player.health/1000).toFixed(1)}k`
-                                        : `${player.maxHealth} / ${player.health.toFixed(0)}`
+                                    playerCurrentStats.baseHealth.toString().length >= 4
+                                        ? `${(playerCurrentStats.baseHealth/1000).toFixed(1)}k / ${(player.health/1000).toFixed(1)}k`
+                                        : `${playerCurrentStats.baseHealth} / ${player.health.toFixed(0)}`
                                 }
                             </LineText>
                         </LineBlock>
                         <Coins>
                         <CoinsText>
-                            {coins}
+                            {player.coins}
                         </CoinsText>
                         <Avatar $image={'icons/items/other/coin.png'} width={'35px'} height={'35px'} />
                     </Coins>

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Avatar from '../Avatar/Avatar';
+import Avatar from '../../Avatar/Avatar';
 
 interface ICombatText {
     isEnemyAttack: boolean;
@@ -77,7 +77,7 @@ function CombatText({
                                     text.slice(text.indexOf('#name') + 5, text.indexOf('#damage'))
                                 }
                                 <Damage isCrit={isCrit}>
-                                    {damage}
+                                    {damage.toFixed(1)}
                                 </Damage>
                                 {
                                     text.slice(text.indexOf('#damage') + 7)

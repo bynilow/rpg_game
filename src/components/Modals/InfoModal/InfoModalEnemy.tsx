@@ -9,12 +9,13 @@ import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
 import Modal from '../Modal';
 import InfoElem from './InfoElem';
+import Section from '../../Section/Section';
 
 interface IEnemyModal {
     $enemyId: string;
     $closeModal: Function;
 
-    $changeWhatInfo: (item: IChangeInfo) => void;
+    $changeWhatInfo: Function;
 }
 
 function EnemyModal({ $closeModal, $changeWhatInfo, $enemyId }: IEnemyModal) {
@@ -28,10 +29,9 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $enemyId }: IEnemyModal) {
         enemyItems = enemy.possibleLoot.map(i => areaItems.find(ai => ai.id === i.id)!)!;
     }
 
+    console.log('enemy id:'+$enemyId, 'enemy: '+enemy)
+
     const backgroundColor = getEnemyBackground(enemy.type);
-    console.log($enemyId);
-    console.log(enemy.type);
-    console.log(backgroundColor);
     const backgroundHoveredColor = getHoveredEnemyBackground(enemy.type);
 
     useEffect(() => {
@@ -39,16 +39,15 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $enemyId }: IEnemyModal) {
     }, [])
 
     if(enemy.title) return (
-        <Modal
-            color={backgroundColor}
-            $flexDirection={"row"}>
-            <CircleButton symbol='✕' click={() => $closeModal()} />
+        <>
 
             <Section>
                 <Avatar
                     $image={enemy.avatar}
                     width={'150px'}
-                    height={'150px'} />
+                    height={'150px'}
+                    $minWidth={'200px'}
+                    $minHeight={'200px'} />
                 <Title>
                     "{enemy.title}"
                 </Title>
@@ -149,6 +148,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $enemyId }: IEnemyModal) {
                                     key={a.id}
                                     id={a.id}
                                     $type={'area'}
+                                    $spawnChance={a.enemies.find(i => i.id === $enemyId)!.spawnChance}
                                     $countMax={a.enemies.find(e => e.id === $enemyId)!.countMax}
                                     $countMin={a.enemies.find(e => e.id === $enemyId)!.countMin}
                                     $changeWhatInfo={() => $changeWhatInfo({
@@ -158,7 +158,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $enemyId }: IEnemyModal) {
                     }
                 </List>
             </Section>
-        </Modal>
+        </>
 
     );
     else return (<></>)
@@ -200,19 +200,6 @@ const ColorText = styled.p<IColorText>`
 const UpdateText = styled.p`
     font-size: 16px;
     margin: 0;
-`
-
-const Section = styled.div`
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    ${scrollBarX
-    }
 `
 
 const Description = styled.p`

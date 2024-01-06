@@ -4,6 +4,8 @@ interface IAvatar{
     $image: string;
     width: string;
     height: string;
+    $minWidth?: string;
+    $minHeight?: string;
     $isDoSomething?: boolean;
     $isMovingOther?: boolean;
     $isMiningOther?: boolean;
@@ -14,7 +16,9 @@ interface IAvatar{
 function Avatar({
     $image, 
     width = '90px', 
-    height = '90px', 
+    height = '90px',
+    $minHeight,
+    $minWidth, 
     $isDoSomething,
     $isMovingOther, 
     $isMiningOther, 
@@ -26,6 +30,8 @@ function Avatar({
             $image={$image}
             width={width}
             height={height}
+            $minWidth={$minWidth}
+            $minHeight={$minHeight}
             $isMovingOther={$isMovingOther}
             $isMiningOther={$isMiningOther}
             $isCircle={$isCircle}>
@@ -69,10 +75,16 @@ const Block = styled.div<IAvatar>`
     justify-content: center;
     align-items: center;
     z-index: 2;
-    min-width: ${p => p.width};
-    min-height: ${p => p.height};
-    max-width: ${p => p.width};
-    max-height: ${p => p.height};
+    width: ${p => p.width};
+    height: ${p => p.height};
+
+    ${
+        p => p.$minWidth ? `min-width: ${p.$minWidth};` : null
+    }
+
+    ${
+        p => p.$minHeight ? `min-height: ${p.$minHeight};` : null
+    }
 
     background-image: ${ p => `url( ${ require('../../'+p.$image) } )` };
     background-size: contain;

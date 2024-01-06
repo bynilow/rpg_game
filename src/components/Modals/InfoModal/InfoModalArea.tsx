@@ -8,11 +8,12 @@ import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
 import Modal from '../Modal';
 import InfoElem from './InfoElem';
+import Section from '../../Section/Section';
 
 interface IModalArea {
     $area: IArea;
     $closeModal: Function;
-    $changeWhatInfo: (item: IChangeInfo) => void;
+    $changeWhatInfo: Function;
 }
 
 function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
@@ -27,16 +28,14 @@ function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
     }, [])
 
     return (
-        <Modal
-            color={backgroundColor}
-            $flexDirection={"row"}>
-
-            <CircleButton symbol='✕' click={() => $closeModal()} />
+        <>
             <Section>
                 <Avatar
                     $image={$area.avatar}
-                    width={'150px'}
-                    height={'150px'} />
+                    width={'250px'}
+                    height={'250px'}
+                    $minWidth={'200px'}
+                    $minHeight={'200px'} />
                 <Title>
                     "{$area.title}"
                 </Title>
@@ -56,6 +55,7 @@ function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
                     }
 
                 </Description>
+
             </Section>
 
             <Section>
@@ -110,7 +110,7 @@ function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
                 </List>
             </Section>
 
-        </Modal>
+        </>
 
     );
 }
@@ -151,19 +151,6 @@ const ColorText = styled.p<IColorText>`
 const UpdateText = styled.p`
     font-size: 16px;
     margin: 0;
-`
-
-const Section = styled.div`
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    ${scrollBarX
-    }
 `
 
 const Description = styled.p`

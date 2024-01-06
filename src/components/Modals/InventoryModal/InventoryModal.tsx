@@ -74,9 +74,10 @@ function InventoryModal({closeModal}:IInventoryModal) {
     }, [selectedMaterial, selectedRare, selectedSort, isReversed, inputText])
     return (
         <>
-            <ModalBackground />
-            <Modal $flexDirection={'column'} >
-                <CircleButton click={() => closeModal()} symbol='✕' />
+            <Modal 
+                $flexDirection={'column'} 
+                $isCloseButton
+                $closeButtonFunction={() => closeModal()}>
                 <InventoryText>Инвентарь</InventoryText>
                 <Bar>
                     <InputName

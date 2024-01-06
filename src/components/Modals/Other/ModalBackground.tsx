@@ -1,28 +1,35 @@
 import styled, { keyframes } from 'styled-components'
 
 interface IModalBackground{
-    $enableStartAnim?: boolean
+    $isEnableAnims?: boolean
+    $closeAnim?: boolean;
 }
 
-function ModalBackground({$enableStartAnim = false}: IModalBackground) {
+function ModalBackground({$isEnableAnims = true, $closeAnim = false}: IModalBackground) {
     return ( 
-        <Background $startAnim={$enableStartAnim}> </Background>
+        <Background 
+            key={$closeAnim ? 'close' : 'none'}
+            $isEnableAnims={$isEnableAnims}
+            $closeAnim={$closeAnim}>
+
+        </Background>
      );
 }
 
 const StartAnim = keyframes`
     0%{
         background-color: rgba(0,0,0,0);
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(0px);
     }
     100%{
-        background-color: #000000a6;
+        background-color: #0000006f;
         backdrop-filter: blur(5px);
     }
 `
 
 interface IBackgroundProps {
-    $startAnim: boolean
+    $isEnableAnims: boolean
+    $closeAnim: boolean;
 }
 
 const Background = styled.div<IBackgroundProps>`
@@ -37,12 +44,8 @@ const Background = styled.div<IBackgroundProps>`
     background-color: #0000006f;
     backdrop-filter: blur(5px);
 
-    animation: ${ p => p.$startAnim ? StartAnim : null} 3s ease;
-    animation-fill-mode: forwards;
-
-    
-
-
+    animation: ${ p => p.$isEnableAnims ? StartAnim : null} 0.5s ease;
+    animation-direction: ${ p => p.$closeAnim ? 'reverse' : 'normal'};
 `
 
 export default ModalBackground;
