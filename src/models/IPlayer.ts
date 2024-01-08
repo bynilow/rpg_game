@@ -1,31 +1,40 @@
 import { IActionTexts } from "./IEnemy";
 
+interface IPlayerStat {
+    baseCount: number;
+    currentScores: number;
+    countScores: number;
+    level: number;
+}
+
 export interface IPlayerBaseStats{
-    baseDamage: number;
-    damageMultiplier: number;
-    critDamageMultiplier: number;
-    critChance: number;
-    oreSpeedMiningMultiplier: number;
-    oreDoubleLootPercentChance: number;
-    treeSpeedMiningMultiplier: number;
-    treeDoubleLootPercentChance: number;
-    capacity: number;
+    baseDamage: IPlayerStat;
+    damageMultiplier: IPlayerStat;
+    critDamageMultiplier: IPlayerStat;
+    critChance: IPlayerStat;
+    oreSpeedMiningMultiplier: IPlayerStat;
+    oreDoubleLootPercentChance: IPlayerStat;
+    treeSpeedMiningMultiplier: IPlayerStat;
+    treeDoubleLootPercentChance: IPlayerStat;
+    capacity: IPlayerStat;
 
-    blockingChancePercent: number;
-    blockingMultiplier: number;
-    dodgePercentChance: number;
-    missPercentChance: number;
-    movementSpeed: number;
-    attackSpeed: number;
-    baseHealth: number;
-    maxHealthMultiplier: number;
-    healthRegenerationMultiplier: number; 
+    blockingChancePercent: IPlayerStat;
+    blockingMultiplier: IPlayerStat;
+    dodgePercentChance: IPlayerStat;
+    missPercentChance: IPlayerStat;
+    movementSpeed: IPlayerStat;
+    attackSpeed: IPlayerStat;
+    baseHealth: IPlayerStat;
+    maxHealthMultiplier: IPlayerStat;
+    healthRegenerationMultiplier: IPlayerStat; 
 
-    experienceMultiplier: number;
-    craftSpeedMultiplier: number;
-    craftDoubleLootPercentChance: number;
-    buyPricePercent: number;
-    sellPricePercent: number;
+    experienceMultiplier: IPlayerStat;
+    craftSpeedMultiplier: IPlayerStat;
+    craftDoubleLootPercentChance: IPlayerStat;
+    buyPricePercent: IPlayerStat;
+    sellPricePercent: IPlayerStat;
+
+    [key: string]: any;
 }
 
 export interface IPlayer{
@@ -35,5 +44,14 @@ export interface IPlayer{
     actionText: IActionTexts;
     level: number;
     currentXP: number;
+    skillPoints: number;
     coins: number;
+}
+
+export interface ISkillUp {
+    id: string;
+    countSkills: number;
+    countLevels: number;
+    type: 'score' | 'multiplier' | 'percent';
+    
 }

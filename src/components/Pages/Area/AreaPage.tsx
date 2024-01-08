@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IArea, IAviablePath, IChangeInfo } from '../../../models/IArea';
 import { IFullItem } from '../../../models/IAreaItem';
 import { IAreaCurrentEnemy } from '../../../models/IEnemy';
-import { addXP, getAvailablePaths, goLevel, mineItem, setAreasFromStorage, setInventoryFromStorage, setPlayerFromStorage, updateAreaEnemies, updateAreaItems } from '../../../store/reducers/ActionCreators';
+import { addXP, getAvailablePaths, goLevel, mineItem, setAreasFromStorage, setInventoryFromStorage, setPlayerFromStorage, setSkillsFromStorage, updateAreaEnemies, updateAreaItems } from '../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../styles/scrollbars';
 import CircleButton from '../../Buttons/CircleButton';
 import AreaEnemy from './AreaEnemy';
@@ -100,6 +100,8 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
         return name
     }
 
+    const [isSkillsOpen, setIsSkillsOpen] = useState(false);
+
     useEffect(() => {
         if (areas.length < 2) {
             dispatch(setAreasFromStorage());
@@ -110,6 +112,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
             dispatch(getAvailablePaths(currentLocation.id));
             dispatch(setInventoryFromStorage());
             dispatch(setPlayerFromStorage());
+            dispatch(setSkillsFromStorage());
         }
 
         if (nextRespawnAreaItems.getTime() < (new Date()).getTime()) {
@@ -149,12 +152,14 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                     : null
             }
             {
-                false
-                    ? <SkillsModal />
+                isSkillsOpen
+                    ? <SkillsModal $closeModal={() => setIsSkillsOpen(false)} />
                     : null
             }
             <Background $image={require('../../../' + currentLocation.avatar)} />
-            <Header openInventory={() => setIsInventoryOpen(true)} />
+            <Header 
+                $openInventory={() => setIsInventoryOpen(true)}
+                $openSkills={() => setIsSkillsOpen(true)} />
             <Area>
             
                 <LevelName color={currentLocation.color}>

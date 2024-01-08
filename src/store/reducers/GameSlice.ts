@@ -3,36 +3,151 @@ import { IArea, IAviablePath, ILocationToMove, IPath } from "../../models/IArea"
 import { IFullItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { IAreaCurrentEnemy, IEnemy, IEnemyDead } from "../../models/IEnemy";
 import { IItemInventory } from "../../models/IInventory";
-import { IPlayer, IPlayerBaseStats } from "../../models/IPlayer";
+import { IPlayer, IPlayerBaseStats, ISkillUp } from "../../models/IPlayer";
 
 
 
 const baseStats: IPlayerBaseStats = {
-    baseDamage: 200,
-    damageMultiplier: 1,
-    critDamageMultiplier: 1.5,
-    critChance: 3,
-    oreSpeedMiningMultiplier: 1,
-    oreDoubleLootPercentChance: 0,
-    treeSpeedMiningMultiplier: 1,
-    treeDoubleLootPercentChance: 0,
-    capacity: 150,
+    baseDamage: {
+        baseCount: 200,
+        countScores: 1,
+        currentScores: 1,
+        level: 1
+    },
+    damageMultiplier: {
+        baseCount: 1,
+        countScores: 0.15,
+        currentScores: 1,
+        level: 1
+    },
+    critDamageMultiplier: {
+        baseCount: 1.5,
+        countScores: 0.2,
+        currentScores: 1.5,
+        level: 1
+    },
+    critChance: {
+        baseCount: 3,
+        currentScores: 3,
+        countScores: 0.5,
+        level: 1
+    },
+    oreSpeedMiningMultiplier: {
+        baseCount: 1,
+        currentScores: 1,
+        countScores: 0.01,
+        level: 1
+    },
+    oreDoubleLootPercentChance: {
+        baseCount: 0,
+        currentScores: 0,
+        countScores: 3,
+        level: 1
+    },
+    treeSpeedMiningMultiplier: {
+        baseCount: 1,
+        currentScores: 1,
+        countScores: 0.01,
+        level: 1
+    },
+    treeDoubleLootPercentChance: {
+        baseCount: 0,
+        currentScores: 0,
+        countScores: 3,
+        level: 1
+    },
+    capacity: {
+        baseCount: 150,
+        currentScores: 150,
+        countScores: 20,
+        level: 1
+    },
 
-    blockingChancePercent: 3,
-    blockingMultiplier: 1.5,
-    dodgePercentChance: 3,
-    missPercentChance: 5,
-    movementSpeed: 0,
-    attackSpeed: 5,
-    baseHealth: 150,
-    maxHealthMultiplier: 1,
-    healthRegenerationMultiplier: 1, 
+    blockingChancePercent: {
+        baseCount: 3,
+        currentScores: 3,
+        countScores: 0.25,
+        level: 1
+    },
+    blockingMultiplier: {
+        baseCount: 1.5,
+        currentScores: 1.5,
+        countScores: 0.25,
+        level: 1
+    },
+    dodgePercentChance: {
+        baseCount: 3,
+        currentScores: 3,
+        countScores: 0.1,
+        level: 1
+    },
+    missPercentChance: {
+        baseCount: 5,
+        currentScores: 5,
+        countScores: 0.1,
+        level: 1
+    },
+    movementSpeed: {
+        baseCount: 0,
+        currentScores: 0,
+        countScores: 1,
+        level: 1
+    },
+    attackSpeed: {
+        baseCount: 0,
+        currentScores: 0,
+        countScores: 0.1,
+        level: 1
+    },
+    baseHealth: {
+        baseCount: 150,
+        currentScores: 150,
+        countScores: 1,
+        level: 1
+    },
+    maxHealthMultiplier: {
+        baseCount: 1,
+        currentScores: 1,
+        countScores: 0.3,
+        level: 1
+    },
+    healthRegenerationMultiplier: {
+        baseCount: 1,
+        currentScores: 1,
+        countScores: 0.5,
+        level: 1
+    }, 
 
-    experienceMultiplier: 1,
-    craftSpeedMultiplier: 1,
-    craftDoubleLootPercentChance: 0,
-    buyPricePercent: 0,
-    sellPricePercent: 0
+    experienceMultiplier: {
+        baseCount: 1,
+        currentScores: 1,
+        countScores: 0.15,
+        level: 1
+    },
+    craftSpeedMultiplier: {
+        baseCount: 1,
+        currentScores: 1,
+        countScores: 0.01,
+        level: 1
+    },
+    craftDoubleLootPercentChance: {
+        baseCount: 0,
+        currentScores: 0,
+        countScores: 3,
+        level: 1
+    },
+    buyPricePercent: {
+        baseCount: 0,
+        currentScores: 0,
+        countScores: 0.5,
+        level: 1
+    },
+    sellPricePercent: {
+        baseCount: 0,
+        currentScores: 0,
+        countScores: 1,
+        level: 1
+    }
 }
 
 interface GameSlice {
@@ -47,8 +162,7 @@ interface GameSlice {
     currentAreaToMove: ILocationToMove;
     inventory: IItemInventory[];
     player: IPlayer;
-    playerCurrentStats: IPlayerBaseStats;
-    playerSkillsLevel: IPlayerBaseStats;
+    playerSkills: IPlayerBaseStats;
 }
 
 interface IUpdateAreaItems {
@@ -359,6 +473,7 @@ const initialState: GameSlice = {
         coins: 0,
         level: 1,
         currentXP: 0,
+        skillPoints: 0,
         actionText: {
             combatText: [
                 "Сжимает свой кулак и бьет #name прямо по лицу нанеся #damage урона."
@@ -372,34 +487,7 @@ const initialState: GameSlice = {
             successBlockingText: "Совершенное владение щитом оказывает эффект! #name получает всего #damage урона!"
         }
     },
-    playerCurrentStats: baseStats,
-    playerSkillsLevel: {
-        baseDamage: 1,
-        damageMultiplier: 1,
-        critDamageMultiplier: 1,
-        critChance: 1,
-        oreSpeedMiningMultiplier: 1,
-        oreDoubleLootPercentChance: 1,
-        treeSpeedMiningMultiplier: 1,
-        treeDoubleLootPercentChance: 1,
-        capacity: 1,
-
-        blockingChancePercent: 1,
-        blockingMultiplier: 1,
-        dodgePercentChance: 1,
-        missPercentChance: 1,
-        movementSpeed: 1,
-        attackSpeed: 1,
-        baseHealth: 150,
-        maxHealthMultiplier: 1,
-        healthRegenerationMultiplier: 1,
-
-        experienceMultiplier: 1,
-        craftSpeedMultiplier: 1,
-        craftDoubleLootPercentChance: 1,
-        buyPricePercent: 1,
-        sellPricePercent: 1
-    }
+    playerSkills: baseStats,
 }
 
 export const gameSlice = createSlice({
@@ -561,11 +649,28 @@ export const gameSlice = createSlice({
                 state.player.level += 1;
                 gainedXP -= needXP;
                 needXP = (state.player.level ** 2.7) + 10;
+                state.player.skillPoints += 5;
                 console.log(state.player.level, gainedXP)
             }
 
             state.player.currentXP = gainedXP;
 
+            localStorage.player = JSON.stringify(state.player);
+        },
+        addSkills(state, action: PayloadAction<ISkillUp[]>) {
+            const skills = action.payload;
+            skills.forEach(s => {
+                state.playerSkills[s.id]['level'] += s.countLevels;
+                state.playerSkills[s.id]['currentScores'] += s.countSkills;
+            });
+
+            localStorage.skills = JSON.stringify(state.playerSkills);
+        },
+        setSkills(state) {
+            state.playerSkills = JSON.parse(localStorage.skills);
+        },
+        decrementSkillPoints(state, action: PayloadAction<number>){
+            state.player.skillPoints -= action.payload;
             localStorage.player = JSON.stringify(state.player);
         }
         

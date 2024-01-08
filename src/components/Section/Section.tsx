@@ -6,19 +6,22 @@ interface ISection {
     $isBlocked?: boolean;
     $isBoxShadow?: boolean;
     $isBackgroundTransparent?: boolean;
+    $gap?: string;
 }
 
 function Section({
     children, 
     $isBlocked, 
     $isBoxShadow, 
-    $isBackgroundTransparent = true}: ISection) {
+    $isBackgroundTransparent = true,
+    $gap = '20px'}: ISection) {
 
     return ( 
         <Block 
             $isBlocked={$isBlocked}
             $isBoxShadow={$isBoxShadow}
-            $isBackgroundTransparent={$isBackgroundTransparent}>
+            $isBackgroundTransparent={$isBackgroundTransparent}
+            $gap={$gap}>
             {
                 children
             }
@@ -31,6 +34,7 @@ interface IBlockProps {
     $isBlocked?: boolean;
     $isBoxShadow?: boolean;
     $isBackgroundTransparent?: boolean;
+    $gap: string;
 }
 
 const Block = styled.div<IBlockProps>`
@@ -40,7 +44,7 @@ const Block = styled.div<IBlockProps>`
     display: flex;
     flex-direction: column;
     justify-content: baseline;
-    gap: 20px;
+    gap: ${ p => p.$gap };
     border-radius: 5px;
     padding: 20px;
     overflow-y: auto;

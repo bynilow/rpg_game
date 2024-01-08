@@ -6,7 +6,7 @@ import { IFullItem, IAreaItem, IFullItemWithCount } from "../../models/IAreaItem
 import { useAppSelector } from "../../hooks/redux";
 import { IItemInventory } from "../../models/IInventory";
 import { IAreaCurrentEnemy, IAreaEnemy, IEnemyDead } from "../../models/IEnemy";
-import { IPlayer } from "../../models/IPlayer";
+import { IPlayer, ISkillUp } from "../../models/IPlayer";
 
 interface IResult {
     results: any[]
@@ -221,6 +221,33 @@ export const setPlayer = (player: IPlayer) => async (dispatch: AppDispatch) => {
 export const addXP = (xp: number) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.addXP(xp));
+    }
+    catch{
+
+    }
+}
+
+export const addSkills = (skills: ISkillUp[]) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.addSkills(skills));
+    }
+    catch{
+
+    }
+}
+
+export const setSkillsFromStorage = () => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.setSkills());
+    }
+    catch{
+
+    }
+}
+
+export const decrementSkillPoints = (points: number) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.decrementSkillPoints(points));
     }
     catch{
 

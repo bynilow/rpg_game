@@ -4,12 +4,13 @@ import { useAppSelector } from '../../hooks/redux';
 import Avatar from '../Avatar/Avatar';
 
 interface IHeader{
-    openInventory: Function;
+    $openInventory: Function;
+    $openSkills: Function;
 }
 
-function Header({openInventory}: IHeader) {
+function Header({$openInventory, $openSkills}: IHeader) {
 
-    const {player, playerCurrentStats} = useAppSelector(state => state.userReducer);
+    const {player, playerSkills} = useAppSelector(state => state.userReducer);
 
     const needXP = (player.level ** 2.7) + 10;
 
@@ -21,7 +22,7 @@ function Header({openInventory}: IHeader) {
                     GAME
                 </GameName>
                     <ButtonsBlock>
-                        <LineBlock>
+                        <LineBlock onClick={() => $openSkills()}>
                             <LineText>
                                 УР: {player.level}
                             </LineText>
@@ -30,8 +31,8 @@ function Header({openInventory}: IHeader) {
                                 {
                                     needXP >= 1_000
                                         ? needXP.toString().length >= 1_000_000
-                                            ? `${(needXP/1000000).toFixed(1)}m / ${(player.currentXP/1000000).toFixed(1)}m`
-                                            : `${(needXP/1000).toFixed(1)}k / ${(player.currentXP/1000).toFixed(1)}k`
+                                            ? `${(needXP / 1000000).toFixed(1)}m / ${(player.currentXP / 1000000).toFixed(1)}m`
+                                            : `${(needXP / 1000).toFixed(1)}k / ${(player.currentXP / 1000).toFixed(1)}k`
                                         : `${needXP.toFixed(1)} / ${player.currentXP.toFixed(1)}`
                                 }
                             </LineText>
@@ -47,12 +48,12 @@ function Header({openInventory}: IHeader) {
                             </LineText>
                         </LineBlock> */}
                         <LineBlock>
-                            <HealthLine max={playerCurrentStats.baseHealth} value={player.health} />
+                            <HealthLine max={playerSkills.baseHealth.baseCount} value={player.health} />
                             <LineText>
                                 {
-                                    playerCurrentStats.baseHealth.toString().length >= 4
-                                        ? `${(playerCurrentStats.baseHealth/1000).toFixed(1)}k / ${(player.health/1000).toFixed(1)}k`
-                                        : `${playerCurrentStats.baseHealth} / ${player.health.toFixed(0)}`
+                                    playerSkills.baseHealth.baseCount.toString().length >= 4
+                                        ? `${(playerSkills.baseHealth.baseCount/1000).toFixed(1)}k / ${(player.health/1000).toFixed(1)}k`
+                                        : `${playerSkills.baseHealth.baseCount} / ${player.health.toFixed(0)}`
                                 }
                             </LineText>
                         </LineBlock>
@@ -62,7 +63,7 @@ function Header({openInventory}: IHeader) {
                         </CoinsText>
                         <Avatar $image={'icons/items/other/coin.png'} width={'35px'} height={'35px'} />
                     </Coins>
-                    <Button onClick={() => openInventory()}>
+                    <Button onClick={() => $openInventory()}>
                         Инвентарь
                     </Button>
                     <Button>
@@ -133,6 +134,11 @@ const LineBlock = styled.div`
     gap: 10px;
     justify-content: right;
     align-items: center;
+    cursor: pointer;
+
+    &:hover{
+        transform: scale(0.95);
+    }
 `
 
 const LineText = styled.p`

@@ -26,8 +26,8 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
         enemies,
         areaItems,
         player,
-        playerSkillsLevel,
-        playerCurrentStats } = useAppSelector(state => state.userReducer);
+        playerSkills } = useAppSelector(state => state.userReducer);
+
     const dispatch = useAppDispatch();
     const foundedEnemy = enemies.find(e => e.id === $enemyId)!;
 
@@ -41,8 +41,8 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
     const [enemyHealth, setEnemyHealth] = useState(enemy.maxHealth);
 
     const [playerData, setPlayerData] = useState(player);
-    const [playerHealth, setPlayerHealth] = useState(playerCurrentStats.baseHealth);
-    const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerCurrentStats.attackSpeed);
+    const [playerHealth, setPlayerHealth] = useState(playerSkills.baseHealth.baseCount);
+    const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerSkills.attackSpeed.baseCount);
 
 
     interface ICombatHistory {
@@ -101,7 +101,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
     }
 
     const onClickAttack = () => {
-        if (playerCurrentStats.attackSpeed === playerCurrentTimeAttack) {
+        if (playerSkills.attackSpeed.baseCount === playerCurrentTimeAttack) {
             attackSomeone(false);
 
             const playerTimerAttack = setInterval(() => {
@@ -110,8 +110,8 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
 
             setTimeout(() => {
                 clearInterval(playerTimerAttack);
-                setPlayerCurrentTimeAttack(playerCurrentStats.attackSpeed);
-            }, playerCurrentStats.attackSpeed * 1000);
+                setPlayerCurrentTimeAttack(playerSkills.attackSpeed.baseCount);
+            }, playerSkills.attackSpeed.baseCount * 1000);
         }
     }
 
@@ -135,35 +135,35 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
         let isCrit = getChance(
             enemyAttack
                 ? enemy.critChance
-                : playerCurrentStats.critChance);
+                : playerSkills.critChance.currentScores);
 
         let isMissed = getChance(
             enemyAttack
                 ? enemy.missChance
-                : playerCurrentStats.missPercentChance);
+                : playerSkills.missPercentChance.currentScores);
 
         let isOpponentDodged = getChance(
             enemyAttack
-                ? playerCurrentStats.dodgePercentChance
+                ? playerSkills.dodgePercentChance.currentScores
                 : enemy.dodgeChance);
 
         let isOpponentBlocked = getChance(
             enemyAttack
-                ? playerCurrentStats.blockingChancePercent
+                ? playerSkills.blockingChancePercent.currentScores
                 : enemy.blockingChance);
 
         let damage =
             enemyAttack
                 ? enemy.damage
-                : playerCurrentStats.baseDamage
+                : playerSkills.baseDamage.baseCount
 
         let critDamage =
             enemyAttack
                 ? Number((enemy.damage * enemy.critDamageMultiplier).toFixed(1))
-                : Number((playerCurrentStats.baseDamage * playerCurrentStats.critDamageMultiplier).toFixed(1))
+                : Number((playerSkills.baseDamage.currentScores * playerSkills.critDamageMultiplier.currentScores).toFixed(1))
 
         let blockedCritDamage = Number(
-            (damage / (enemyAttack ? playerCurrentStats.blockingMultiplier : enemy.blockingMultiplier))
+            (damage / (enemyAttack ? playerSkills.blockingMultiplier.currentScores : enemy.blockingMultiplier))
                 .toFixed(1));
 
         if (isCrit) {
@@ -382,13 +382,13 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
                                 }
                             </Title>
                             <BlockLine>
-                                <HealthLine max={playerCurrentStats.baseHealth} value={playerHealth} />
+                                <HealthLine max={playerSkills.baseHealth.currentScores} value={playerHealth} />
                                 <BlockText>
-                                    {playerHealth.toFixed(1)}/{playerCurrentStats.baseHealth}
+                                    {playerHealth.toFixed(1)}/{playerSkills.baseHealth.currentScores}
                                 </BlockText>
                             </BlockLine>
                             <BlockLine>
-                                <AttackLine max={playerCurrentStats.attackSpeed} value={playerCurrentTimeAttack} />
+                                <AttackLine max={playerSkills.attackSpeed.currentScores} value={playerCurrentTimeAttack} />
                                 <BlockText>
                                     {
                                         playerCurrentTimeAttack.toFixed(1)

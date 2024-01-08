@@ -10,6 +10,7 @@ interface IModal {
     $isCloseButton?: boolean;
     $isEnableAnims?: boolean;
     $closeButtonFunction?: Function;
+    $gap?: string;
     children: React.ReactNode;
 }
 
@@ -20,7 +21,8 @@ function Modal({
     $alignItems = '', 
     $isEnableAnims = true,
     $isCloseButton,
-    $closeButtonFunction }: IModal) {
+    $closeButtonFunction,
+    $gap = '20px' }: IModal) {
 
     const [isOpenAnim, setIsOpenAnim] = useState(true);
     const [isCloseAnim, setIsCloseAnim] = useState(false);
@@ -36,8 +38,6 @@ function Modal({
         }, 470)
     }
     
-    console.log(children?.toString())
-
     useEffect(() => {
 
     }, [])
@@ -54,7 +54,8 @@ function Modal({
                 $alignItems={$alignItems}
                 $isEnableAnims={$isEnableAnims}
                 $isOpenAnim={isOpenAnim}
-                $isCloseAnim={isCloseAnim} >
+                $isCloseAnim={isCloseAnim}
+                $gap={$gap} >
 
                 {
                     $isCloseButton
@@ -77,6 +78,7 @@ interface IModalBlockProps{
     $isEnableAnims: boolean;
     $isOpenAnim: boolean;
     $isCloseAnim: boolean;
+    $gap: string;
 }
 
 const ModalBlockAnim = keyframes`
@@ -94,6 +96,7 @@ const ModalBlock = styled.div<IModalBlockProps>`
     z-index: 9999;
     position: absolute;
     width: 70vw;
+    max-height: 80vh;
     height: 80vh;
     top: 0;
     bottom: 0;
@@ -106,10 +109,9 @@ const ModalBlock = styled.div<IModalBlockProps>`
     border-radius: 15px;
     display: flex;
     flex-direction: ${ p => p.$flexDirection };
-    justify-content: ${ p => p.$flexDirection === 'row' ? 'space-around' : null };
+    justify-content: ${ p => p.$flexDirection === 'row' ? 'space-around' : 'baseline' };
     align-items: ${ p => p.$alignItems };
-    gap: 20px;
-
+    gap: ${ p => p.$gap };
 
     animation: ${p => p.$isEnableAnims ? ModalBlockAnim : null} 0.5s ease;
     animation-direction: ${ 
