@@ -2,42 +2,51 @@ import styled, { keyframes } from 'styled-components'
 import { useAppDispatch } from '../../../hooks/redux';
 import { stopMineItem, stopMoveToLocation } from '../../../store/reducers/ActionCreators';
 import { IFullItem } from '../../../models/IAreaItem';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 
 
 interface IAreaItemProps {
-    item: IFullItem;
-    index: number;
-    miningId: string;
-    setIsMiningId: Function;
-    mineItem: Function;
-    clearIsMiningId: Function;
+    $item: IFullItem;
+    $index: number;
+    $miningId: string;
+    $setIsMiningId: Function;
+    $mineItem: Function;
+    $clearIsMiningId: Function;
+    $playerSpeedMining: number;
 }
 
-function Area({ item, mineItem, index, miningId, setIsMiningId, clearIsMiningId }: IAreaItemProps) {
+function Area({ 
+    $item, 
+    $mineItem, 
+    $index, 
+    $miningId, 
+    $setIsMiningId, 
+    $clearIsMiningId, 
+    $playerSpeedMining}: IAreaItemProps) {
 
     const dispatch = useAppDispatch();
 
     const [isMining, setIsMining] = useState(false);
     const isMiningRef = useRef(isMining);
     isMiningRef.current = isMining;
-    const [timeToMining, setTimeToMining] = useState(item.timeToMining);
+    const [baseTimeToMining, setBaseTimeToMining] = useState($item.timeToMining - $playerSpeedMining*-1);
+    const [timeToMining, setTimeToMining] = useState(baseTimeToMining);
 
     const onClickStartMining = (e:React.MouseEvent<HTMLDivElement>) => {
         if(!isMining){
             setIsMining(true);
-            setIsMiningId();
+            $setIsMiningId();
             startIntervalMine();
         }
     }
 
     const onClickStopMining = () => {
         dispatch(stopMineItem());
-        setTimeToMining(item.timeToMining);
+        setTimeToMining(baseTimeToMining);
         setIsMining(false);
-        clearIsMiningId();
+        $clearIsMiningId();
         
     }
 
@@ -49,41 +58,40 @@ function Area({ item, mineItem, index, miningId, setIsMiningId, clearIsMiningId 
         setTimeout(() => {
             clearInterval(interval);
             if(isMiningRef.current) {
-                clearIsMiningId();
-                mineItem();
+                $clearIsMiningId();
+                $mineItem();
             }
-        }, item.timeToMining*1000)
-        
+        }, baseTimeToMining*1000)
     }
-///(miningId !== item.idInArea && miningId !== '')
+
     return (
         <AreaItemBlock 
-            color={getItemBackground(item.rare)} 
-            $hoveredColor={getItemHoveredBackground(item.rare)}
-            $index={index} 
-            $isMiningOther={(miningId !== item.idInArea && miningId !== '')} >
+            color={getItemBackground($item.rare)} 
+            $hoveredColor={getItemHoveredBackground($item.rare)}
+            $$index={$index} 
+            $isMiningOther={($miningId !== $item.idInArea && $miningId !== '')} >
             <AreaItemBlockClickable onClick={e => onClickStartMining(e)} />
             <Avatar 
-                $image={item.avatar} 
+                $image={$item.avatar} 
                 width={'90px'} 
                 height={'90px'}
                 $isDoSomething={isMining}
                 $onClicked={() => onClickStopMining()} 
-                $isMiningOther={(miningId !== item.idInArea && miningId !== '')} />
+                $isMiningOther={($miningId !== $item.idInArea && $miningId !== '')} />
 
-            <Title>{item.title}</Title>
+            <Title>{$item.title}</Title>
             <Timer>
                 {
                     isMining
                         ? timeToMining.toFixed(1)
-                        : item.timeToMining
+                        : baseTimeToMining
                 }s
             </Timer>
             <TimerLine 
-                color={getRareColor(item.rare)}
-                $backgroundColor={getRareTimerBackgroundColor(item.rare)}
-                max={item.timeToMining} 
-                value={isMining ? timeToMining : item.timeToMining} />
+                color={getRareColor($item.rare)}
+                $backgroundColor={getRareTimerBackgroundColor($item.rare)}
+                max={baseTimeToMining} 
+                value={isMining ? timeToMining : baseTimeToMining} />
         </AreaItemBlock>
     );
 }
@@ -170,7 +178,7 @@ const AreaItemBlockAnim = keyframes`
 interface IAreaItemBlockProps{
     color: string;
     $hoveredColor: string;
-    $index: number;
+    $$index: number;
     $isMiningOther: boolean;
     
 }
@@ -194,7 +202,7 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
         p => p.$isMiningOther
             ? ` &::after{
                 position: absolute;
-                z-index: 99;
+                z-$index: 99;
                 border-radius: 5px;
                 top: 0;
                 left: 0;
@@ -208,7 +216,7 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
 
     transform: scale(0) rotate(-45deg);
     animation: ${AreaItemBlockAnim} .5s ease;
-    animation-delay: ${p => p.$index/3}s;
+    animation-delay: ${p => p.$$index/3}s;
     animation-fill-mode: forwards;
     
     transition: 1s;

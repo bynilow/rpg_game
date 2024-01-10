@@ -11,6 +11,8 @@ interface IModal {
     $isEnableAnims?: boolean;
     $closeButtonFunction?: Function;
     $gap?: string;
+    $size?: 'small' | 'medium' | 'large';
+    $justifyContent?: 'space-between' | 'space-around' | 'center' | 'baseline' | 'end';
     children: React.ReactNode;
 }
 
@@ -22,7 +24,9 @@ function Modal({
     $isEnableAnims = true,
     $isCloseButton,
     $closeButtonFunction,
-    $gap = '20px' }: IModal) {
+    $gap = '20px',
+    $justifyContent = 'space-between',
+    $size = 'medium' }: IModal) {
 
     const [isOpenAnim, setIsOpenAnim] = useState(true);
     const [isCloseAnim, setIsCloseAnim] = useState(false);
@@ -55,7 +59,9 @@ function Modal({
                 $isEnableAnims={$isEnableAnims}
                 $isOpenAnim={isOpenAnim}
                 $isCloseAnim={isCloseAnim}
-                $gap={$gap} >
+                $gap={$gap}
+                $size={$size}
+                $justifyContent={$justifyContent} >
 
                 {
                     $isCloseButton
@@ -79,6 +85,8 @@ interface IModalBlockProps{
     $isOpenAnim: boolean;
     $isCloseAnim: boolean;
     $gap: string;
+    $size: string;
+    $justifyContent: string;
 }
 
 const ModalBlockAnim = keyframes`
@@ -95,9 +103,24 @@ const ModalBlockAnim = keyframes`
 const ModalBlock = styled.div<IModalBlockProps>`
     z-index: 9999;
     position: absolute;
-    width: 70vw;
-    max-height: 80vh;
-    height: 80vh;
+    width: ${ p => 
+        p.$size === 'small'
+        ? '40vw'
+        : p.$size === 'medium'
+        ? '70vw'
+        : '80vw' };
+    max-height: ${ p => 
+        p.$size === 'small'
+        ? '60vh'
+        : p.$size === 'medium'
+        ? '80vh'
+        : '90vh' };
+    height: ${ p => 
+        p.$size === 'small'
+        ? '60vh'
+        : p.$size === 'medium'
+        ? '80vh'
+        : '90vh' };
     top: 0;
     bottom: 0;
     left: 0;
@@ -109,7 +132,7 @@ const ModalBlock = styled.div<IModalBlockProps>`
     border-radius: 15px;
     display: flex;
     flex-direction: ${ p => p.$flexDirection };
-    justify-content: ${ p => p.$flexDirection === 'row' ? 'space-around' : 'baseline' };
+    justify-content: ${ p => p.$justifyContent };
     align-items: ${ p => p.$alignItems };
     gap: ${ p => p.$gap };
 

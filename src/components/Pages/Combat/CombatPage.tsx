@@ -11,6 +11,7 @@ import { addItemsToInventory, addXP, setDeadEnemy, setPlayer } from '../../../st
 import { IFullItemWithCount } from '../../../models/IAreaItem';
 import { IPlayer } from '../../../models/IPlayer';
 import Section from '../../Section/Section';
+import { getChance, getRandomNumber } from '../../../functions/Random';
 
 interface ICombatPage {
     $enemyId: string;
@@ -41,8 +42,8 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
     const [enemyHealth, setEnemyHealth] = useState(enemy.maxHealth);
 
     const [playerData, setPlayerData] = useState(player);
-    const [playerHealth, setPlayerHealth] = useState(playerSkills.baseHealth.baseCount);
-    const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerSkills.attackSpeed.baseCount);
+    const [playerHealth, setPlayerHealth] = useState(playerSkills.baseHealth.baseCount * playerSkills.maxHealthMultiplier.currentScores);
+    const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerSkills.attackSpeed.currentScores);
 
 
     interface ICombatHistory {
@@ -65,13 +66,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
 
     const [enemyTime, setEnemyTime] = useState<number>(enemy.attackSpeed + 5);
 
-    const getChance = (chance: number) => {
-        const randomNumber = Math.round(Math.random() * 100);
-        if (randomNumber <= chance) return true
-        else return false
-    }
-
-    const getRandomNumber = (min: number, max: number) => Math.floor(Math.random() * max + min);
+    
 
     const enemyAttack = () => {
         setEnemyTime(enemy.attackSpeed);
@@ -101,7 +96,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
     }
 
     const onClickAttack = () => {
-        if (playerSkills.attackSpeed.baseCount === playerCurrentTimeAttack) {
+        if (playerSkills.attackSpeed.currentScores === playerCurrentTimeAttack) {
             attackSomeone(false);
 
             const playerTimerAttack = setInterval(() => {
@@ -110,13 +105,17 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
 
             setTimeout(() => {
                 clearInterval(playerTimerAttack);
-                setPlayerCurrentTimeAttack(playerSkills.attackSpeed.baseCount);
-            }, playerSkills.attackSpeed.baseCount * 1000);
+                setPlayerCurrentTimeAttack(playerSkills.attackSpeed.currentScores);
+            }, playerSkills.attackSpeed.currentScores * 1000);
         }
     }
 
     const attackSomeone = (enemyAttack: boolean) => {
 
+        const playerCurrentDamage = playerSkills.baseDamage.currentScores * playerSkills.damageMultiplier.currentScores;
+        console.log(playerSkills.baseDamage)
+        console.log(playerSkills.damageMultiplier)
+        console.log(playerSkills.baseDamage.currentScores * playerSkills.damageMultiplier.currentScores)
         const avatar =
             enemyAttack
                 ? enemy.avatar
@@ -155,12 +154,12 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
         let damage =
             enemyAttack
                 ? enemy.damage
-                : playerSkills.baseDamage.baseCount
+                : playerCurrentDamage
 
         let critDamage =
             enemyAttack
                 ? Number((enemy.damage * enemy.critDamageMultiplier).toFixed(1))
-                : Number((playerSkills.baseDamage.currentScores * playerSkills.critDamageMultiplier.currentScores).toFixed(1))
+                : Number((playerCurrentDamage * playerSkills.critDamageMultiplier.currentScores).toFixed(1))
 
         let blockedCritDamage = Number(
             (damage / (enemyAttack ? playerSkills.blockingMultiplier.currentScores : enemy.blockingMultiplier))
@@ -260,7 +259,16 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
 
     const winCombat = () => {
         const possibleItems = enemy.possibleLoot;
+        const experienceCount = Number((
+            enemy.baseCountXP 
+            * playerSkills.experienceMultiplier.currentScores 
+            + (enemy.level / 2)).toFixed(0));
+        const experienceItem: IFullItemWithCount = {
+            ...areaItems.find(i => i.id === 'experience')!,
+            count: experienceCount
+        }
         const items: IFullItemWithCount[] = [];
+        items.push(experienceItem);
         possibleItems.forEach(i => {
             if (getChance(i.dropChance)) {
                 const foundedItem = areaItems.find(ai => ai.id === i.id)!;
@@ -275,7 +283,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
             }
         })
         dispatch(addItemsToInventory(items));
-        dispatch(addXP(enemy.baseCountXP));
+        dispatch(addXP(experienceCount));
         dispatch(setDeadEnemy({ levelId: $currentLocationId, enemyIdInArea: $enemyIdInArea }));
 
         setReceivedItems(items);
@@ -340,7 +348,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
 
     }, [isWin])
 
-
+    const playerCurrentMaxHealth = playerSkills.baseHealth.currentScores * playerSkills.maxHealthMultiplier.currentScores;
 
     return (
         <>
@@ -382,9 +390,9 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
                                 }
                             </Title>
                             <BlockLine>
-                                <HealthLine max={playerSkills.baseHealth.currentScores} value={playerHealth} />
+                                <HealthLine max={playerCurrentMaxHealth} value={playerHealth} />
                                 <BlockText>
-                                    {playerHealth.toFixed(1)}/{playerSkills.baseHealth.currentScores}
+                                    {playerHealth.toFixed(1)}/{playerCurrentMaxHealth}
                                 </BlockText>
                             </BlockLine>
                             <BlockLine>

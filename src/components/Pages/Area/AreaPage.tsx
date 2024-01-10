@@ -15,6 +15,8 @@ import InfoModal from '../../Modals/InfoModal/InfoModal';
 import Header from '../../Header/Header';
 import Section from '../../Section/Section';
 import SkillsModal from '../../Modals/SkillsModal/SkillsModal';
+import { getRandomNumberForLoot } from '../../../functions/Random';
+import CraftModal from '../../Modals/CraftModal/CraftModal';
 
 
 interface IAreaPage {
@@ -24,7 +26,7 @@ interface IAreaPage {
 function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const dispatch = useAppDispatch();
-    const { areas, availablePaths, currentLocationId } = useAppSelector(state => state.userReducer);
+    const { areas, availablePaths, currentLocationId, playerSkills, inventory } = useAppSelector(state => state.userReducer);
 
     const currentLocation = areas[areas.findIndex((i: IArea) => i.id === currentLocationId)];
 
@@ -91,8 +93,14 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
     const [miningItemId, setMiningItemId] = useState<string>('');
 
     const onClickItem = (miningItem: IFullItem) => {
-        dispatch(mineItem({ ...miningItem, count: 1 }));
-        dispatch(addXP(miningItem.baseCountXP));
+        const chanceExtraLootTree = playerSkills['treeDoubleLootPercentChance']['currentScores'];
+        const chanceExtraLootOre = playerSkills['oreDoubleLootPercentChance']['currentScores'];
+        const countLoot = getRandomNumberForLoot( miningItem.type === 'ore' ? chanceExtraLootOre : chanceExtraLootTree );
+        console.log(countLoot)
+        dispatch(mineItem({ 
+            ...miningItem, 
+            count: countLoot }));
+        dispatch(addXP(miningItem.baseCountXP * playerSkills['experienceMultiplier']['currentScores']));
     }
 
     const getNameAreaById = (lvlId: string) => {
@@ -101,6 +109,8 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
     }
 
     const [isSkillsOpen, setIsSkillsOpen] = useState(false);
+
+    const [isCraftOpen, setIsCraftOpen] = useState(true);
 
     useEffect(() => {
         if (areas.length < 2) {
@@ -135,6 +145,11 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     return (
         <>
+            {
+                isCraftOpen
+                    ? <CraftModal closeModal={() => setIsCraftOpen(false)} />
+                    : null
+            }
             {
                 isInventoryOpen
                     ? <InventoryModal closeModal={() => closeInventoryModal()} />
@@ -178,16 +193,23 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                         <LevelsList>
                             {
                                 availablePaths.map((p, ind) => <AreaPath
-                                    key={p.pathId}
-                                    index={ind}
-                                    areaId={p.pathId}
-                                    setMoveAreaId={() => setMoveAreaId(p.pathId)}
-                                    clearMoveAreaId={() => setMoveAreaId('')}
-                                    moveAreaId={moveAreaId}
-                                    avatarUrl={getAreaFromId(p.pathId).avatar}
-                                    title={getNameAreaById(p.pathId) || ''}
-                                    timeToMove={p.time}
-                                    goLevel={() => onClickGoLevel(p)} />)
+                                    key={
+                                        p.pathId + playerSkills['movementSpeed']['currentScores'] 
+                                            + playerSkills['capacity']['currentScores']
+                                            + inventory.reduce((a,v) => a + v.item.weight * v.count ,0)}
+                                    $index={ind}
+                                    $areaId={p.pathId}
+                                    $setMoveAreaId={() => setMoveAreaId(p.pathId)}
+                                    $clearMoveAreaId={() => setMoveAreaId('')}
+                                    $moveAreaId={moveAreaId}
+                                    $avatarUrl={getAreaFromId(p.pathId).avatar}
+                                    $title={getNameAreaById(p.pathId) || ''}
+                                    $timeToMove={p.time}
+                                    $goLevel={() => onClickGoLevel(p)}
+                                    $playerInventoryWeight={
+                                        inventory.reduce((a,v) => a + v.item.weight * v.count ,0)}
+                                    $playerInventoryMaxWeight={playerSkills['capacity']['currentScores']}
+                                    $playerMovementSpeed={playerSkills['movementSpeed']['currentScores']} />)
                             }
                         </LevelsList>
                     </Section>
@@ -206,13 +228,18 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                             {
                                 currentLocation.currentAreaItems.map((i: IFullItem, ind) =>
                                     <AreaItem
-                                        key={i.idInArea + currentLocation.id}
-                                        index={ind}
-                                        setIsMiningId={() => setMiningItemId(i.idInArea)}
-                                        clearIsMiningId={() => setMiningItemId('')}
-                                        miningId={miningItemId}
-                                        item={i}
-                                        mineItem={() => onClickItem(i)} />)
+                                        key={i.idInArea + currentLocation.id + playerSkills[i.type === 'ore' 
+                                            ? 'oreSpeedMining'
+                                            : 'treeSpeedMining']['currentScores']}
+                                        $index={ind}
+                                        $setIsMiningId={() => setMiningItemId(i.idInArea)}
+                                        $clearIsMiningId={() => setMiningItemId('')}
+                                        $miningId={miningItemId}
+                                        $item={i}
+                                        $mineItem={() => onClickItem(i)}
+                                        $playerSpeedMining={playerSkills[i.type === 'ore' 
+                                            ? 'oreSpeedMining'
+                                            : 'treeSpeedMining']['currentScores']} />)
                             }
                         </LevelsList>
                     </Section>

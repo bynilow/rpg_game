@@ -5,43 +5,55 @@ import { useEffect, useRef, useState } from 'react';
 import Avatar from '../../Avatar/Avatar';
 
 interface IArea {
-    title: string;
-    timeToMove: number;
-    areaId: string;
-    goLevel: Function;
-    avatarUrl: string;
-    index: number;
-    moveAreaId: string;
-    setMoveAreaId: Function;
-    clearMoveAreaId: Function;
+    $title: string;
+    $timeToMove: number;
+    $areaId: string;
+    $goLevel: Function;
+    $avatarUrl: string;
+    $index: number;
+    $moveAreaId: string;
+    $setMoveAreaId: Function;
+    $clearMoveAreaId: Function;
+    $playerMovementSpeed: number;
+    $playerInventoryWeight: number;
+    $playerInventoryMaxWeight: number;
 }
 
 
 
 function AreaPath({ 
-    title, 
-    timeToMove, 
-    goLevel, 
-    avatarUrl = '', 
-    index, 
-    moveAreaId,
-    setMoveAreaId,
-    clearMoveAreaId,
-    areaId }: IArea) {
+    $title, 
+    $timeToMove, 
+    $goLevel, 
+    $avatarUrl = '', 
+    $index, 
+    $moveAreaId,
+    $setMoveAreaId,
+    $clearMoveAreaId,
+    $areaId,
+    $playerMovementSpeed,
+    $playerInventoryWeight,
+    $playerInventoryMaxWeight }: IArea) {
 
     const dispatch = useAppDispatch();
 
     const [isMoving, setIsMoving] = useState(false);
     const isMovingRef = useRef(isMoving);
     isMovingRef.current = isMoving;
-    const [currentTimeToMove, setCurrentTimeToMove] = useState(timeToMove);
+    const [overweight, setOverweight] = useState(
+        $playerInventoryMaxWeight >= $playerInventoryWeight
+            ? 0
+            : ($playerInventoryMaxWeight - $playerInventoryWeight) / 10 * -1);
+    const [baseTimeToMovement, setBaseTimeToMovement] = useState(($timeToMove - $playerMovementSpeed*-1) + overweight )
+    const [currentTimeToMove, setCurrentTimeToMove] = useState(baseTimeToMovement);
+    
 
     const onClickLevel = (e:React.MouseEvent<HTMLDivElement>) => {
         if(!isMoving){
             setIsMoving(true);
             startIntervalMove();
-            setCurrentTimeToMove(timeToMove);
-            setMoveAreaId();
+            setCurrentTimeToMove(baseTimeToMovement);
+            $setMoveAreaId();
         }
 
     }
@@ -49,7 +61,7 @@ function AreaPath({
     const onClickStopMove = () => {
         setIsMoving(false);
         dispatch(stopMoveToLocation());
-        clearMoveAreaId();
+        $clearMoveAreaId();
     }
 
     const startIntervalMove = () => {
@@ -60,33 +72,33 @@ function AreaPath({
         setTimeout(() => {
             clearInterval(interval);
             if(isMovingRef.current) {
-                clearMoveAreaId();
-                goLevel();
+                $clearMoveAreaId();
+                $goLevel();
             };
-        }, timeToMove*1000)
+        }, baseTimeToMovement*1000)
     }
     return (
         <Area
-            $index={index} 
-            $isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')}>
+            $$index={$index} 
+            $isMovingOther={($moveAreaId !== $areaId && $moveAreaId !== '')}>
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
             <Avatar 
-                $image={avatarUrl}
+                $image={$avatarUrl}
                 width={'90px'} 
                 height={'90px'}
                 $onClicked={() => onClickStopMove()} 
                 $isDoSomething={isMoving}
-                $isMovingOther={(moveAreaId !== areaId && moveAreaId !== '')} />
+                $isMovingOther={($moveAreaId !== $areaId && $moveAreaId !== '')} />
                 
-            <Name>{title}</Name>
-            <Timer>
+            <Name>{$title}</Name>
+            <Timer $isOverweight={overweight > 0}>
                 {
                     isMoving
                         ? currentTimeToMove.toFixed(1) + 's'
-                        : timeToMove + 's'
+                        : baseTimeToMovement.toFixed(1) + 's'
                 }
             </Timer>
-            <TimerLine max={timeToMove} value={isMoving ? currentTimeToMove : timeToMove} />
+            <TimerLine max={baseTimeToMovement} value={isMoving ? currentTimeToMove : baseTimeToMovement} />
         </Area>
     );
 }
@@ -99,9 +111,13 @@ const AreaBlockClickable = styled.div`
     left: 0;
 `
 
-const Timer = styled.p`
+interface ITimerProps{
+    $isOverweight: boolean;
+}
+
+const Timer = styled.p<ITimerProps>`
     position: absolute;
-    color: #A9A9A9;
+    color: ${p => p.$isOverweight ? '#bb3a3a' : '#A9A9A9'};
     bottom: 0;
     right: 0;
     margin: 10px;
@@ -135,7 +151,7 @@ const Name = styled.p`
 
 
 interface IAreaBlockProps {
-    $index: number;
+    $$index: number;
     $isMovingOther: boolean;
 }
 
@@ -163,7 +179,7 @@ const Area = styled.div<IAreaBlockProps>`
 
     transform: scale(0) rotate(-45deg);
     animation: ${AreaBlockAnim} 1s ease;
-    animation-delay: ${p => p.$index/3}s;
+    animation-delay: ${p => p.$$index/3}s;
     animation-fill-mode: forwards;
     transition: 0.1s;
 
@@ -171,7 +187,7 @@ const Area = styled.div<IAreaBlockProps>`
         p => p.$isMovingOther
             ? `&::after{
                 position: absolute;
-                z-index: 99;
+                z-$index: 99;
                 border-radius: 5px;
                 top: 0;
                 left: 0;

@@ -12,9 +12,9 @@ export interface IPlayerBaseStats{
     damageMultiplier: IPlayerStat;
     critDamageMultiplier: IPlayerStat;
     critChance: IPlayerStat;
-    oreSpeedMiningMultiplier: IPlayerStat;
+    oreSpeedMining: IPlayerStat;
     oreDoubleLootPercentChance: IPlayerStat;
-    treeSpeedMiningMultiplier: IPlayerStat;
+    treeSpeedMining: IPlayerStat;
     treeDoubleLootPercentChance: IPlayerStat;
     capacity: IPlayerStat;
 

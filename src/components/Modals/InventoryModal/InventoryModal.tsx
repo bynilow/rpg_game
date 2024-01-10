@@ -14,7 +14,7 @@ interface IInventoryModal {
 
 function InventoryModal({closeModal}:IInventoryModal) {
 
-    const {inventory} = useAppSelector(state => state.userReducer)
+    const {inventory, playerSkills} = useAppSelector(state => state.userReducer)
 
     const [inputText, setInputText] = useState('');
     const [selectedMaterial, setSelectedMaterial] = useState('all');
@@ -78,7 +78,14 @@ function InventoryModal({closeModal}:IInventoryModal) {
                 $flexDirection={'column'} 
                 $isCloseButton
                 $closeButtonFunction={() => closeModal()}>
-                <InventoryText>Инвентарь</InventoryText>
+                <InfoBlock>
+                    <InventoryText>Инвентарь</InventoryText>
+                    <CapacityText>
+                        {
+                            `${inventory.reduce((a, v) => a + v.item.weight * v.count, 0).toFixed(1)} / ${playerSkills['capacity']['currentScores']}kg`
+                        }
+                    </CapacityText>
+                </InfoBlock>
                 <Bar>
                     <InputName
                         type='text'
@@ -285,7 +292,15 @@ function InventoryModal({closeModal}:IInventoryModal) {
     );
 }
 
-///🠗  🠕
+const CapacityText = styled.p`
+    color: gray;
+`
+
+const InfoBlock = styled.div`
+    display: flex;
+    align-items: end;
+    gap: 20px;
+`
 
 const ReverseButton = styled.div`
     font-size: 16px;
@@ -427,6 +442,8 @@ const EmptyItem = styled.div`
 
 const ItemsList = styled.div`
     display: flex;
+    gap: 10px;
+    padding: 20px;
     height: 70%;
     justify-content: space-between;
     flex-wrap: wrap;

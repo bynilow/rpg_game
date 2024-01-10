@@ -21,10 +21,19 @@ export interface IFullItem {
     dateReceiving: string;
     cost: number;
     baseCountXP: number;
+    weight: number;
 }
 
 export interface IFullItemWithCount extends IFullItem{
     count: number;
+}
+
+export interface ICraftItem {
+    id: string;
+    itemsNeed: {
+        id: string;
+        count: number;
+    }[];
 }
 
 ///types - food, ore, tree

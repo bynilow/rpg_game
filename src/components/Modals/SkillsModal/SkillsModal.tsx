@@ -31,7 +31,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'damageMultiplier',
             title: 'Множитель урона',
-            description: '',
+            description: 'Навык, который увеличивает силу причиняемого урона персонажем. Чем выше уровень навыка, тем больше урона он может нанести своим врагам, что делает его более смертоносным и эффективным в сражениях.',
             branch: 'strength',
             type: 'multiplier',
             count: 0.15,
@@ -40,7 +40,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'critDamageMultiplier',
             title: 'Множитель критического урона',
-            description: '',
+            description: 'Навык повышает силу нанесения критического урона, который превышает обычный урон. Чем выше уровень навыка, тем больше урона наносится при критическом ударе.',
             branch: 'strength',
             type: 'multiplier',
             count: 0.2,
@@ -49,43 +49,43 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'critChance',
             title: 'Шанс критического урона',
-            description: '',
+            description: 'Навык определяет вероятность нанесения критического урона во время сражений. Чем выше уровень навыка, тем больше шансов на успешное нанесение критического удара.',
             branch: 'strength',
             type: 'percent',
             count: 0.5,
             selectedLevel: 0
         },
         {
-            id: 'oreSpeedMiningMultiplier',
-            title: 'Множитель скорости добычи руды',
-            description: '',
+            id: 'oreSpeedMining',
+            title: 'Скорость добычи руды',
+            description: 'Навык увеличивает скорость добычи руды, что позволяет персонажу быстрее собирать полезные ископаемые.',
             branch: 'strength',
-            type: 'multiplier',
+            type: 'score',
             count: 0.01,
             selectedLevel: 0
         },
         {
             id: 'oreDoubleLootPercentChance',
             title: 'Шанс дополнительного количества руды',
-            description: '',
+            description: 'Навык увеличивает шансы на получение дополнительных порций руды при её добыче. За каждые 100% навыка игрок гарантированно получает на 1 руду больше.',
             branch: 'strength',
             type: 'percent',
             count: 3,
             selectedLevel: 0
         },
         {
-            id: 'treeSpeedMiningMultiplier',
-            title: 'Множитель скорости добычи деревьев',
-            description: '',
+            id: 'treeSpeedMining',
+            title: 'Скорость добычи деревьев',
+            description: 'Навык позволяет персонажу быстрее добывать древесину.',
             branch: 'strength',
-            type: 'multiplier',
+            type: 'score',
             count: 0.01,
             selectedLevel: 0
         },
         {
             id: 'treeDoubleLootPercentChance',
             title: 'Шанс дополнительного количества дерева',
-            description: '',
+            description: 'Навык повышает вероятность получения дополнительных порций дерева при его добыче. За каждые 100% навыка игрок гарантированно получает на 1 дерево больше.',
             branch: 'strength',
             type: 'percent',
             count: 3,
@@ -94,7 +94,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'capacity',
             title: 'Грузоподъемность',
-            description: '',
+            description: 'Навык определяет максимально переносимый вес персонажа. Чем выше уровень навыка, тем больше веса персонаж сможет поднять и нести. Это позволяет ему собирать больше ресурсов, переносить более сильные оружия и броню, а также быть более мобильным.',
             branch: 'strength',
             type: 'score',
             count: 20,
@@ -103,7 +103,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'blockingChancePercent',
             title: 'Шанс блокирования',
-            description: '',
+            description: 'Навык, определяющий вероятность успешной блокировки атаки противника. Чем выше уровень этого навыка, тем больше вероятность успешной блокировки и снижения получаемого урона.',
             branch: 'agility',
             type: 'percent',
             count: 0.25,
@@ -112,7 +112,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'blockingMultiplier',
             title: 'Множитель блокирования',
-            description: '',
+            description: 'Навык увеличивает эффективность блокирования, позволяя блокировать большую долю урона от атак противника. Уровень этого навыка влияет на снижение получаемого урона при успешной блокировке.',
             branch: 'agility',
             type: 'multiplier',
             count: 0.05,
@@ -121,7 +121,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'dodgePercentChance',
             title: 'Шанс уклонения',
-            description: '',
+            description: 'Навык определяет вероятность успешного уклонения от атак противника. Чем выше уровень этого навыка, тем больше шанс уклониться от атаки и избежать получения урона.',
             branch: 'agility',
             type: 'percent',
             count: 0.1,
@@ -130,7 +130,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'missPercentChance',
             title: 'Шанс промаха',
-            description: '',
+            description: 'Навык, определяющий вероятность промаха при совершении атаки. Чем выше уровень этого навыка, тем меньше шанс промахнуться.',
             branch: 'agility',
             type: 'percent',
             count: 0.1,
@@ -139,7 +139,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'movementSpeed',
             title: 'Скорость передвижения',
-            description: '',
+            description: 'Навык влияет на скорость передвижения по локациям. Чем выше уровень этого навыка, тем быстрее персонаж может перемещаться.',
             branch: 'agility',
             type: 'score',
             count: 0.1,
@@ -148,7 +148,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'attackSpeed',
             title: 'Скорость атаки',
-            description: '',
+            description: 'Навык, определяющий скорость выполнения атак персонажа. Чем выше уровень этого навыка, тем быстрее персонаж может совершать свои атаки.',
             branch: 'agility',
             type: 'score',
             count: 0.1,
@@ -157,7 +157,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'maxHealthMultiplier',
             title: 'Множитель максимального количества ОЗ',
-            description: '',
+            description: 'Навык увеличивает максимальное количество очков здоровья персонажа.',
             branch: 'agility',
             type: 'multiplier',
             count: 0.3,
@@ -166,7 +166,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'healthRegenerationMultiplier',
             title: 'Множитель регенерации ОЗ',
-            description: '',
+            description: 'Навык, определяющий скорость восстановления очков здоровья персонажа. Чем выше уровень этого навыка, тем быстрее персонаж может восстанавливать свои ОЗ.',
             branch: 'agility',
             type: 'multiplier',
             count: 0.5,
@@ -175,7 +175,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'experienceMultiplier',
             title: 'Множитель получаемого опыта',
-            description: '',
+            description: 'Навык увеличивает количество опыта, получаемого за все действия. Благодаря данному навыку, игрок сможет быстрее повышать свой уровень и развивать свои навыки и способности.',
             branch: 'intelligence',
             type: 'multiplier',
             count: 0.15,
@@ -184,7 +184,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'craftSpeedMultiplier',
             title: 'Множитель скорости создания предметов',
-            description: '',
+            description: 'Навык позволяет игроку ускорить процесс создания предметов. Скорость создания предметов становится более эффективной.',
             branch: 'intelligence',
             type: 'multiplier',
             count: 0.01,
@@ -193,7 +193,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'craftDoubleLootPercentChance',
             title: 'Шанс дополнительного количества предметов',
-            description: '',
+            description: 'Навык повышает вероятность получения дополнительного предмета при его крафте. За каждые 100% навыка игрок гарантированно получает на 1 предмет больше.',
             branch: 'intelligence',
             type: 'percent',
             count: 3,
@@ -202,7 +202,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'buyPricePercent',
             title: 'Скидка при покупке',
-            description: '',
+            description: 'Навык позволяет игроку получать существенные скидки на покупку предметов у торговцев. Благодаря этому навыку, игрок может экономить игровую валюту и приобретать нужные предметы по более низким ценам.',
             branch: 'intelligence',
             type: 'percent',
             count: 0.5,
@@ -211,7 +211,7 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
         {
             id: 'sellPricePercent',
             title: 'Наценка при продаже',
-            description: '',
+            description: 'Навык повышает ценность продаваемых предметов. Благодаря наценке, игрок может получать больше игровой валюты за проданные вещи или ресурсы, что способствует быстрому накоплению богатства.',
             branch: 'intelligence',
             type: 'percent',
             count: 1,
@@ -265,19 +265,41 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
     }
 
     const changeTexts = () => {
-        setNextSkillLevelText(
-            infoSkill.type === 'multiplier'
-                ? `Множитель: x${playerSkills[infoSkill.id]['currentScores']} `
-                : infoSkill.type === 'percent'
-                    ? `Процент: ${playerSkills[infoSkill.id]['currentScores']}% `
-                    : `Очки: ${playerSkills[infoSkill.id]['currentScores']}  `);
+        const currentScores = playerSkills[infoSkill.id]['currentScores'];
+        const baseScore = playerSkills[infoSkill.id]['countScores'];
 
-        setNextSkillLevelSpanText(
-            infoSkill.type === 'multiplier'
-                ? `+ x${(infoSkill.count * (infoSkill.selectedLevel)).toFixed(2)} = x${(playerSkills[infoSkill.id]['currentScores'] + infoSkill.count * (infoSkill.selectedLevel)).toFixed(2)}`
-                : infoSkill.type === 'percent'
-                    ? `+ ${(infoSkill.count * (infoSkill.selectedLevel)).toFixed(2)}% = ${(playerSkills[infoSkill.id]['currentScores'] + infoSkill.count * (infoSkill.selectedLevel)).toFixed(2)}%`
-                    : `+ ${(infoSkill.count * (infoSkill.selectedLevel)).toFixed(2)} = ${(playerSkills[infoSkill.id]['currentScores'] + infoSkill.count * (infoSkill.selectedLevel)).toFixed(2)}`);
+        switch (infoSkill.type) {
+            case 'multiplier':
+                setNextSkillLevelText(`Множитель: x${currentScores}`);
+                setNextSkillLevelSpanText(` + x${(baseScore * (infoSkill.selectedLevel)).toFixed(2)} = x${(currentScores + baseScore * (infoSkill.selectedLevel)).toFixed(2)}`);
+                break;
+            case 'percent':
+                setNextSkillLevelText(`Процент: ${currentScores}%`);
+                if(infoSkill.id === 'missPercentChance'){
+                    setNextSkillLevelSpanText(` - ${(baseScore * (infoSkill.selectedLevel)).toFixed(2)}% = ${(currentScores - baseScore * (infoSkill.selectedLevel)).toFixed(2)}%`)
+                }
+                else{
+                    setNextSkillLevelSpanText(` + ${(baseScore * (infoSkill.selectedLevel)).toFixed(2)}% = ${(currentScores + baseScore * (infoSkill.selectedLevel)).toFixed(2)}%`);
+                }
+                break;
+            case 'score':
+                if(infoSkill.id === 'attackSpeed' ||
+                infoSkill.id === 'movementSpeed' || 
+                infoSkill.id === 'oreSpeedMining' || 
+                infoSkill.id === 'treeSpeedMining'){
+                    setNextSkillLevelText(`Скорость: ${currentScores}s`);
+                    setNextSkillLevelSpanText(` - ${(baseScore * (infoSkill.selectedLevel)).toFixed(2)}s = ${(currentScores - baseScore * (infoSkill.selectedLevel)).toFixed(2)}s`)
+                }
+                else if(infoSkill.id === 'capacity'){
+                    setNextSkillLevelText(`Вес: ${currentScores}`);
+                    setNextSkillLevelSpanText(` + ${(baseScore * (infoSkill.selectedLevel)).toFixed(2)} = ${(currentScores + baseScore * (infoSkill.selectedLevel)).toFixed(2)}`);
+                }
+                else{
+                    setNextSkillLevelText(`Очки: ${currentScores}`);
+                    setNextSkillLevelSpanText(` + ${(baseScore * (infoSkill.selectedLevel)).toFixed(2)} = ${(currentScores + baseScore * (infoSkill.selectedLevel)).toFixed(2)}`);
+                }
+                break;
+        }               
     }
 
     useEffect(() => {
@@ -291,7 +313,8 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
             $flexDirection='column'
             $isCloseButton
             $closeButtonFunction={() => $closeModal()}
-            $gap='10px' >
+            $gap='10px'
+            $justifyContent='baseline' >
             <SkillsTitle>
                 Навыки
             </SkillsTitle>

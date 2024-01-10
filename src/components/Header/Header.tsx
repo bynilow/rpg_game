@@ -23,6 +23,13 @@ function Header({$openInventory, $openSkills}: IHeader) {
                 </GameName>
                     <ButtonsBlock>
                         <LineBlock onClick={() => $openSkills()}>
+                            {
+                                player.skillPoints
+                                    ? <PointsText>
+                                        +{ player.skillPoints }
+                                    </PointsText>
+                                    : null
+                            }
                             <LineText>
                                 УР: {player.level}
                             </LineText>
@@ -79,6 +86,18 @@ function Header({$openInventory, $openSkills}: IHeader) {
      );
 }
 
+const PointsText = styled.p`
+    position: absolute;
+    z-index: 9;
+    bottom: -50%;
+    left:-10%;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 0 5px black;
+
+`
+
 const LevelLine = styled.progress`
     width: 50px;
     height: 50%;
@@ -124,6 +143,7 @@ const EnergyLine = styled.progress`
 `
 
 const LineBlock = styled.div`
+    position: relative;
     height: 100%;
     padding: 0 10px;
     transition: .1s;

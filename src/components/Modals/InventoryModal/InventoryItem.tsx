@@ -5,7 +5,7 @@ import Avatar from '../../Avatar/Avatar';
 
 function InventoryItem({item, count}:IItemInventory) {
     return ( 
-        <Item rare={item.rare}>
+        <Item $rare={item.rare}>
             <ActionsModal>
                 <ButtonAction isDisabled={false}>
                     Информация
@@ -26,11 +26,19 @@ function InventoryItem({item, count}:IItemInventory) {
                     item.title
                 }
             </Title>
-            <Cost>
-                {
-                    item.cost
-                }$
-            </Cost>
+            <AboutItemBlock>
+                <Weight>
+                    kg
+                    {
+                        ' '+item.weight
+                    }
+                </Weight>
+                <Cost>
+                    ${
+                        item.cost
+                    }
+                </Cost>
+            </AboutItemBlock>
             <Count>
                 x{ count }
             </Count>
@@ -38,15 +46,27 @@ function InventoryItem({item, count}:IItemInventory) {
      );
 }
 
+const AboutItemBlock = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 5px;
+`
+
+interface IWeightImgProps {
+    $image: string;
+}
+
+const Weight = styled.p`
+    color: gray;
+    font-size: 14px;
+`
+
 const Cost = styled.p`
     color: black;
     background-color: #dddddd;
     border-radius: 5px;
-    position: absolute;
     padding: 5px;
-    margin: 5px;
-    bottom: 0;
-    left: 0;
 `
 
 interface ButtonProps{
@@ -104,28 +124,32 @@ const Title = styled.p`
 `
 
 interface IItemProps {
-    rare: string;
+    $rare: string;
 }
 
 const Item = styled.div<IItemProps>`
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    justify-content: space-between;
     z-index: 1;
     box-shadow: 0 0 5px #0000005a;
     background: white;
     border-radius: 5px;
     width: 150px;
     height: 250px;
-    margin: 20px;
+    padding: 5px 0;
     transition: 0.3s;
 
     background: ${props => 
-        props.rare === 'common' 
+        props.$rare === 'common' 
         ? "linear-gradient(135deg, white 80%, #a4a4ab 80%);"
-        : props.rare === 'uncommon'
+        : props.$rare === 'uncommon'
         ? "linear-gradient(135deg, white 80%, #59c87f 80%);"
-        : props.rare === 'rare'
+        : props.$rare === 'rare'
         ? "linear-gradient(135deg, white 80%, #4d69cd 80%);"
-        : props.rare === 'mythical'
+        : props.$rare === 'mythical'
         ? "linear-gradient(135deg, white 80%, #d42be6 80%);"
         : "linear-gradient(135deg, white 80%, #caab05 80%);"
     };

@@ -7,6 +7,7 @@ import { useAppSelector } from "../../hooks/redux";
 import { IItemInventory } from "../../models/IInventory";
 import { IAreaCurrentEnemy, IAreaEnemy, IEnemyDead } from "../../models/IEnemy";
 import { IPlayer, ISkillUp } from "../../models/IPlayer";
+import { getChance, getRandomNumber } from "../../functions/Random";
 
 interface IResult {
     results: any[]
@@ -21,14 +22,6 @@ interface IUpdateAreaItems {
 interface IUpdateAreaEnemies {
     enemies: IAreaEnemy[];
     levelId: string;
-}
-
-const getRandomNumber = (min:number, max:number) => Math.floor(Math.random() * max + min);
-
-const getChance = (chance: number) => {
-    const randomNumber = Math.round(Math.random()*100); 
-    if (randomNumber <= chance) return true
-    else return false
 }
 
 export const goLevel = (levelId:string) => async (dispatch: AppDispatch) => {
@@ -183,6 +176,7 @@ export const addItemsToInventory = (items:IFullItemWithCount[]) => async (dispat
 export const setInventoryFromStorage = () => async (dispatch: AppDispatch) => {
     try{
         const items = JSON.parse(localStorage.inventory);
+        dispatch(gameSlice.actions.setInventory(items));
         
     }
     catch{

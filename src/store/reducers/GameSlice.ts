@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IArea, IAviablePath, ILocationToMove, IPath } from "../../models/IArea";
-import { IFullItem, IFullItemWithCount } from "../../models/IAreaItem";
+import { ICraftItem, IFullItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { IAreaCurrentEnemy, IEnemy, IEnemyDead } from "../../models/IEnemy";
 import { IItemInventory } from "../../models/IInventory";
 import { IPlayer, IPlayerBaseStats, ISkillUp } from "../../models/IPlayer";
@@ -9,15 +9,15 @@ import { IPlayer, IPlayerBaseStats, ISkillUp } from "../../models/IPlayer";
 
 const baseStats: IPlayerBaseStats = {
     baseDamage: {
-        baseCount: 200,
+        baseCount: 50,
+        currentScores: 50,
         countScores: 1,
-        currentScores: 1,
         level: 1
     },
     damageMultiplier: {
         baseCount: 1,
-        countScores: 0.15,
         currentScores: 1,
+        countScores: 0.15,
         level: 1
     },
     critDamageMultiplier: {
@@ -32,10 +32,10 @@ const baseStats: IPlayerBaseStats = {
         countScores: 0.5,
         level: 1
     },
-    oreSpeedMiningMultiplier: {
-        baseCount: 1,
-        currentScores: 1,
-        countScores: 0.01,
+    oreSpeedMining: {
+        baseCount: 0,
+        currentScores: 0,
+        countScores: 0.1,
         level: 1
     },
     oreDoubleLootPercentChance: {
@@ -44,10 +44,10 @@ const baseStats: IPlayerBaseStats = {
         countScores: 3,
         level: 1
     },
-    treeSpeedMiningMultiplier: {
-        baseCount: 1,
-        currentScores: 1,
-        countScores: 0.01,
+    treeSpeedMining: {
+        baseCount: 0,
+        currentScores: 0,
+        countScores: 0.1,
         level: 1
     },
     treeDoubleLootPercentChance: {
@@ -90,12 +90,12 @@ const baseStats: IPlayerBaseStats = {
     movementSpeed: {
         baseCount: 0,
         currentScores: 0,
-        countScores: 1,
+        countScores: 0.1,
         level: 1
     },
     attackSpeed: {
-        baseCount: 0,
-        currentScores: 0,
+        baseCount: 6,
+        currentScores: 6,
         countScores: 0.1,
         level: 1
     },
@@ -150,6 +150,54 @@ const baseStats: IPlayerBaseStats = {
     }
 }
 
+const craftItems: ICraftItem[] = [
+    {
+        id: 'birch_plank',
+        itemsNeed: [
+            {
+                id: 'birch_tree',
+                count: 1
+            }
+        ]
+    },
+    {
+        id: 'oak_plank',
+        itemsNeed: [
+            {
+                id: 'oak_tree',
+                count: 1
+            }
+        ]
+    },
+    {
+        id: 'willow_plank',
+        itemsNeed: [
+            {
+                id: 'willow_tree',
+                count: 1
+            }
+        ]
+    },
+    {
+        id: 'cedar_plank',
+        itemsNeed: [
+            {
+                id: 'cedar_tree',
+                count: 1
+            }
+        ]
+    },
+    {
+        id: 'teak_plank',
+        itemsNeed: [
+            {
+                id: 'teak_tree',
+                count: 1
+            }
+        ]
+    },
+]
+
 interface GameSlice {
     currentLocationId: string;
     availablePaths: IAviablePath[];
@@ -157,6 +205,7 @@ interface GameSlice {
     areas: IArea[];
     enemies: IEnemy[];
     areaItems: IFullItem[];
+    craftItems: ICraftItem[];
     currentAreaItem: IFullItem | {};
     currentAreaItemMiningTime: number;
     currentAreaToMove: ILocationToMove;
@@ -300,7 +349,22 @@ const initialState: GameSlice = {
             "rare": "common",
             "dateReceiving": "",
             "cost": 1,
-            "baseCountXP": 1
+            "baseCountXP": 1,
+            "weight": 0
+        },
+        {
+            "id": "experience",
+            "idInArea": "",
+            "title": "Опыт",
+            "avatar": "icons/items/other/experience.png",
+            "description": "Опыт.",
+            "timeToMining": 0,
+            "type": "other",
+            "rare": "common",
+            "dateReceiving": "",
+            "cost": 1,
+            "baseCountXP": 1,
+            "weight": 0
         },
         {
             "id": "birch_tree",
@@ -313,7 +377,8 @@ const initialState: GameSlice = {
             "rare": "common",
             "dateReceiving": "",
             "cost": 3,
-            "baseCountXP": 3
+            "baseCountXP": 3,
+            "weight": 2
         },
         {
             "id": "oak_tree",
@@ -326,7 +391,8 @@ const initialState: GameSlice = {
             "rare": "uncommon",
             "dateReceiving": "",
             "cost": 7,
-            "baseCountXP": 7.5
+            "baseCountXP": 7.5,
+            "weight": 3.5
         },
         {
             "id": "willow_tree",
@@ -339,7 +405,8 @@ const initialState: GameSlice = {
             "rare": "rare",
             "dateReceiving": "",
             "cost": 18,
-            "baseCountXP": 18.7
+            "baseCountXP": 18.7,
+            "weight": 5
         },
         {
             "id": "cedar_tree",
@@ -352,7 +419,8 @@ const initialState: GameSlice = {
             "rare": "mythical",
             "dateReceiving": "",
             "cost": 35,
-            "baseCountXP": 46.8
+            "baseCountXP": 46.8,
+            "weight": 6.5
         },
         {
             "id": "teak_tree",
@@ -365,7 +433,8 @@ const initialState: GameSlice = {
             "rare": "legendary",
             "dateReceiving": "",
             "cost": 70,
-            "baseCountXP": 117.1
+            "baseCountXP": 117.1,
+            "weight": 8
         },
         {
             "id": "iron_ore",
@@ -378,7 +447,8 @@ const initialState: GameSlice = {
             "rare": "common",
             "dateReceiving": "",
             "cost": 5,
-            "baseCountXP": 5
+            "baseCountXP": 5,
+            "weight": 3.5
         },
         {
             "id": "tungsten_ore",
@@ -391,7 +461,8 @@ const initialState: GameSlice = {
             "rare": "uncommon",
             "dateReceiving": "",
             "cost": 13,
-            "baseCountXP": 11.5
+            "baseCountXP": 11.5,
+            "weight": 5
         },
         {
             "id": "platinum_ore",
@@ -404,7 +475,8 @@ const initialState: GameSlice = {
             "rare": "rare",
             "dateReceiving": "",
             "cost": 34,
-            "baseCountXP": 26.4
+            "baseCountXP": 26.4,
+            "weight": 6.5
         },
         {
             "id": "titanium_ore",
@@ -417,7 +489,8 @@ const initialState: GameSlice = {
             "rare": "mythical",
             "dateReceiving": "",
             "cost": 65,
-            "baseCountXP": 60.8
+            "baseCountXP": 60.8,
+            "weight": 8
         },
         {
             "id": "adamantite_ore",
@@ -430,7 +503,8 @@ const initialState: GameSlice = {
             "rare": "legendary",
             "dateReceiving": "",
             "cost": 93,
-            "baseCountXP": 139.9
+            "baseCountXP": 139.9,
+            "weight": 9.5
         },
         {
             "id": "wool",
@@ -443,7 +517,8 @@ const initialState: GameSlice = {
             "rare": "common",
             "dateReceiving": "",
             "cost": 8,
-            "baseCountXP": 1
+            "baseCountXP": 1,
+            "weight": 1.5
         },
         {
             "id": "bottle",
@@ -456,9 +531,81 @@ const initialState: GameSlice = {
             "rare": "common",
             "dateReceiving": "",
             "cost": 3,
-            "baseCountXP": 1
+            "baseCountXP": 1,
+            "weight": 0.5
+        },
+        {
+            "id": "birch_plank",
+            "idInArea": "",
+            "title": "Доска из Березы",
+            "avatar": "icons/items/materials/wood_plank.png",
+            "description": "",
+            "timeToMining": 6.0,
+            "type": "material",
+            "rare": "common",
+            "dateReceiving": "",
+            "cost": 5,
+            "baseCountXP": 2,
+            "weight": 1
+        },
+        {
+            "id": "oak_plank",
+            "idInArea": "",
+            "title": "Доска из Дуба",
+            "avatar": "icons/items/materials/wood_plank.png",
+            "description": "",
+            "timeToMining": 10.0,
+            "type": "material",
+            "rare": "uncommon",
+            "dateReceiving": "",
+            "cost": 9,
+            "baseCountXP": 3.5,
+            "weight": 1.7
+        },
+        {
+            "id": "willow_plank",
+            "idInArea": "",
+            "title": "Доска из Ивы",
+            "avatar": "icons/items/materials/wood_plank.png",
+            "description": "",
+            "timeToMining": 16.0,
+            "type": "material",
+            "rare": "rare",
+            "dateReceiving": "",
+            "cost": 20,
+            "baseCountXP": 9.3,
+            "weight": 2.5
+        },
+        {
+            "id": "cedar_plank",
+            "idInArea": "",
+            "title": "Доска из Кедра",
+            "avatar": "icons/items/materials/wood_plank.png",
+            "description": "",
+            "timeToMining": 20.0,
+            "type": "material",
+            "rare": "mythical",
+            "dateReceiving": "",
+            "cost": 39,
+            "baseCountXP": 23.4,
+            "weight": 3.2
+        },
+        {
+            "id": "teak_plank",
+            "idInArea": "",
+            "title": "Доска из Тика",
+            "avatar": "icons/items/materials/wood_plank.png",
+            "description": "",
+            "timeToMining": 26.0,
+            "type": "material",
+            "rare": "legendary",
+            "dateReceiving": "",
+            "cost": 80,
+            "baseCountXP": 55,
+            "weight": 4
         }
     ],
+    craftItems: craftItems,
     currentAreaToMove: {
         time: 0,
         locationId: 'south_beach'
@@ -473,7 +620,7 @@ const initialState: GameSlice = {
         coins: 0,
         level: 1,
         currentXP: 0,
-        skillPoints: 0,
+        skillPoints: 20,
         actionText: {
             combatText: [
                 "Сжимает свой кулак и бьет #name прямо по лицу нанеся #damage урона."
@@ -582,14 +729,16 @@ export const gameSlice = createSlice({
         addItemToInventory(state, action: PayloadAction<IFullItemWithCount>){
             const foundedItemIndex = state.inventory.findIndex(i => i.item.id === action.payload.id);
             const date = new Date().toISOString();
+            const count = action.payload.count;
+
             if(foundedItemIndex !== -1){
-                state.inventory[foundedItemIndex].count += 1;
+                state.inventory[foundedItemIndex].count += count;
                 state.inventory[foundedItemIndex].item.dateReceiving = date;
             }
             else{
                 state.inventory.push({
                     item: {...action.payload, dateReceiving: date},
-                    count: 1
+                    count
                 })
             }
             localStorage.inventory = JSON.stringify(state.inventory);
@@ -608,7 +757,7 @@ export const gameSlice = createSlice({
                         state.inventory[foundedItemIndex].count += i.count;
                         state.inventory[foundedItemIndex].item.dateReceiving = date;
                     }
-                    else {
+                    else if(i.id !== 'experience') { 
                         state.inventory.push({
                             item: { ...i, dateReceiving: date },
                             count: i.count
@@ -660,8 +809,18 @@ export const gameSlice = createSlice({
         addSkills(state, action: PayloadAction<ISkillUp[]>) {
             const skills = action.payload;
             skills.forEach(s => {
-                state.playerSkills[s.id]['level'] += s.countLevels;
-                state.playerSkills[s.id]['currentScores'] += s.countSkills;
+                if(s.id === 'missPercentChance' ||
+                    s.id === 'attackSpeed' ||
+                    s.id === 'movementSpeed' ||
+                    s.id === 'treeSpeedMining' ||
+                    s.id === 'oreSpeedMining'){
+                    state.playerSkills[s.id]['level'] += s.countLevels;
+                    state.playerSkills[s.id]['currentScores'] -= s.countSkills;
+                }
+                else{
+                    state.playerSkills[s.id]['level'] += s.countLevels;
+                    state.playerSkills[s.id]['currentScores'] += s.countSkills;
+                }
             });
 
             localStorage.skills = JSON.stringify(state.playerSkills);
