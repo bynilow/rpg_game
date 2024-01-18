@@ -1,3 +1,5 @@
+import { IArmor, ITool, IWeapon } from "./IEquipment";
+
 export interface IAreaItem {
     id: string;
     countMin: number;
@@ -18,10 +20,15 @@ export interface IFullItem {
     description: string;
     timeToMining: number;
     type: string;
+    subType?: string;
     dateReceiving: string;
     cost: number;
     baseCountXP: number;
     weight: number;
+    itemsToCraft?: ICraftItem[]; 
+    armorStats?: IArmor;
+    toolStats?: ITool;
+    weaponStats?: IWeapon;
 }
 
 export interface IFullItemWithCount extends IFullItem{
@@ -30,10 +37,7 @@ export interface IFullItemWithCount extends IFullItem{
 
 export interface ICraftItem {
     id: string;
-    itemsNeed: {
-        id: string;
-        count: number;
-    }[];
+    count: number;
 }
 
 ///types - food, ore, tree

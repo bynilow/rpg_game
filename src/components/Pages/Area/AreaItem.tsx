@@ -1,8 +1,7 @@
-import styled, { keyframes } from 'styled-components'
-import { useAppDispatch } from '../../../hooks/redux';
-import { stopMineItem, stopMoveToLocation } from '../../../store/reducers/ActionCreators';
-import { IFullItem } from '../../../models/IAreaItem';
 import { useEffect, useRef, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { useAppDispatch } from '../../../hooks/redux';
+import { IFullItem } from '../../../models/IAreaItem';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 
@@ -31,7 +30,7 @@ function Area({
     const [isMining, setIsMining] = useState(false);
     const isMiningRef = useRef(isMining);
     isMiningRef.current = isMining;
-    const [baseTimeToMining, setBaseTimeToMining] = useState($item.timeToMining - $playerSpeedMining*-1);
+    const [baseTimeToMining, setBaseTimeToMining] = useState(Number(($item.timeToMining + $playerSpeedMining).toFixed(2)));
     const [timeToMining, setTimeToMining] = useState(baseTimeToMining);
 
     const onClickStartMining = (e:React.MouseEvent<HTMLDivElement>) => {
@@ -43,11 +42,14 @@ function Area({
     }
 
     const onClickStopMining = () => {
-        dispatch(stopMineItem());
         setTimeToMining(baseTimeToMining);
         setIsMining(false);
         $clearIsMiningId();
-        
+
+        var highestTimeoutId = setTimeout(";");
+        for (var i = 0; i < highestTimeoutId; i++) {
+            clearTimeout(i);
+        }
     }
 
     const startIntervalMine = () => {
@@ -63,6 +65,10 @@ function Area({
             }
         }, baseTimeToMining*1000)
     }
+
+    useEffect(() => {
+        setBaseTimeToMining(baseTimeToMining < 0 ? 0.1 : baseTimeToMining)
+    })
 
     return (
         <AreaItemBlock 

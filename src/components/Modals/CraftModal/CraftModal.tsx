@@ -1,93 +1,149 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAppSelector } from '../../../hooks/redux';
-import { rareList } from '../../../models/IAreaItem';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { IFullItem, IFullItemWithCount, rareList } from '../../../models/IAreaItem';
+import { addItemToInventory, addItemsToInventory, addXP, removeItemsFromInventory } from '../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../styles/scrollbars';
-import CircleButton from '../../Buttons/CircleButton';
 import Modal from '../Modal';
-import ModalBackground from '../Other/ModalBackground';
 import CraftItem from './CraftItem';
+import { getRandomNumberForLoot } from '../../../functions/Random';
+import InfoModal from '../InfoModal/InfoModal';
+import { IChangeInfo } from '../../../models/IArea';
 
 interface ICraftModal {
-    closeModal: Function;
+    $closeModal: Function;
+    $openInfoModal: (info: IChangeInfo) => void;
 }
 
-function CraftModal({ closeModal }: ICraftModal) {
+function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
 
-    const { craftItems, areaItems, playerSkills, inventory } = useAppSelector(state => state.userReducer)
+    const { areaItems, playerSkills, inventory } = useAppSelector(state => state.userReducer);
+    const dispatch = useAppDispatch();
 
     const [inputText, setInputText] = useState('');
     const [selectedMaterial, setSelectedMaterial] = useState('all');
     const [selectedRare, setSelectedRare] = useState('all');
     const [selectedSort, setSelectedSort] = useState('title');
+    const [isReadyToCraft, setIsReadyCraft] = useState(false);
     const [isReversed, setIsReversed] = useState(false);
 
-    // const [sortedInventory, setSortedInventory] = useState(inventory);
+    const [sortedItems, setSortedItems] = useState<IFullItem[]>(areaItems.filter(i => i.itemsToCraft).map(i => ({...i, localId: new Date().toISOString()})));
 
     const sortFilterInventory = () => {
-        // let inventoryFilterMaterial = inventory;
-        // let inventoryFilterRare = inventory;
-        // let inventorySorted = inventory;
+        let itemsFilterMaterial = areaItems.filter(i => i.itemsToCraft?.length);
+        let itemsFilterRare = areaItems.filter(i => i.itemsToCraft?.length);
+        let itemsSorted = areaItems.filter(i => i.itemsToCraft?.length);
 
-        // if (selectedMaterial !== 'all') {
-        //     inventoryFilterMaterial = inventory.filter(i => i.item.type === selectedMaterial);
-        // }
-        // if (selectedRare !== 'all') {
-        //     inventoryFilterRare = inventory.filter(i => i.item.rare === selectedRare);
-        // }
+        if (selectedMaterial !== 'all') {
+            itemsFilterMaterial = areaItems.filter(i => i.type === selectedMaterial);
+        }
+        if (selectedRare !== 'all') {
+            itemsFilterRare = areaItems.filter(i => i.rare === selectedRare);
+        }
 
-        // let filteredInventory = inventoryFilterMaterial.filter(i => inventoryFilterRare.includes(i));
+        switch (selectedMaterial){
+            case 'all':
+                itemsFilterMaterial = areaItems.filter(i => i.itemsToCraft?.length);
+                break;
+            case 'helmet':
+                itemsFilterMaterial = areaItems.filter(i => i.subType === 'helmet');
+                break;
+            case 'chest':
+                itemsFilterMaterial = areaItems.filter(i => i.subType === 'chest');
+                break;
+            case 'foot':
+                itemsFilterMaterial = areaItems.filter(i => i.subType === 'foot');
+                break;
+            case 'weapon':
+                itemsFilterMaterial = areaItems.filter(i => i.type === 'weapon');
+                break;
+            case 'axe':
+                itemsFilterMaterial = areaItems.filter(i => i.subType === 'axe');
+                break;
+            case 'pickaxe':
+                itemsFilterMaterial = areaItems.filter(i => i.subType === 'pickaxe');
+                break;
+        }
 
-        // switch (selectedSort) {
-        //     case 'title':
-        //         inventorySorted = filteredInventory.sort((a, b) =>
-        //             a.item.title.localeCompare(b.item.title));
-        //         break;
-        //     case 'date':
-        //         inventorySorted = filteredInventory.sort((a, b) =>
-        //             a.item.dateReceiving.localeCompare(b.item.dateReceiving)).reverse();
-        //         break;
-        //     case 'rare':
-        //         inventorySorted = filteredInventory.sort((a, b) =>
-        //             rareList.indexOf(a.item.rare) - rareList.indexOf(b.item.rare));
-        //         break;
-        //     case 'cost':
-        //         inventorySorted = filteredInventory.sort((a, b) =>
-        //             a.item.cost - b.item.cost).reverse();
-        //         break;
-        //     case 'count':
-        //         inventorySorted = filteredInventory.sort((a, b) =>
-        //             a.count - b.count).reverse();
-        //         break;
-        //     default:
-        //         break;
-        // }
+        let filteredItems = itemsFilterMaterial.filter(i => itemsFilterRare.includes(i));
 
-        // let inventoryTexted = inventorySorted.filter(i =>
-        //     i.item.title.toLocaleLowerCase().includes(inputText.toLowerCase()));
+        switch (selectedSort) {
+            case 'title':
+                itemsSorted = filteredItems.sort((a, b) =>
+                    a.title.localeCompare(b.title));
+                break;
+            case 'rare':
+                itemsSorted = filteredItems.sort((a, b) =>
+                    rareList.indexOf(a.rare) - rareList.indexOf(b.rare));
+                break;
+            case 'cost':
+                itemsSorted = filteredItems.sort((a, b) =>
+                    a.cost - b.cost).reverse();
+                break;
+            case 'time':
+                itemsSorted = filteredItems.sort((a, b) =>
+                    a.timeToMining - b.timeToMining).reverse();
+                break;
+            default:
+                break;
+        }
 
-        // setSortedInventory(isReversed ? inventoryTexted.reverse() : inventoryTexted);
+        const checkedCraftItem = isReadyToCraft ? itemsSorted.filter(i => getCountCanCraft(i)) : itemsSorted;
+
+        let inventoryTexted = checkedCraftItem.filter(i =>
+            i.title.toLocaleLowerCase().includes(inputText.toLowerCase()));
+
+        setSortedItems(isReversed ? inventoryTexted.reverse() : inventoryTexted);
     }
 
-    const [isClickedSelectCount, setIsClickedSelectCount] = useState('');
+    const [craftingId, setCraftingId] = useState('');
+    const [selectedId, setSelectedId] = useState('');
 
-    const onClickSelectCount = (id: string) => {
+    const createItem = (itemCraft: IFullItemWithCount, itemsRemove: IFullItemWithCount[]) => {
+        let count: number[] = [];
+        for(let i = 0; i < itemCraft.count; i++){
+            count.push(getRandomNumberForLoot(playerSkills.craftDoubleLootPercentChance.currentScores));
+        }
+        console.log(count)
+        const sumCount = count.reduce((a,cv) => a + cv, 0);
+        dispatch(addItemToInventory({
+            ...itemCraft,
+            dateReceiving: new Date().toISOString(),
+            count: sumCount}));
+        dispatch(removeItemsFromInventory(itemsRemove));
+        const experience = itemCraft.baseCountXP * sumCount * playerSkills.experienceMultiplier.currentScores;
+        dispatch(addXP(experience));
+        sortFilterInventory();
+    }
 
+    const getCountCanCraft = (i: IFullItem ) => {
+        if(i.itemsToCraft){
+            return Math.min(...( i.itemsToCraft!.map(i => 
+                ( Math.floor((inventory.find(pi => pi.item.id === i.id)?.count || 0 ) / i.count)) ) ))
+        }
+        else{
+            return 0
+        }
+        
+    }
+
+    const onClickCancelCrafting = (id: string) => {
+        setCraftingId('');
     }
 
     useEffect(() => {
         sortFilterInventory();
-    }, [selectedMaterial, selectedRare, selectedSort, isReversed, inputText])
+    }, [selectedMaterial, selectedRare, selectedSort, isReversed, inputText, isReadyToCraft, inventory])
 
     return (
-        <>
+        <>  
             <Modal
                 $flexDirection={'row'}
                 $gap='20px'
                 $size='large'
                 $justifyContent='baseline'
                 $isCloseButton
-                $closeButtonFunction={() => closeModal()}>
+                $closeButtonFunction={() => $closeModal()}>
                 <CraftTypesPlace>
                     <CraftType />
                     <CraftType />
@@ -111,38 +167,66 @@ function CraftModal({ closeModal }: ICraftModal) {
                                 {
                                     selectedMaterial === 'all'
                                         ? 'Все'
-                                        : selectedMaterial === 'melee'
+                                        : selectedMaterial === 'weapon'
                                             ? 'Оружие'
-                                            : selectedMaterial === 'armor'
-                                                ? 'Броня'
-                                                : selectedMaterial === 'materials'
-                                                    ? 'Материалы'
-                                                    : 'Другое'
+                                            : selectedMaterial === 'helmet'
+                                                ? 'Шлемы'
+                                                : selectedMaterial === 'chest'
+                                                    ? 'Нагрудники'
+                                                    : selectedMaterial === 'foot'
+                                                        ? 'Поножи'
+                                                        : selectedMaterial === 'axe'
+                                                            ? 'Топоры'
+                                                            : selectedMaterial === 'pickaxe'
+                                                                ? 'Кирки'
+                                                                : selectedMaterial === 'material'
+                                                                    ? 'Материалы'
+                                                                    : 'Другое'
                                 }
                             </DropdownButton>
                             <DropdownOptions>
                                 <DropdownOption
-                                    isSelected={selectedMaterial === 'all'}
+                                    $isSelected={selectedMaterial === 'all'}
                                     onClick={() => setSelectedMaterial('all')}>
                                     Все
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedMaterial === 'melee'}
-                                    onClick={() => setSelectedMaterial('melee')}>
+                                    $isSelected={selectedMaterial === 'weapon'}
+                                    onClick={() => setSelectedMaterial('weapon')}>
                                     Оружие
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedMaterial === 'armor'}
-                                    onClick={() => setSelectedMaterial('armor')}>
-                                    Броня
+                                    $isSelected={selectedMaterial === 'helmet'}
+                                    onClick={() => setSelectedMaterial('helmet')}>
+                                    Шлемы
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedMaterial === 'materials'}
-                                    onClick={() => setSelectedMaterial('materials')}>
+                                    $isSelected={selectedMaterial === 'chest'}
+                                    onClick={() => setSelectedMaterial('chest')}>
+                                    Нагрудники
+                                </DropdownOption>
+                                <DropdownOption
+                                    $isSelected={selectedMaterial === 'foot'}
+                                    onClick={() => setSelectedMaterial('foot')}>
+                                    Поножи
+                                </DropdownOption>
+                                <DropdownOption
+                                    $isSelected={selectedMaterial === 'axe'}
+                                    onClick={() => setSelectedMaterial('axe')}>
+                                    Топоры
+                                </DropdownOption>
+                                <DropdownOption
+                                    $isSelected={selectedMaterial === 'pickaxe'}
+                                    onClick={() => setSelectedMaterial('pickaxe')}>
+                                    Кирки
+                                </DropdownOption>
+                                <DropdownOption
+                                    $isSelected={selectedMaterial === 'material'}
+                                    onClick={() => setSelectedMaterial('material')}>
                                     Материалы
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedMaterial === 'other'}
+                                    $isSelected={selectedMaterial === 'other'}
                                     onClick={() => setSelectedMaterial('other')}>
                                     Другое
                                 </DropdownOption>
@@ -182,32 +266,32 @@ function CraftModal({ closeModal }: ICraftModal) {
                             </DropdownButton>
                             <DropdownOptions>
                                 <DropdownOption
-                                    isSelected={selectedRare === 'all'}
+                                    $isSelected={selectedRare === 'all'}
                                     onClick={() => setSelectedRare('all')}>
                                     <RareIcon color="white" /> Все
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedRare === 'common'}
+                                    $isSelected={selectedRare === 'common'}
                                     onClick={() => setSelectedRare('common')}>
                                     <RareIcon color="#a4a4ab" /> Обычное
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedRare === 'uncommon'}
+                                    $isSelected={selectedRare === 'uncommon'}
                                     onClick={() => setSelectedRare('uncommon')}>
                                     <RareIcon color="#59c87f" /> Необычное
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedRare === 'rare'}
+                                    $isSelected={selectedRare === 'rare'}
                                     onClick={() => setSelectedRare('rare')}>
                                     <RareIcon color="#4d69cd" /> Редкое
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedRare === 'mythical'}
+                                    $isSelected={selectedRare === 'mythical'}
                                     onClick={() => setSelectedRare('mythical')}>
                                     <RareIcon color="#d42be6" /> Мифическое
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedRare === 'legendary'}
+                                    $isSelected={selectedRare === 'legendary'}
                                     onClick={() => setSelectedRare('legendary')}>
                                     <RareIcon color="#caab05" /> Легендарное
                                 </DropdownOption>
@@ -223,27 +307,36 @@ function CraftModal({ closeModal }: ICraftModal) {
                                             ? 'По редкости'
                                             : selectedSort === 'cost'
                                                 ? 'По стоимости'
-                                                : ''
+                                                : 'По скорости'
                                 }
                             </DropdownButton>
                             <DropdownOptions>
                                 <DropdownOption
-                                    isSelected={selectedSort === 'title'}
+                                    $isSelected={selectedSort === 'title'}
                                     onClick={() => setSelectedSort('title')}>
                                     По названию
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedSort === 'rare'}
+                                    $isSelected={selectedSort === 'rare'}
                                     onClick={() => setSelectedSort('rare')}>
                                     По редкости
                                 </DropdownOption>
                                 <DropdownOption
-                                    isSelected={selectedSort === 'cost'}
+                                    $isSelected={selectedSort === 'cost'}
                                     onClick={() => setSelectedSort('cost')}>
                                     По стоимости
                                 </DropdownOption>
+                                <DropdownOption
+                                    $isSelected={selectedSort === 'time'}
+                                    onClick={() => setSelectedSort('time')}>
+                                    По скорости
+                                </DropdownOption>
                             </DropdownOptions>
                         </SelectDropdown>
+                        <CheckBoxBlock onClick={() => setIsReadyCraft(!isReadyToCraft)} >
+                            <Checkbox type='checkbox' checked={isReadyToCraft} />
+                            Готовы к крафту
+                        </CheckBoxBlock>
                         <ReverseButton onClick={() => setIsReversed(!isReversed)}>
                             {
                                 isReversed
@@ -252,29 +345,29 @@ function CraftModal({ closeModal }: ICraftModal) {
                             }
                         </ReverseButton>
                     </Bar>
-                    <ItemsList key={craftItems.length}>
+                    <ItemsList key={sortedItems.length}>
                         {
-                            craftItems.map((i, ind) => 
+                            sortedItems.map((i, ind) => 
                                 <CraftItem 
                                     key={i.id 
-                                        + playerSkills.craftSpeedMultiplier.currentScores 
-                                        + playerSkills.craftDoubleLootPercentChance.currentScores}
-                                    $fullItem={areaItems.find(ai => ai.id === i.id) || areaItems[0]}
-                                    $itemToCraft={i}
-                                    $craftingId={i.id}
+                                        + playerSkills.craftSpeed.currentScores 
+                                        + playerSkills.craftDoubleLootPercentChance.currentScores
+                                        + getCountCanCraft(i)}
                                     $index={ind}
-                                    $playerCraftingSpeed={playerSkills.craftSpeedMultiplier.currentScores}
-                                    $clearIsCraftingId={() => null}
-                                    $craftItem={() => null}
-                                    $setIsCraftingId={() => null}
-                                    $onClickSelectCount={() => setIsClickedSelectCount(i.id)}
-                                    $onClickCancelCount={() => setIsClickedSelectCount('')}
-                                    $isClickedSelectCount={isClickedSelectCount === i.id}
-                                    $countCanCraft={
-                                        Math.min(...( i.itemsNeed.map(i => 
-                                            ( Math.floor((inventory.find(pi => pi.item.id === i.id)?.count || 0 ) / i.count)) ) ))
-                                        
-                                    } />)
+                                    $openInfoModal={(info: IChangeInfo) => $openInfoModal(info)}
+                                    $fullItem={areaItems.find(ai => ai.id === i.id) || areaItems[0]}
+                                    $playerCraftingSpeed={playerSkills.craftSpeed.currentScores}
+                                    $craftItem={(count: number, itemsToRemove: IFullItemWithCount[]) => createItem({
+                                        ...areaItems.find(ai => ai.id === i.id)!,
+                                        count 
+                                    }, itemsToRemove)}
+                                    $craftingId={craftingId}
+                                    $setCraftingId={() => setCraftingId(i.id)}
+                                    $clearCraftingId={() => onClickCancelCrafting(i.id)}
+                                    $isSelected={selectedId === i.id}
+                                    $setSelectedId={() => setSelectedId(i.id)}
+                                    $clearSelectedId={() => setSelectedId('')}
+                                    $countCanCraft={getCountCanCraft(i)} />)
                         }
 
                         <EmptyItem />
@@ -343,7 +436,24 @@ const EmptyText = styled.p`
     margin: 20px;
 `
 
+const Checkbox = styled.input`
+    
+`
 
+const CheckBoxBlock = styled.div`
+    font-size: 16px;
+    height: 40px;
+    min-width: 200px;
+    border-radius: 5px;
+    border: 1px solid black;
+    box-shadow: 0 0 5px #0000005a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    cursor: pointer;
+    user-select: none;
+`
 
 interface IRareIconProps {
     color: string;
@@ -356,7 +466,7 @@ const RareIcon = styled.div<IRareIconProps>`
 `
 
 interface IDropdownOptionProps {
-    isSelected: boolean;
+    $isSelected: boolean;
 }
 
 const DropdownOption = styled.div<IDropdownOptionProps>`
@@ -368,7 +478,7 @@ const DropdownOption = styled.div<IDropdownOptionProps>`
     padding: 5px;
     cursor: pointer;
     transition: 0.1s;
-    border-bottom: ${p => p.isSelected ? '1px solid black;' : 'none;'};
+    border-bottom: ${p => p.$isSelected ? '1px solid black;' : 'none;'};
 
     &:hover{
         padding-left: 20px;
@@ -390,14 +500,14 @@ const DropdownOptions = styled.div`
     border-radius: 5px;
     
     padding: 5px;
-    width: 100%;
+    min-width: 200px;
     top: 100%;    
 `
 
 const SelectDropdown = styled.div`
     position: relative;
     z-index: 999;
-    width: 15vw;
+    min-width: 200px;
     
 
     &:hover ${DropdownOptions} {
@@ -452,6 +562,7 @@ const InputName = styled.input`
 
 const Bar = styled.div`
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 `
 

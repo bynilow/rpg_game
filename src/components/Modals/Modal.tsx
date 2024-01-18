@@ -4,7 +4,7 @@ import ModalBackground from './Other/ModalBackground';
 import CircleButton from '../Buttons/CircleButton';
 
 interface IModal {
-    color?: string;
+    $backgroundColor?: string;
     $flexDirection: 'row' | 'column';
     $alignItems?: '';
     $isCloseButton?: boolean;
@@ -13,11 +13,11 @@ interface IModal {
     $gap?: string;
     $size?: 'small' | 'medium' | 'large';
     $justifyContent?: 'space-between' | 'space-around' | 'center' | 'baseline' | 'end';
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 function Modal({ 
-    color = 'white', 
+    $backgroundColor = 'white', 
     children, 
     $flexDirection, 
     $alignItems = '', 
@@ -26,7 +26,7 @@ function Modal({
     $closeButtonFunction,
     $gap = '20px',
     $justifyContent = 'space-between',
-    $size = 'medium' }: IModal) {
+    $size = 'medium', }: IModal) {
 
     const [isOpenAnim, setIsOpenAnim] = useState(true);
     const [isCloseAnim, setIsCloseAnim] = useState(false);
@@ -53,7 +53,7 @@ function Modal({
                 $closeAnim={isCloseAnim} />
             <ModalBlock
                 key={isCloseAnim ? 'close' : 'none'}
-                color={color}
+                $backgroundColor={$backgroundColor}
                 $flexDirection={$flexDirection}
                 $alignItems={$alignItems}
                 $isEnableAnims={$isEnableAnims}
@@ -78,7 +78,7 @@ function Modal({
 }
 
 interface IModalBlockProps{
-    color: string;
+    $backgroundColor: string;
     $flexDirection: 'row' | 'column';
     $alignItems: string;
     $isEnableAnims: boolean;
@@ -145,7 +145,7 @@ const ModalBlock = styled.div<IModalBlockProps>`
 
     transition: .1s;
 
-    background: ${p => p.color};
+    background: ${p => p.$backgroundColor};
 `
 
 export default Modal;

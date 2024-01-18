@@ -12,6 +12,7 @@ import { IFullItemWithCount } from '../../../models/IAreaItem';
 import { IPlayer } from '../../../models/IPlayer';
 import Section from '../../Section/Section';
 import { getChance, getRandomNumber } from '../../../functions/Random';
+import { getStats } from '../../../functions/Stats';
 
 interface ICombatPage {
     $enemyId: string;
@@ -35,15 +36,16 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
     const [enemy, setEnemy] = useState<IEnemy>({
         ...foundedEnemy,
         baseCountXP: foundedEnemy.baseCountXP * $level,
-        damage: foundedEnemy.damage * $level / 3,
+        damage: foundedEnemy.damage * $level / 2,
         maxHealth: foundedEnemy.maxHealth * $level / 2
     });
 
     const [enemyHealth, setEnemyHealth] = useState(enemy.maxHealth);
 
-    const [playerData, setPlayerData] = useState(player);
-    const [playerHealth, setPlayerHealth] = useState(playerSkills.baseHealth.baseCount * playerSkills.maxHealthMultiplier.currentScores);
-    const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerSkills.attackSpeed.currentScores);
+    const [playerStats, setPlayerStats] = useState(getStats(playerSkills, player));
+
+    const [playerHealth, setPlayerHealth] = useState(playerStats.baseHealth);
+    const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerStats.attackSpeed < 0 ? 0.1 : playerStats.attackSpeed);
 
 
     interface ICombatHistory {
@@ -87,7 +89,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
             avatar: enemy.avatar,
             characterName: enemy.title,
             damage: 0,
-            hurtName: playerData.title,
+            hurtName: player.title,
             text,
             date: new Date().toLocaleTimeString()
         };
@@ -96,7 +98,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
     }
 
     const onClickAttack = () => {
-        if (playerSkills.attackSpeed.currentScores === playerCurrentTimeAttack) {
+        if (playerStats.attackSpeed === playerCurrentTimeAttack) {
             attackSomeone(false);
 
             const playerTimerAttack = setInterval(() => {
@@ -105,14 +107,14 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
 
             setTimeout(() => {
                 clearInterval(playerTimerAttack);
-                setPlayerCurrentTimeAttack(playerSkills.attackSpeed.currentScores);
-            }, playerSkills.attackSpeed.currentScores * 1000);
+                setPlayerCurrentTimeAttack(playerStats.attackSpeed);
+            }, playerStats.attackSpeed * 1000);
         }
     }
 
     const attackSomeone = (enemyAttack: boolean) => {
 
-        const playerCurrentDamage = playerSkills.baseDamage.currentScores * playerSkills.damageMultiplier.currentScores;
+        const playerCurrentDamage = playerStats.baseDamage;
         console.log(playerSkills.baseDamage)
         console.log(playerSkills.damageMultiplier)
         console.log(playerSkills.baseDamage.currentScores * playerSkills.damageMultiplier.currentScores)
@@ -134,21 +136,21 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
         let isCrit = getChance(
             enemyAttack
                 ? enemy.critChance
-                : playerSkills.critChance.currentScores);
+                : playerStats.critChance);
 
         let isMissed = getChance(
             enemyAttack
                 ? enemy.missChance
-                : playerSkills.missPercentChance.currentScores);
+                : playerStats.missPercentChance);
 
         let isOpponentDodged = getChance(
             enemyAttack
-                ? playerSkills.dodgePercentChance.currentScores
+                ? playerStats.dodgePercentChance
                 : enemy.dodgeChance);
 
         let isOpponentBlocked = getChance(
             enemyAttack
-                ? playerSkills.blockingChancePercent.currentScores
+                ? playerStats.blockingChancePercent
                 : enemy.blockingChance);
 
         let damage =
@@ -159,10 +161,10 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
         let critDamage =
             enemyAttack
                 ? Number((enemy.damage * enemy.critDamageMultiplier).toFixed(1))
-                : Number((playerCurrentDamage * playerSkills.critDamageMultiplier.currentScores).toFixed(1))
+                : Number((playerCurrentDamage * playerStats.critDamageMultiplier).toFixed(1))
 
         let blockedCritDamage = Number(
-            (damage / (enemyAttack ? playerSkills.blockingMultiplier.currentScores : enemy.blockingMultiplier))
+            (damage / (enemyAttack ? playerStats.blockingMultiplier : enemy.blockingMultiplier))
                 .toFixed(1));
 
         if (isCrit) {
@@ -261,7 +263,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
         const possibleItems = enemy.possibleLoot;
         const experienceCount = Number((
             enemy.baseCountXP 
-            * playerSkills.experienceMultiplier.currentScores 
+            * playerStats.experienceMultiplier 
             + (enemy.level / 2)).toFixed(0));
         const experienceItem: IFullItemWithCount = {
             ...areaItems.find(i => i.id === 'experience')!,
@@ -386,7 +388,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
                             $isBackgroundTransparent={false}>
                             <Title>
                                 {
-                                    playerData.title
+                                    player.title
                                 }
                             </Title>
                             <BlockLine>
@@ -396,7 +398,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
                                 </BlockText>
                             </BlockLine>
                             <BlockLine>
-                                <AttackLine max={playerSkills.attackSpeed.currentScores} value={playerCurrentTimeAttack} />
+                                <AttackLine max={playerStats.attackSpeed} value={playerCurrentTimeAttack} />
                                 <BlockText>
                                     {
                                         playerCurrentTimeAttack.toFixed(1)

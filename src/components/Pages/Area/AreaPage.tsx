@@ -17,6 +17,8 @@ import Section from '../../Section/Section';
 import SkillsModal from '../../Modals/SkillsModal/SkillsModal';
 import { getRandomNumberForLoot } from '../../../functions/Random';
 import CraftModal from '../../Modals/CraftModal/CraftModal';
+import CharacterModal from '../../Modals/Character/CharacterModal';
+import { getStats } from '../../../functions/Stats';
 
 
 interface IAreaPage {
@@ -26,60 +28,36 @@ interface IAreaPage {
 function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const dispatch = useAppDispatch();
-    const { areas, availablePaths, currentLocationId, playerSkills, inventory } = useAppSelector(state => state.userReducer);
-
-    const currentLocation = areas[areas.findIndex((i: IArea) => i.id === currentLocationId)];
+    const { areas, availablePaths, currentLocation, playerSkills, inventory, player } = useAppSelector(state => state.userReducer);
 
     const getAreaFromId = (id: string) => {
         return areas[areas.findIndex(i => i.id === id)];
     }
 
-    const lastRespawnAreaItems = new Date(currentLocation.lastRespawnAreaItems);
-    const nextRespawnAreaItems = new Date(
-        new Date(lastRespawnAreaItems)
-            .setMinutes(lastRespawnAreaItems.getMinutes() + currentLocation?.timeToRespawnAreaItems));
-
-    const lastRespawnAreaEnemies = new Date(currentLocation?.lastRespawnAreaEnemies);
-    const nextRespawnAreaEnemies = new Date(
-        new Date(lastRespawnAreaEnemies)
-            .setMinutes(lastRespawnAreaEnemies.getMinutes() + currentLocation?.timeToRespawnAreaEnemies));
-
     const [isInventoryOpen, setIsInventoryOpen] = useState(false);
-
-    const closeInventoryModal = () => {
-        setIsInventoryOpen(false);
-    }
 
     const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [whatInfo, setWhatInfo] = useState('area');
-    const [infoArea, setInfoArea] = useState(currentLocation);
-    const [infoItemId, setInfoItemId] = useState('');
-    const [infoEnemyId, setInfoEnemyId] = useState('');
+    const [infoId, setInfoId] = useState(areas[0].id);
 
-    const onClickOpenInfoModal = () => {
+    const onClickOpenInfoModal = (info?: IChangeInfo) => {
+        if(info){
+            setInfoId(info.id);
+            setWhatInfo(info.whatInfo);
+        }
         setIsInfoOpen(true);
     }
 
-    const onChangeInfo = ({ ...info }: IChangeInfo) => {
-        console.log(info.whatInfo, info.enemyId)
-        if (info.whatInfo === 'area' && info.area) {
-            setInfoArea(info.area);
-        }
-        else if (info.whatInfo === 'item' && info.itemId) {
-            setInfoItemId(info.itemId);
-        }
-        else if (info.whatInfo === 'enemy' && info.enemyId) {
-            setInfoEnemyId(info.enemyId);
-        }
+    const onChangeInfo = (info: IChangeInfo) => {
+        console.log(info.whatInfo, info.id)
+        setInfoId(info.id);
         setWhatInfo(info.whatInfo);
         
     }
 
     const onClickCloseModalInfo = () => {
         setIsInfoOpen(false);
-        setInfoArea(currentLocation);
-        setInfoItemId('');
-        setInfoEnemyId('');
+        setInfoId(areas[0].id);
         setWhatInfo('area');
     }
 
@@ -110,60 +88,67 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const [isSkillsOpen, setIsSkillsOpen] = useState(false);
 
-    const [isCraftOpen, setIsCraftOpen] = useState(true);
+    const [isCraftOpen, setIsCraftOpen] = useState(false);
+
+    const [isCharacterOpen, setIsCharacterOpen] = useState(false);
+
+    const [stats, setStats] = useState(getStats(playerSkills, player));
+
+    const [inventoryWeight, setInventoryWeight] = useState(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));
+
+
 
     useEffect(() => {
-        if (areas.length < 2) {
-            dispatch(setAreasFromStorage());
-            console.log(JSON.parse(localStorage.areas))
-        }
-
-        if (currentLocation) {
+        if (!availablePaths.length && currentLocation) {
             dispatch(getAvailablePaths(currentLocation.id));
             dispatch(setInventoryFromStorage());
             dispatch(setPlayerFromStorage());
             dispatch(setSkillsFromStorage());
         }
 
-        if (nextRespawnAreaItems.getTime() < (new Date()).getTime()) {
+        if (new Date(currentLocation!.nextRespawnAreaItems).getTime() < (new Date()).getTime()) {
             dispatch(updateAreaItems({
                 levelId: currentLocation.id,
                 date: new Date().toISOString(),
-                itemsToUpdate: currentLocation.areaItems
+                itemsToUpdate: currentLocation.areaItems || []
             }));
         }
-
-        if (nextRespawnAreaEnemies.getTime() < (new Date()).getTime()) {
+        if (currentLocation && new Date(currentLocation.nextRespawnAreaEnemies).getTime() < (new Date()).getTime()) {
             dispatch(updateAreaEnemies({
                 levelId: currentLocation.id,
                 enemies: currentLocation.enemies
             }));
         }
 
-        onChangeInfo({area: currentLocation, whatInfo: 'area'});
-    }, [currentLocationId])
+        onChangeInfo({ id: currentLocation.id, whatInfo: 'area' });
 
-    return (
+        
+        setStats(getStats(playerSkills, player));
+        setInventoryWeight(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));
+        console.log('eee')
+    }, [player, currentLocation.id])
+
+    console.log(currentLocation?.currentEnemies[0])
+
+
+    if(!currentLocation) return <div>Loading...</div>
+    else return (
         <>
             {
+                isCharacterOpen
+                ? <CharacterModal $closeModal={() => setIsCharacterOpen(false)} />
+                : null
+            }
+            {
                 isCraftOpen
-                    ? <CraftModal closeModal={() => setIsCraftOpen(false)} />
+                    ? <CraftModal 
+                        $closeModal={() => setIsCraftOpen(false)}
+                        $openInfoModal={(info: IChangeInfo) => onClickOpenInfoModal(info)} />
                     : null
             }
             {
                 isInventoryOpen
-                    ? <InventoryModal closeModal={() => closeInventoryModal()} />
-                    : null
-            }
-            {
-                isInfoOpen
-                    ? <InfoModal
-                        $area={infoArea}
-                        $itemId={infoItemId}
-                        $enemyId={infoEnemyId}
-                        $closeModal={() => onClickCloseModalInfo()}
-                        $whatInfo={whatInfo}
-                        $changeWhatInfo={(info: IChangeInfo) => onChangeInfo(info)} />
+                    ? <InventoryModal closeModal={() => setIsInventoryOpen(false)} />
                     : null
             }
             {
@@ -171,14 +156,25 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                     ? <SkillsModal $closeModal={() => setIsSkillsOpen(false)} />
                     : null
             }
+            {
+                isInfoOpen
+                    ? <InfoModal
+                        $id={infoId}
+                        $closeModal={() => onClickCloseModalInfo()}
+                        $whatInfo={whatInfo}
+                        $changeInfo={(info: IChangeInfo) => onChangeInfo(info)} />
+                    : null
+            }
             <Background $image={require('../../../' + currentLocation.avatar)} />
             <Header 
                 $openInventory={() => setIsInventoryOpen(true)}
-                $openSkills={() => setIsSkillsOpen(true)} />
+                $openSkills={() => setIsSkillsOpen(true)}
+                $openCraft={() => setIsCraftOpen(true)}
+                $openCharacter={() => setIsCharacterOpen(true)} />
             <Area>
             
                 <LevelName color={currentLocation.color}>
-                    Ты на уровне: {currentLocation.title} / {currentLocation.id}
+                    {currentLocation.title}
                     <CircleButton symbol='?' click={() => onClickOpenInfoModal()} />
 
                 </LevelName>
@@ -194,9 +190,10 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                             {
                                 availablePaths.map((p, ind) => <AreaPath
                                     key={
-                                        p.pathId + playerSkills['movementSpeed']['currentScores'] 
-                                            + playerSkills['capacity']['currentScores']
-                                            + inventory.reduce((a,v) => a + v.item.weight * v.count ,0)}
+                                        p.pathId 
+                                            + stats.movementSpeed 
+                                            + stats.capacity
+                                            + inventoryWeight}
                                     $index={ind}
                                     $areaId={p.pathId}
                                     $setMoveAreaId={() => setMoveAreaId(p.pathId)}
@@ -206,10 +203,9 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                                     $title={getNameAreaById(p.pathId) || ''}
                                     $timeToMove={p.time}
                                     $goLevel={() => onClickGoLevel(p)}
-                                    $playerInventoryWeight={
-                                        inventory.reduce((a,v) => a + v.item.weight * v.count ,0)}
-                                    $playerInventoryMaxWeight={playerSkills['capacity']['currentScores']}
-                                    $playerMovementSpeed={playerSkills['movementSpeed']['currentScores']} />)
+                                    $playerInventoryWeight={inventoryWeight}
+                                    $playerInventoryMaxWeight={stats.capacity}
+                                    $playerMovementSpeed={stats.movementSpeed} />)
                             }
                         </LevelsList>
                     </Section>
@@ -221,25 +217,28 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
                         <NameBlock>Местность: </NameBlock>
                         <DescriptionText>
-                            ⟳ {nextRespawnAreaItems.toLocaleString()}
+                            ⟳ {new Date(currentLocation.nextRespawnAreaItems).toLocaleString()}
                         </DescriptionText>
 
                         <LevelsList>
                             {
                                 currentLocation.currentAreaItems.map((i: IFullItem, ind) =>
                                     <AreaItem
-                                        key={i.idInArea + currentLocation.id + playerSkills[i.type === 'ore' 
-                                            ? 'oreSpeedMining'
-                                            : 'treeSpeedMining']['currentScores']}
+                                        key={
+                                            i.idInArea 
+                                            + currentLocation.id 
+                                            + stats.treeSpeedMining
+                                            + stats.oreSpeedMining }
                                         $index={ind}
                                         $setIsMiningId={() => setMiningItemId(i.idInArea)}
                                         $clearIsMiningId={() => setMiningItemId('')}
                                         $miningId={miningItemId}
                                         $item={i}
                                         $mineItem={() => onClickItem(i)}
-                                        $playerSpeedMining={playerSkills[i.type === 'ore' 
-                                            ? 'oreSpeedMining'
-                                            : 'treeSpeedMining']['currentScores']} />)
+                                        $playerSpeedMining={
+                                            i.type === 'tree'
+                                                ? stats.treeSpeedMining
+                                                : stats.oreSpeedMining} />)
                             }
                         </LevelsList>
                     </Section>
@@ -251,14 +250,14 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
                         <NameBlock>Враги: </NameBlock>
                         <DescriptionText>
-                            ⟳ {nextRespawnAreaEnemies.toLocaleString()}
+                            ⟳ {new Date(currentLocation.nextRespawnAreaEnemies).toLocaleString()}
                         </DescriptionText>
                         <LevelsList >
                             {
                                 currentLocation.currentEnemies
                                     ? currentLocation.currentEnemies.map((e, ind) =>
                                         <AreaEnemy
-                                            key={e.idInArea}
+                                            key={e.idInArea + currentLocation.id}
                                             id={e.id}
                                             $idInArea={e.idInArea}
                                             $onClickStartBattle={() => $onClickStartBattle(e)}

@@ -76,6 +76,7 @@ function InventoryModal({closeModal}:IInventoryModal) {
         <>
             <Modal 
                 $flexDirection={'column'} 
+                $justifyContent='baseline'
                 $isCloseButton
                 $closeButtonFunction={() => closeModal()}>
                 <InfoBlock>

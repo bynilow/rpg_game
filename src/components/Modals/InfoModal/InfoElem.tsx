@@ -1,21 +1,24 @@
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks/redux';
 import { IArea } from '../../../models/IArea';
-import { IFullItem } from '../../../models/IAreaItem';
+import { ICraftItem, IFullItem } from '../../../models/IAreaItem';
 import { IEnemy } from '../../../models/IEnemy';
 import { getAreaBackground, getEnemyBackground, getHoveredAreaBackground, getHoveredEnemyBackground, getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface IInfoElem {
     id: string
-    $countMin: number;
-    $countMax: number;
+    $countMin?: number;
+    $countMax?: number;
+    $count?: number;
     $type: 'area' | 'item' | 'enemy';
     $levelMin?: number;
     $levelMax?: number;
     $dropChance?: number;
     $spawnChance?: number;
+    $itemsToCraft?: ICraftItem[];
+    $isCrafting?: boolean;
     $changeWhatInfo: Function;
 }
 
@@ -28,7 +31,10 @@ function InfoElem({
     $dropChance,
     $spawnChance,
     $levelMin,
-    $levelMax}:IInfoElem) {
+    $levelMax,
+    $count,
+    $itemsToCraft,
+    $isCrafting = false}:IInfoElem) {
 
     const {areas, areaItems, enemies} = useAppSelector(state => state.userReducer);
 
@@ -54,21 +60,37 @@ function InfoElem({
             break;
     }
 
+    const [countText, setCountText] = useState(
+        $countMax && !$count
+            ? $countMax === $countMin  
+                ? `Количество: ${$countMax}`
+                : `Количество: ${$countMin} - ${$countMax}`
+            : $count
+                ? `Количество: ${$count}`
+                : ``
+    )
+
     useEffect(() => {
 
     }, [$type])
 
-
+    
 
     return ( 
         <Item 
             color={color}
             $hoveredColor={hoveredColor} 
             onClick={() => $changeWhatInfo()}>
-            <Avatar 
+            <Avatar
                 $image={thisObject.avatar}
-                width={'80px'} 
-                height={'80px'}  />
+                width={'80px'}
+                height={'80px'} >
+                {
+                    $isCrafting
+                        ? <Crafting>🔨</Crafting>
+                        : null
+                }
+            </Avatar>
             <Info>
                 <Title>
                     {
@@ -100,10 +122,16 @@ function InfoElem({
                         }
                     </AboutText>
                     <AboutText>
+                        { countText }
+                    </AboutText>
+                    <AboutText>
                         {
-                            $countMax !== $countMin
-                                ? `Количество: ${$countMin} - ${$countMax}`
-                                : `Количество: ${$countMax}`
+                            $itemsToCraft
+                                ? $itemsToCraft.map(i => 
+                                    <p>
+                                        x{i.count} {areaItems.find(fi => fi.id === i.id)?.title}
+                                    </p>)
+                                : null
                         }
                     </AboutText>
                 </About>
@@ -111,6 +139,14 @@ function InfoElem({
         </Item>
      );
 }
+
+const Crafting = styled.div`
+    font-size: 40px;
+`
+
+const itemForCraft = styled.p`
+    
+`
 
 const About = styled.div`
     display: flex;

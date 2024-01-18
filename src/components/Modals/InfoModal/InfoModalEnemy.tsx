@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks/redux';
 import { IChangeInfo } from '../../../models/IArea';
@@ -12,57 +12,57 @@ import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
 
 interface IEnemyModal {
-    $enemyId: string;
+    $id: string;
     $closeModal: Function;
 
     $changeWhatInfo: Function;
 }
 
-function EnemyModal({ $closeModal, $changeWhatInfo, $enemyId }: IEnemyModal) {
+function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
 
     const { areaItems, areas, enemies } = useAppSelector(state => state.userReducer);
 
-    const enemy = enemies.find(e => e.id === $enemyId)!;
+    const [thisEnemy, setThisEnemy] = useState(enemies.find(e => e.id === $id)!)
     let enemyItems: IFullItem[] = [];
 
-    if (enemy) {
-        enemyItems = enemy.possibleLoot.map(i => areaItems.find(ai => ai.id === i.id)!)!;
+    if (thisEnemy) {
+        enemyItems = thisEnemy.possibleLoot.map(i => areaItems.find(ai => ai.id === i.id)!)!;
     }
 
-    console.log('enemy id:'+$enemyId, 'enemy: '+enemy)
+    console.log('thisEnemy id:'+$id, 'thisEnemy: '+thisEnemy)
 
-    const backgroundColor = getEnemyBackground(enemy.type);
-    const backgroundHoveredColor = getHoveredEnemyBackground(enemy.type);
+    const backgroundColor = getEnemyBackground(thisEnemy.type);
+    const backgroundHoveredColor = getHoveredEnemyBackground(thisEnemy.type);
 
     useEffect(() => {
 
     }, [])
 
-    if(enemy.title) return (
+    if(thisEnemy.title) return (
         <>
 
             <Section>
                 <Avatar
-                    $image={enemy.avatar}
+                    $image={thisEnemy.avatar}
                     width={'150px'}
                     height={'150px'}
                     $minWidth={'200px'}
                     $minHeight={'200px'} />
                 <Title>
-                    "{enemy.title}"
+                    "{thisEnemy.title}"
                 </Title>
-                <ColorText color={getEnemyColor(enemy.type)}>
+                <ColorText color={getEnemyColor(thisEnemy.type)}>
                     {
-                        enemy.type === 'enemy'
+                        thisEnemy.type === 'enemy'
                             ? "Враг"
-                            : enemy.type === 'neutral'
+                            : thisEnemy.type === 'neutral'
                                 ? "Нейтральный"
                                 : "Босс"
 
                     }
                 </ColorText>
                 <Description>
-                    {enemy.description}
+                    {thisEnemy.description}
                 </Description>
                 <Title>
                     Характеристики
@@ -70,47 +70,47 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $enemyId }: IEnemyModal) {
                 <Property>
                     <ProperyName>
                         Жизни:
-                    </ProperyName> {enemy.maxHealth}
+                    </ProperyName> {thisEnemy.maxHealth}
                 </Property>
                 <Property>
                     <ProperyName>
                         Скорость атаки:
-                    </ProperyName> {enemy.attackSpeed}s
+                    </ProperyName> {thisEnemy.attackSpeed}s
                 </Property>
                 <Property>
                     <ProperyName>
                         Урон:
-                    </ProperyName> {enemy.damage}
+                    </ProperyName> {thisEnemy.damage}
                 </Property>
                 <Property>
                     <ProperyName>
                         Множитель крит. урона:
-                    </ProperyName> x{enemy.critDamageMultiplier}
+                    </ProperyName> x{thisEnemy.critDamageMultiplier}
                 </Property>
                 <Property>
                     <ProperyName>
                         Шанс крит. урона:
-                    </ProperyName> {enemy.critChance}%
+                    </ProperyName> {thisEnemy.critChance}%
                 </Property>
                 <Property>
                     <ProperyName>
                         Шанс промаха:
-                    </ProperyName> {enemy.missChance}%
+                    </ProperyName> {thisEnemy.missChance}%
                 </Property>
                 <Property>
                     <ProperyName>
                         Шанс уклонения:
-                    </ProperyName> {enemy.dodgeChance}%
+                    </ProperyName> {thisEnemy.dodgeChance}%
                 </Property>
                 <Property>
                     <ProperyName>
                         Шанс блокирования:
-                    </ProperyName> {enemy.blockingChance}%
+                    </ProperyName> {thisEnemy.blockingChance}%
                 </Property>
                 <Property>
                     <ProperyName>
                         Множитель блокирования:
-                    </ProperyName> x{enemy.blockingMultiplier}
+                    </ProperyName> x{thisEnemy.blockingMultiplier}
                 </Property>
             </Section>
 
@@ -125,9 +125,9 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $enemyId }: IEnemyModal) {
                                 key={i.id}
                                 id={i.id}
                                 $type={'item'}
-                                $countMax={enemy.possibleLoot.find(pl => pl.id === i.id)!.countMax}
-                                $countMin={enemy.possibleLoot.find(pl => pl.id === i.id)!.countMin}
-                                $dropChance={enemy.possibleLoot.find(pl => pl.id === i.id)!.dropChance}
+                                $countMax={thisEnemy.possibleLoot.find(pl => pl.id === i.id)!.countMax}
+                                $countMin={thisEnemy.possibleLoot.find(pl => pl.id === i.id)!.countMin}
+                                $dropChance={thisEnemy.possibleLoot.find(pl => pl.id === i.id)!.dropChance}
                                 $changeWhatInfo={() => $changeWhatInfo({
                                     whatInfo: 'item',
                                     itemId: i.id
@@ -142,15 +142,15 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $enemyId }: IEnemyModal) {
                 </Title>
                 <List>
                     {
-                        areas.filter(a => a.enemies.findIndex(e => e.id === $enemyId) !== -1)
+                        areas.filter(a => a.enemies.findIndex(e => e.id === $id) !== -1)
                             .map(a =>
                                 <InfoElem
                                     key={a.id}
                                     id={a.id}
                                     $type={'area'}
-                                    $spawnChance={a.enemies.find(i => i.id === $enemyId)!.spawnChance}
-                                    $countMax={a.enemies.find(e => e.id === $enemyId)!.countMax}
-                                    $countMin={a.enemies.find(e => e.id === $enemyId)!.countMin}
+                                    $spawnChance={a.enemies.find(i => i.id === $id)!.spawnChance}
+                                    $countMax={a.enemies.find(e => e.id === $id)!.countMax}
+                                    $countMin={a.enemies.find(e => e.id === $id)!.countMin}
                                     $changeWhatInfo={() => $changeWhatInfo({
                                         whatInfo: 'area',
                                         area: a

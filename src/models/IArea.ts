@@ -18,6 +18,8 @@ export interface IArea {
     timeToRespawnAreaEnemies: number;
     lastRespawnAreaItems: string;
     lastRespawnAreaEnemies: string;
+    nextRespawnAreaItems: string;
+    nextRespawnAreaEnemies: string;
 }
 
 export interface IPath {
@@ -37,8 +39,6 @@ export interface ILocationToMove {
 }
 
 export interface IChangeInfo {
-    area?: IArea;
-    itemId?: string;
-    enemyId?: string;
+    id: string;
     whatInfo: 'area' | 'item' | 'enemy';
   }

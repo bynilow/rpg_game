@@ -182,12 +182,12 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
             selectedLevel: 0
         },
         {
-            id: 'craftSpeedMultiplier',
-            title: 'Множитель скорости создания предметов',
+            id: 'craftSpeed',
+            title: 'Скорость создания предметов',
             description: 'Навык позволяет игроку ускорить процесс создания предметов. Скорость создания предметов становится более эффективной.',
             branch: 'intelligence',
-            type: 'multiplier',
-            count: 0.01,
+            type: 'score',
+            count: 0.1,
             selectedLevel: 0
         },
         {
@@ -286,7 +286,8 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
                 if(infoSkill.id === 'attackSpeed' ||
                 infoSkill.id === 'movementSpeed' || 
                 infoSkill.id === 'oreSpeedMining' || 
-                infoSkill.id === 'treeSpeedMining'){
+                infoSkill.id === 'treeSpeedMining' ||
+                infoSkill.id === 'craftSpeed'){
                     setNextSkillLevelText(`Скорость: ${currentScores}s`);
                     setNextSkillLevelSpanText(` - ${(baseScore * (infoSkill.selectedLevel)).toFixed(2)}s = ${(currentScores - baseScore * (infoSkill.selectedLevel)).toFixed(2)}s`)
                 }

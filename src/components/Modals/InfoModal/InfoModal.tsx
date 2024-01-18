@@ -7,42 +7,60 @@ import AreaModal from './InfoModalArea';
 import EnemyModal from './InfoModalEnemy';
 import ItemModal from './InfoModalItem';
 import Modal from '../Modal';
+import { useAppSelector } from '../../../hooks/redux';
+import { getAreaBackground, getEnemyBackground, getItemBackground } from '../../../styles/backgrounds';
 
 interface IInfoModal {
-    $area: IArea;
-    $itemId: string;
-    $enemyId: string;
-    $closeModal: Function;
+    $id: string;
     $whatInfo: string;
 
-    $changeWhatInfo: (item: IChangeInfo) => void;
+    $closeModal: Function;
+    $changeInfo: (info: IChangeInfo) => void;
 }
 
-function InfoModal({ $area, $closeModal, $whatInfo, $changeWhatInfo, $itemId, $enemyId }: IInfoModal) {
+function InfoModal({ $id, $closeModal, $whatInfo, $changeInfo }: IInfoModal) {
+
+    const {areaItems, areas, enemies} = useAppSelector(state => state.userReducer);
+
     useEffect(() => {
 
-    }, [$whatInfo])
+    }, [$whatInfo, $id])
+
+    const getBackgroundColor = () => {
+        switch($whatInfo){
+            case 'item':
+                return getItemBackground(areaItems.find(i => i.id === $id)!.rare);
+            case 'area':
+                return getAreaBackground(areas.find(a => a.id === $id)!.color);
+            case 'enemy':
+                return getEnemyBackground(enemies.find(e => e.id === $id)!.type);
+        }
+    }
 
     return (
         <Modal
             $flexDirection='row'
             $isCloseButton={true}
-            $closeButtonFunction={() => $closeModal()}>
+            $closeButtonFunction={() => $closeModal()}
+            $backgroundColor={getBackgroundColor()} >
             {
                 $whatInfo === 'area'
                 ? <AreaModal
-                    $area={$area}
-                    $changeWhatInfo={(info: IChangeInfo) => $changeWhatInfo(info)}
+                    key={$id}
+                    $id={$id}
+                    $changeWhatInfo={(info: IChangeInfo) => $changeInfo(info)}
                     $closeModal={() => $closeModal()} />
                 : $whatInfo === 'item'
                     ? <ItemModal
-                        $itemId={$itemId}
-                        $changeWhatInfo={(info: IChangeInfo) => $changeWhatInfo(info)}
+                        key={$id}
+                        $id={$id}
+                        $changeWhatInfo={(info: IChangeInfo) => $changeInfo(info)}
                         $closeModal={() => $closeModal()} />
                     : $whatInfo === 'enemy'
                         ? <EnemyModal
-                            $enemyId={$enemyId}
-                            $changeWhatInfo={(info: IChangeInfo) => $changeWhatInfo(info)}
+                            key={$id}
+                            $id={$id}
+                            $changeWhatInfo={(info: IChangeInfo) => $changeInfo(info)}
                             $closeModal={() => $closeModal()} />
                         : null
             }

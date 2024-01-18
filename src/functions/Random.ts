@@ -6,9 +6,9 @@ export const getChance = (chance: number) => {
 
 export const getRandomNumber = (min: number, max: number) => Math.floor(Math.random() * max + min);
 
-export const getRandomNumberForLoot = (num: number) => {
-    const baseLootMultiplier = parseInt( String(num / 100) ) + 1; /// 1
-    const percentOfExtraLoot = parseInt( String(num % 100) );  /// 35
+export const getRandomNumberForLoot = (chancePercent: number) => {
+    const baseLootMultiplier = parseInt( String(chancePercent / 100) ) + 1; /// 1
+    const percentOfExtraLoot = parseInt( String(chancePercent % 100) );  /// 35
     const isExtraLoot = Number(getChance(percentOfExtraLoot)); 
     
     return baseLootMultiplier + isExtraLoot

@@ -1,41 +1,42 @@
-import styled, { keyframes } from 'styled-components'
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { stopMineItem, stopMoveToLocation } from '../../../store/reducers/ActionCreators';
-import { ICraftItem, IFullItem } from '../../../models/IAreaItem';
 import { useEffect, useRef, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { IChangeInfo } from '../../../models/IArea';
+import { IFullItem, IFullItemWithCount } from '../../../models/IAreaItem';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
+import CircleButton from '../../Buttons/CircleButton';
 import NeedItem from './NeedItem';
 
 
 interface ICraftItemProps {
     $fullItem: IFullItem;
-    $itemToCraft: ICraftItem;
     $index: number;
     $craftingId: string;
-    $isClickedSelectCount: boolean;
-    $setIsCraftingId: Function;
-    $craftItem: Function;
-    $clearIsCraftingId: Function;
-    $onClickSelectCount: Function;
-    $onClickCancelCount: Function;
+    $isSelected: boolean;
+    $setCraftingId: Function;
+    $clearCraftingId: Function;
+    $craftItem: (count: number, removeItems: IFullItemWithCount[]) => void;
+    $setSelectedId: Function;
+    $clearSelectedId: Function;
+    $openInfoModal: (info: IChangeInfo) => void;
     $playerCraftingSpeed: number;
     $countCanCraft: number;
 }
 
 function CraftItem({ 
     $fullItem,
-    $itemToCraft, 
     $craftItem, 
     $index, 
     $craftingId, 
     $countCanCraft,
-    $isClickedSelectCount,
-    $setIsCraftingId, 
-    $clearIsCraftingId, 
-    $onClickSelectCount,
-    $onClickCancelCount,
-    $playerCraftingSpeed}: ICraftItemProps) {
+    $setCraftingId, 
+    $clearCraftingId, 
+    $playerCraftingSpeed,
+    $isSelected,
+    $setSelectedId,
+    $clearSelectedId,
+    $openInfoModal}: ICraftItemProps) {
 
     const {areaItems, inventory} = useAppSelector(state => state.userReducer)
     const dispatch = useAppDispatch();
@@ -43,90 +44,130 @@ function CraftItem({
     const [isCrafting, setIsCrafting] = useState(false);
     const isCraftingRef = useRef(isCrafting);
     isCraftingRef.current = isCrafting;
-    const [baseTimeToCrafting, setBaseTimeToCrafting] = useState($fullItem.timeToMining - $playerCraftingSpeed*-1);
-    const [timeToMining, setTimeToMining] = useState(baseTimeToCrafting);
+    const [baseTimeToCrafting, setBaseTimeToCrafting] = useState($fullItem.timeToMining - $playerCraftingSpeed);
+    const [timeToCrafting, setTimeToCrafting] = useState(baseTimeToCrafting);
 
-    const onClickStartMining = (e:React.MouseEvent<HTMLDivElement>) => {
+    const onClickStartMining = () => {
         if(!isCrafting){
             setIsCrafting(true);
-            $setIsCraftingId();
+            isCraftingRef.current = true;
+            $setCraftingId();
+            setBaseTime();
             startIntervalMine();
         }
     }
 
-    const onClickStopMining = () => {
-        dispatch(stopMineItem());
-        setTimeToMining(baseTimeToCrafting);
+    const onClickCancelCrafting = () => {
+        $clearCraftingId();
         setIsCrafting(false);
-        $clearIsCraftingId();
+        isCraftingRef.current = false;
+        setBaseTime();
         
+        var highestTimeoutId = setTimeout(";");
+        for (var i = 0; i < highestTimeoutId; i++) {
+            clearTimeout(i);
+        }
     }
 
     const startIntervalMine = () => {
+        setBaseTime(rangeCount);
         const interval = setInterval(() => {
             if(!isCraftingRef.current) clearInterval(interval);
-            setTimeToMining(t => t - 0.05);
+            setTimeToCrafting(t => t - 0.05);
         }, 50);
+        
         setTimeout(() => {
             clearInterval(interval);
+            const itemsToRemove: IFullItemWithCount[] = 
+                $fullItem.itemsToCraft!.map(i => {
+                    return { 
+                        ...areaItems.find(fi => fi.id === i.id)!, 
+                        count: i.count*rangeCount }
+                        });
+
             if(isCraftingRef.current) {
-                $clearIsCraftingId();
-                $craftItem();
+                $clearCraftingId();
+                $craftItem(rangeCount, itemsToRemove);
             }
+            setRangeCount(1);
+            setIsCrafting(false);
+            setBaseTime(1);
         }, baseTimeToCrafting*1000)
     }
 
-    console.log($countCanCraft)
     const [rangeCount, setRangeCount] = useState(1);
+
+    const onChangeRange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setRangeCount(Number(e.currentTarget.value));
+        setBaseTime(Number(e.currentTarget.value));
+    }
+
+    const setBaseTime = (changedRange = rangeCount) => {
+        setBaseTimeToCrafting(($fullItem.timeToMining - $playerCraftingSpeed*-1)*changedRange);
+        setTimeToCrafting(($fullItem.timeToMining - $playerCraftingSpeed*-1)*changedRange);
+
+    }
+
+    useEffect(() => {
+
+    }, [$countCanCraft])
+
+    if(!$fullItem.title){
+        return (<></>)
+    }
 
     return (
         <Item 
             color={getItemBackground($fullItem.rare)} 
             $hoveredColor={getItemHoveredBackground($fullItem.rare)}
-            $isMiningOther={false} >
-            {/* <AreaItemBlockClickable onClick={e => onClickStartMining(e)} /> */}
+            $isMiningOther={$craftingId !== $fullItem.id && $craftingId !== ''} >
+            <AreaItemBlockClickable />
+            <CircleButton symbol='?' click={() => $openInfoModal({id: $fullItem.id, whatInfo: 'item'})} />
             <Avatar 
                 $image={$fullItem.avatar} 
                 width={'120px'} 
                 height={'120px'}
                 $isDoSomething={isCrafting}
-                $onClicked={() => onClickStopMining()} 
+                $onClicked={() => onClickCancelCrafting()} 
                 $isMiningOther={false} />
 
             <InfoBlock>
-                <Title>{$fullItem.title}</Title>
+                <Title>{$fullItem.title} ({inventory.find(i => $fullItem.id === i.item.id)?.count || 0})</Title>
                 <NeedList>
                     {
-                        $itemToCraft.itemsNeed.map(i => 
+                        $fullItem.itemsToCraft!.map(i => 
                             <NeedItem 
                                 key={i.id}
                                 $id={i.id}
-                                $title={areaItems.find(ai => ai.id === i.id)!.title}
+                                $title={areaItems.find(ai => ai.id === i.id)?.title || ''}
                                 $countNeed={i.count*rangeCount}
                                 $countHave={inventory.find(pi => pi.item.id === i.id)?.count || 0} />)
                     }
                 </NeedList>
                 <CraftBlock>
                     {
-                        $countCanCraft
-                            ? <CraftButton onClick={() => $onClickSelectCount(true)}>
+                        $countCanCraft && $craftingId === ''
+                            ? <Button onClick={
+                                $isSelected
+                                ? () => onClickStartMining()
+                                : () => $setSelectedId() }>
                                 {
-                                    $isClickedSelectCount
+                                    $isSelected
                                         ? '🗸'
                                         : '+'
                                 }
-                            </CraftButton>
+                            </Button>
                             : null
                     }
                     {
-                        $isClickedSelectCount
-                        ? <CraftButton onClick={() => $onClickCancelCount()}>
+                        $isSelected && $craftingId === '' && $countCanCraft
+                        ? <Button onClick={() => $clearSelectedId()}>
                             ✖
-                        </CraftButton>
+                        </Button>
                         : null
                     }
                     {
-                        $isClickedSelectCount && $countCanCraft > 1
+                        $isSelected && $craftingId === '' && $countCanCraft > 1
                         ? <RangeBlock>
                             <CountRangeText>
                                 x{rangeCount}
@@ -136,7 +177,7 @@ function CraftItem({
                                 min={1} 
                                 max={$countCanCraft} 
                                 value={rangeCount}
-                                onChange={e => setRangeCount(Number(e.target.value))} />
+                                onChange={e => onChangeRange(e)} />
                             
                         </RangeBlock>
                         : null
@@ -144,22 +185,46 @@ function CraftItem({
 
                 </CraftBlock>
             </InfoBlock>
-            
-            <Timer>
+            <InfoCrafting>
                 {
                     isCrafting
-                        ? timeToMining.toFixed(1)
-                        : baseTimeToCrafting
-                }s
-            </Timer>
+                        ? <CountCrafting>
+                            x{rangeCount}
+                        </CountCrafting>
+                        : null
+                }
+                <Timer>
+                    {
+                        isCrafting
+                            ? Number(timeToCrafting.toFixed(1))
+                            : baseTimeToCrafting
+                    }s
+                </Timer>
+            </InfoCrafting> 
+            
             <TimerLine 
                 color={getRareColor($fullItem.rare)}
                 $backgroundColor={getRareTimerBackgroundColor($fullItem.rare)}
                 max={baseTimeToCrafting} 
-                value={isCrafting ? timeToMining : baseTimeToCrafting} />
+                value={isCrafting ? timeToCrafting : baseTimeToCrafting} />
         </Item>
     );
 }
+
+const InfoCrafting = styled.div`
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: center;
+`
+
+const CountCrafting = styled.p`
+    color: gray;
+`
 
 const CountRangeText = styled.p`
     font-size: 20px;
@@ -199,7 +264,7 @@ const CountRange = styled.input`
 
 `
 
-const CraftButton = styled.div`
+const Button = styled.div`
     font-size: 30px;
     line-height: 0;
     width: 40px;
@@ -244,16 +309,13 @@ const AreaItemBlockClickable = styled.div`
     width: 100%;
     height: 100%;
     position: absolute;
+    z-index: -1;
     top: 0;
     left: 0;
 `
 
 const Timer = styled.p`
-    position: absolute;
     color: #8b8b8b;
-    bottom: 0;
-    right: 0;
-    margin: 10px;
 `
 
 interface ITimerLineProps{
@@ -342,7 +404,7 @@ const Item = styled.div<IAreaItemBlockProps>`
         p => p.$isMiningOther
             ? ` &::after{
                 position: absolute;
-                z-$index: 99;
+                z-index: 99;
                 border-radius: 5px;
                 top: 0;
                 left: 0;

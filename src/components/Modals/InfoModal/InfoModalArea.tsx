@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks/redux';
 import { IArea, IChangeInfo } from '../../../models/IArea';
@@ -11,17 +11,19 @@ import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
 
 interface IModalArea {
-    $area: IArea;
+    $id: string;
     $closeModal: Function;
-    $changeWhatInfo: Function;
+    $changeWhatInfo: (info: IChangeInfo) => void;
 }
 
-function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
+function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
 
     const { areas } = useAppSelector(state => state.userReducer);
 
-    const backgroundColor = getAreaBackground($area.color);
-    const backgroundHoveredColor = getHoveredAreaBackground($area.color);
+    const [thisArea, setThisArea] = useState(areas.find(a => a.id === $id)!);
+
+    const backgroundColor = getAreaBackground(thisArea.color);
+    const backgroundHoveredColor = getHoveredAreaBackground(thisArea.color);
 
     useEffect(() => {
 
@@ -31,19 +33,19 @@ function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
         <>
             <Section>
                 <Avatar
-                    $image={$area.avatar}
+                    $image={thisArea.avatar}
                     width={'250px'}
                     height={'250px'}
                     $minWidth={'200px'}
                     $minHeight={'200px'} />
                 <Title>
-                    "{$area.title}"
+                    "{thisArea.title}"
                 </Title>
-                <ColorText color={getAreaColor($area.color)}>
+                <ColorText color={getAreaColor(thisArea.color)}>
                     {
-                        $area.color === 'green'
+                        thisArea.color === 'green'
                             ? 'Зеленная зона'
-                            : $area.color === 'yellow'
+                            : thisArea.color === 'yellow'
                                 ? 'Желтая зона'
                                 : 'Красная зона'
 
@@ -51,7 +53,7 @@ function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
                 </ColorText>
                 <Description>
                     {
-                        $area.description
+                        thisArea.description
                     }
 
                 </Description>
@@ -63,11 +65,11 @@ function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
                     Местность
                 </Title>
                 <UpdateText>
-                    Обновляется каждые {$area.timeToRespawnAreaItems} минут
+                    Обновляется каждые {thisArea.timeToRespawnAreaItems} минут
                 </UpdateText>
                 <List>
                     {
-                        $area.areaItems.map(i =>
+                        thisArea.areaItems.map(i =>
                             <InfoElem
                                 key={i.id}
                                 id={i.id}
@@ -76,7 +78,7 @@ function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
                                 $countMin={i.countMin}
                                 $changeWhatInfo={() => $changeWhatInfo({
                                     whatInfo: 'item',
-                                    itemId: i.id
+                                    id: i.id
                                 })} />)
                     }
 
@@ -88,11 +90,11 @@ function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
                     Враги
                 </Title>
                 <UpdateText>
-                    Обновляются каждые {$area.timeToRespawnAreaEnemies} минут
+                    Обновляются каждые {thisArea.timeToRespawnAreaEnemies} минут
                 </UpdateText>
                 <List>
                     {
-                        $area.enemies.map(e =>
+                        thisArea.enemies.map(e =>
                             <InfoElem
                                 id={e.id}
                                 key={e.id}
@@ -104,7 +106,7 @@ function AreaModal({ $area, $changeWhatInfo, $closeModal }: IModalArea) {
                                 $spawnChance={e.spawnChance}
                                 $changeWhatInfo={() => $changeWhatInfo({
                                     whatInfo: 'enemy',
-                                    enemyId: e.id
+                                    id: e.id
                                 })} />)
                     }
                 </List>

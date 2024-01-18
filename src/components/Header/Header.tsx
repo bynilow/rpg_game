@@ -2,31 +2,42 @@ import styled from 'styled-components'
 import Container from '../Container/Container';
 import { useAppSelector } from '../../hooks/redux';
 import Avatar from '../Avatar/Avatar';
+import { useEffect } from 'react';
+import { getRandomNumber } from '../../functions/Random';
 
 interface IHeader{
     $openInventory: Function;
     $openSkills: Function;
+    $openCraft: Function;
+    $openCharacter: Function;
 }
 
-function Header({$openInventory, $openSkills}: IHeader) {
+function Header({$openInventory, $openSkills, $openCraft, $openCharacter}: IHeader) {
 
     const {player, playerSkills} = useAppSelector(state => state.userReducer);
 
     const needXP = (player.level ** 2.7) + 10;
 
+    useEffect(() => {
+
+    }, [player.currentXP])
+
     return ( 
         <Block>
             <Container>
                 <ContainerInner>
-                <GameName>
-                    GAME
-                </GameName>
+                    <GameLogo>
+                        {/* <Logo $rotate={getRandomNumber(-5,5)} /> */}
+                        <LogoText>
+                            GRINDFEST
+                        </LogoText>
+                    </GameLogo>
                     <ButtonsBlock>
                         <LineBlock onClick={() => $openSkills()}>
                             {
                                 player.skillPoints
                                     ? <PointsText>
-                                        +{ player.skillPoints }
+                                        +{player.skillPoints}
                                     </PointsText>
                                     : null
                             }
@@ -59,32 +70,82 @@ function Header({$openInventory, $openSkills}: IHeader) {
                             <LineText>
                                 {
                                     playerSkills.baseHealth.baseCount.toString().length >= 4
-                                        ? `${(playerSkills.baseHealth.baseCount/1000).toFixed(1)}k / ${(player.health/1000).toFixed(1)}k`
+                                        ? `${(playerSkills.baseHealth.baseCount / 1000).toFixed(1)}k / ${(player.health / 1000).toFixed(1)}k`
                                         : `${playerSkills.baseHealth.baseCount} / ${player.health.toFixed(0)}`
                                 }
                             </LineText>
                         </LineBlock>
                         <Coins>
-                        <CoinsText>
-                            {player.coins}
-                        </CoinsText>
-                        <Avatar $image={'icons/items/other/coin.png'} width={'35px'} height={'35px'} />
-                    </Coins>
-                    <Button onClick={() => $openInventory()}>
-                        Инвентарь
-                    </Button>
-                    <Button>
-                        Крафт
-                    </Button>
-                    <Button>
-                        Персонаж
-                    </Button>
-                </ButtonsBlock>
+                            <CoinsText>
+                                {player.coins}
+                            </CoinsText>
+                            <Avatar $image={'icons/items/other/coin.png'} width={'35px'} height={'35px'} />
+                        </Coins>
+                        <Button onClick={() => $openInventory()}>
+                            Инвентарь
+                        </Button>
+                        <Button onClick={() => $openCraft()}>
+                            Крафт
+                        </Button>
+                        <Button onClick={() => $openCharacter()}>
+                            Персонаж
+                        </Button>
+                    </ButtonsBlock>
                 </ContainerInner>
             </Container>
         </Block>
      );
 }
+
+interface ILogoProps {
+    $rotate: number;
+}
+
+const Logo = styled.div<ILogoProps>`
+    background-image: ${ `url( ${ require('../../icons/logos/logo.png') } )` };
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 150px;
+    height: 100%;
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    &:hover{
+        transform: scale(1.7) rotate(${p => p.$rotate}deg);
+    }
+`
+
+const LogoText = styled.p`
+
+    background: #B94AF7;
+    background: linear-gradient(to right, #B94AF7 0%, #FC5E5D 51%, #FABB01 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #000000;
+    line-height: 0.8;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    &:hover{
+        transform: scale(1.4) rotate(-5deg);
+
+    }
+`
+
+const GameLogo = styled.p`
+    user-select: none;
+    display: flex;
+    gap: 10px;
+    height: 100%;
+    align-items: center;
+
+`
 
 const PointsText = styled.p`
     position: absolute;
@@ -240,23 +301,17 @@ const ContainerInner = styled.div`
 
 `
 
-const GameName = styled.p`
-    margin: 0;
-    font-size: 20px;
-    font-weight: bold;
-
-`
-
 const Block = styled.div`
     top: 0;
     left: 0;
+    padding: 10px 0;
     margin-bottom: 20px;
     width: 100vw;
     min-height: 50px;
-    
     display: flex;
     justify-content: center;
     align-items: center;
+
 `
 
 export default Header;

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks/redux';
 import { IChangeInfo } from '../../../models/IArea';
@@ -11,60 +11,60 @@ import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
 
 interface IModalItem {
-    $itemId: string;
+    $id: string;
     $closeModal: Function;
 
-    $changeWhatInfo: (item: IChangeInfo) => void;
+    $changeWhatInfo: Function;
 }
 
-function ItemModal({ $closeModal, $changeWhatInfo, $itemId }: IModalItem) {
+function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
 
     const { areaItems, areas, enemies } = useAppSelector(state => state.userReducer);
 
-    const item = areaItems.find(i => i.id === $itemId)!;
+    const [thisItem, setThisItem] = useState(areaItems.find(i => i.id === $id)!);
 
-    const backgroundColor = getItemBackground(item.rare);
-    const backgroundHoveredColor = getItemHoveredBackground(item.rare);
+    const backgroundColor = getItemBackground(thisItem.rare);
+    const backgroundHoveredColor = getItemHoveredBackground(thisItem.rare);
 
     useEffect(() => {
 
-    }, [])
+    }, [$id])
 
     return (
         <>
 
             <Section>
                 <Avatar
-                    $image={item.avatar}
+                    $image={thisItem.avatar}
                     width={'250px'}
                     height={'250px'}
                     $minWidth={'200px'}
                     $minHeight={'200px'} />
                 <Title>
-                    "{item.title}"
+                    "{thisItem.title}"
                 </Title>
-                <ColorText color={getRareColor(item.rare)}>
+                <ColorText color={getRareColor(thisItem.rare)}>
                     {
-                        item.rare === 'common'
+                        thisItem.rare === 'common'
                             ? "Обычное"
-                            : item.rare === 'uncommon'
+                            : thisItem.rare === 'uncommon'
                                 ? "Необычное"
-                                : item.rare === 'rare'
+                                : thisItem.rare === 'rare'
                                     ? "Редкое"
-                                    : item.rare === 'mythical'
+                                    : thisItem.rare === 'mythical'
                                         ? "Мифическое"
                                         : "Легендарное"
 
                     }
                 </ColorText>
                 <Cost>
-                    {item.cost}$
+                    {thisItem.cost}$
                 </Cost>
                 <Description>
-                    {item.description}
+                    {thisItem.description}
                 </Description>
                 {
-                    item.type === 'tree' || item.type === 'ore'
+                    thisItem.type === 'tree' || thisItem.type === 'ore'
                         ? <>
                             <Title>
                                 Характеристики
@@ -72,12 +72,95 @@ function ItemModal({ $closeModal, $changeWhatInfo, $itemId }: IModalItem) {
                             <Property>
                                 <ProperyName>
                                     Скорость добычи:
-                                </ProperyName> {item.timeToMining}s
+                                </ProperyName> {thisItem.timeToMining}s
                             </Property>
                             <Property>
                                 <ProperyName>
                                     Получаемый опыт:
-                                </ProperyName> {item.baseCountXP}
+                                </ProperyName> {thisItem.baseCountXP}
+                            </Property>
+                        </>
+                        : null
+                }
+
+                {
+                    thisItem.type === 'armor'
+                        ? <>
+                            <Title>
+                                Характеристики
+                            </Title>
+                            <Property>
+                                <ProperyName>
+                                    Скорость создания:
+                                </ProperyName> {thisItem.timeToMining}s
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Опыт:
+                                </ProperyName> {thisItem.baseCountXP}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Множитель ОЗ:
+                                </ProperyName> +x{thisItem.armorStats?.healthMultiplier}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс промаха:
+                                </ProperyName> {thisItem.armorStats!.missChance > 0
+                                    ? '+' + thisItem.armorStats?.missChance
+                                    : thisItem.armorStats?.missChance}%
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс уклонения:
+                                </ProperyName> {thisItem.armorStats!.dodgeChance > 0
+                                    ? '+' + thisItem.armorStats!.dodgeChance
+                                    : thisItem.armorStats!.dodgeChance}%
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Скорость передвижения:
+                                </ProperyName> {thisItem.armorStats!.speedMovement > 0
+                                    ? '+' + thisItem.armorStats!.speedMovement
+                                    : thisItem.armorStats!.speedMovement}s
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Скорость атаки:
+                                </ProperyName> {thisItem.armorStats!.speedAttack > 0
+                                    ? '+' + thisItem.armorStats?.speedAttack
+                                    : thisItem.armorStats?.speedAttack}s
+                            </Property>
+                        </>
+                        : null
+                }
+
+                {
+                    thisItem.type === 'tool'
+                        ? <>
+                            <Title>
+                                Характеристики
+                            </Title>
+                            <Property>
+                                <ProperyName>
+                                    Скорость создания:
+                                </ProperyName> {thisItem.timeToMining}s
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Опыт:
+                                </ProperyName> {thisItem.baseCountXP}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Скорость добычи:
+                                </ProperyName> {thisItem.toolStats?.miningSpeed}s
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс дополнительного лута:
+                                </ProperyName> +{thisItem.toolStats!.doubleChancePercent}%
                             </Property>
                         </>
                         : null
@@ -90,34 +173,50 @@ function ItemModal({ $closeModal, $changeWhatInfo, $itemId }: IModalItem) {
                 </Title>
                 <List>
                     {
-                        areas.filter(a => a.areaItems.findIndex(i => i.id === $itemId) !== -1)
+                        areas.filter(a => a.areaItems.findIndex(i => i.id === $id) !== -1)
                             .map(a =>
                                 <InfoElem
                                     key={a.id}
                                     id={a.id}
                                     $type={'area'}
-                                    $countMax={a.areaItems.find(i => i.id === $itemId)!.countMax}
-                                    $countMin={a.areaItems.find(i => i.id === $itemId)!.countMin}
+                                    $countMax={a.areaItems.find(i => i.id === $id)!.countMax}
+                                    $countMin={a.areaItems.find(i => i.id === $id)!.countMin}
                                     $changeWhatInfo={() => $changeWhatInfo({
                                         whatInfo: 'area',
-                                        area: a
+                                        id: a.id
                                     })} />)
                     }
                     {
-                        enemies.filter(e => e.possibleLoot.findIndex(i => i.id === $itemId) !== -1)
+                        enemies.filter(e => e.possibleLoot.findIndex(i => i.id === $id) !== -1)
                             .map(ef =>
                                 <InfoElem
                                     key={ef.id}
                                     id={ef.id}
                                     $type={'enemy'}
-                                    $dropChance={ef.possibleLoot.find(pl => pl.id === $itemId)!.dropChance}
-                                    $countMax={ef.possibleLoot.find(pl => pl.id === $itemId)!.countMax}
-                                    $countMin={ef.possibleLoot.find(pl => pl.id === $itemId)!.countMin}
+                                    $dropChance={ef.possibleLoot.find(pl => pl.id === $id)!.dropChance}
+                                    $countMax={ef.possibleLoot.find(pl => pl.id === $id)!.countMax}
+                                    $countMin={ef.possibleLoot.find(pl => pl.id === $id)!.countMin}
                                     $changeWhatInfo={() => $changeWhatInfo({
                                         whatInfo: 'enemy',
-                                        enemyId: ef.id
+                                        id: ef.id
                                     })} />)
                     }
+                    
+                    {
+                        thisItem.itemsToCraft
+                            ? <InfoElem
+                                key={$id}
+                                id={$id}
+                                $type={'item'}
+                                $itemsToCraft={thisItem.itemsToCraft}
+                                $isCrafting
+                                $changeWhatInfo={() => $changeWhatInfo({
+                                    whatInfo: 'item',
+                                    id: $id
+                                })} />
+                            : null
+                    }
+                    
                 </List>
             </Section>
 
@@ -126,7 +225,18 @@ function ItemModal({ $closeModal, $changeWhatInfo, $itemId }: IModalItem) {
                     Используется
                 </Title>
                 <List>
-
+                    {
+                        areaItems.filter(i => i.itemsToCraft).filter(i => i.itemsToCraft!.find(fi => fi.id === $id))
+                            .map(i => <InfoElem
+                                key={i.id}
+                                id={i.id}
+                                $type={'item'}
+                                $count={i.itemsToCraft!.find(i => i.id === $id)!.count}
+                                $changeWhatInfo={() => $changeWhatInfo({
+                                    whatInfo: 'item',
+                                    id: i.id
+                                })} />)
+                    }
                 </List>
             </Section>
         </>

@@ -1,7 +1,6 @@
-import styled, { keyframes } from 'styled-components'
-import { useAppDispatch } from '../../../hooks/redux';
-import { stopMoveToLocation } from '../../../store/reducers/ActionCreators';
 import { useEffect, useRef, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { useAppDispatch } from '../../../hooks/redux';
 import Avatar from '../../Avatar/Avatar';
 
 interface IArea {
@@ -44,7 +43,7 @@ function AreaPath({
         $playerInventoryMaxWeight >= $playerInventoryWeight
             ? 0
             : ($playerInventoryMaxWeight - $playerInventoryWeight) / 10 * -1);
-    const [baseTimeToMovement, setBaseTimeToMovement] = useState(($timeToMove - $playerMovementSpeed*-1) + overweight )
+    const [baseTimeToMovement, setBaseTimeToMovement] = useState(($timeToMove + $playerMovementSpeed) + overweight);
     const [currentTimeToMove, setCurrentTimeToMove] = useState(baseTimeToMovement);
     
 
@@ -60,8 +59,12 @@ function AreaPath({
     
     const onClickStopMove = () => {
         setIsMoving(false);
-        dispatch(stopMoveToLocation());
         $clearMoveAreaId();
+
+        var highestTimeoutId = setTimeout(";");
+        for (var i = 0; i < highestTimeoutId; i++) {
+            clearTimeout(i);
+        }
     }
 
     const startIntervalMove = () => {
@@ -77,6 +80,11 @@ function AreaPath({
             };
         }, baseTimeToMovement*1000)
     }
+
+    useEffect(() => {
+        setBaseTimeToMovement(baseTimeToMovement < 0 ? 0.1 : baseTimeToMovement);
+    }, [])
+
     return (
         <Area
             $$index={$index} 

@@ -43,25 +43,6 @@ export const getAvailablePaths = (levelId:string) => async (dispatch: AppDispatc
     }
 }
 
-export const setLocationToMove = (location:ILocationToMove) => async (dispatch: AppDispatch) => {
-    try{
-        dispatch(gameSlice.actions.setLocationToMove(location));
-    }
-    catch{
-
-    }
-}
-
-export const stopMoveToLocation = () => async (dispatch: AppDispatch) => {
-    try{
-        dispatch(gameSlice.actions.stopMove());
-        
-    }
-    catch{
-
-    }
-}
-
 export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispatch: AppDispatch) => {
     try{
         const items = updatedLevel.itemsToUpdate.map(i => {
@@ -74,6 +55,7 @@ export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispat
             }
         });
         const filteredItems = items.filter(i => i !== undefined)!;
+        console.log('wtf')
         dispatch(gameSlice.actions.updateAreaItems({
             levelId: updatedLevel.levelId,
             date: updatedLevel.date,
@@ -81,8 +63,8 @@ export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispat
         }));
         
     }
-    catch{
-
+    catch(e){
+        console.log(e)
     }
 }
 
@@ -135,17 +117,6 @@ export const mineItem = (miningItem: IFullItemWithCount) => async (dispatch: App
     }
 }
 
-export const stopMineItem = () => async (dispatch: AppDispatch) => {
-    try{
-        dispatch(gameSlice.actions.stopMine());
-        
-    }
-    catch{
-
-    }
-}
-
-
 export const setAreasFromStorage = () => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.setAreasFromStorage());
@@ -167,6 +138,15 @@ export const addItemToInventory = (item:IFullItemWithCount) => async (dispatch: 
 export const addItemsToInventory = (items:IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.addItemsToInventory(items));
+    }
+    catch{
+
+    }
+}
+
+export const removeItemsFromInventory = (items:IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.removeItemsFromInventory(items));
     }
     catch{
 
@@ -242,6 +222,15 @@ export const setSkillsFromStorage = () => async (dispatch: AppDispatch) => {
 export const decrementSkillPoints = (points: number) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.decrementSkillPoints(points));
+    }
+    catch{
+
+    }
+}
+
+export const equipItem = (id: string) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.equipItem(id));
     }
     catch{
 

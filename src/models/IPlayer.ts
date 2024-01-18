@@ -1,4 +1,5 @@
 import { IActionTexts } from "./IEnemy";
+import { IArmor, ITool, IWeapon } from "./IEquipment";
 
 interface IPlayerStat {
     baseCount: number;
@@ -29,7 +30,7 @@ export interface IPlayerBaseStats{
     healthRegenerationMultiplier: IPlayerStat; 
 
     experienceMultiplier: IPlayerStat;
-    craftSpeedMultiplier: IPlayerStat;
+    craftSpeed: IPlayerStat;
     craftDoubleLootPercentChance: IPlayerStat;
     buyPricePercent: IPlayerStat;
     sellPricePercent: IPlayerStat;
@@ -46,6 +47,12 @@ export interface IPlayer{
     currentXP: number;
     skillPoints: number;
     coins: number;
+    headStats: IArmor;
+    chestStats: IArmor;
+    footStats: IArmor;
+    weaponStats: IWeapon;
+    axeStats: ITool;
+    pickaxeStats: ITool;
 }
 
 export interface ISkillUp {

@@ -11,6 +11,7 @@ interface IAvatar{
     $isMiningOther?: boolean;
     $onClicked?: Function;
     $isCircle?: boolean;
+    children?: React.ReactNode;
 }
 
 function Avatar({
@@ -23,7 +24,8 @@ function Avatar({
     $isMovingOther, 
     $isMiningOther, 
     $onClicked = () => null,
-    $isCircle} : IAvatar) {
+    $isCircle,
+    children} : IAvatar) {
 
     return ( 
         <Block 
@@ -35,12 +37,13 @@ function Avatar({
             $isMovingOther={$isMovingOther}
             $isMiningOther={$isMiningOther}
             $isCircle={$isCircle}>
+            {children}
             {
                 $isDoSomething
-                ? <StopAction onClick={() => $onClicked()}>
-                    ✕
-                </StopAction>
-            : null
+                    ? <StopAction onClick={() => $onClicked()}>
+                        ✕
+                    </StopAction>
+                    : null
             }
         </Block>
      );
