@@ -19,6 +19,8 @@ import { getRandomNumberForLoot } from '../../../functions/Random';
 import CraftModal from '../../Modals/CraftModal/CraftModal';
 import CharacterModal from '../../Modals/Character/CharacterModal';
 import { getStats } from '../../../functions/Stats';
+import { Enemies } from '../../../data/Enemies';
+import ShopModal from '../../Modals/ShopModal/ShopModal';
 
 
 interface IAreaPage {
@@ -49,7 +51,6 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
     }
 
     const onChangeInfo = (info: IChangeInfo) => {
-        console.log(info.whatInfo, info.id)
         setInfoId(info.id);
         setWhatInfo(info.whatInfo);
         
@@ -65,7 +66,6 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const onClickGoLevel = (selectedPath: IAviablePath) => {
         dispatch(goLevel(selectedPath.pathId));
-
     }
 
     const [miningItemId, setMiningItemId] = useState<string>('');
@@ -91,6 +91,8 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
     const [isCraftOpen, setIsCraftOpen] = useState(false);
 
     const [isCharacterOpen, setIsCharacterOpen] = useState(false);
+
+    const [traderId, setTraderId] = useState('');
 
     const [stats, setStats] = useState(getStats(playerSkills, player));
 
@@ -122,18 +124,22 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
         onChangeInfo({ id: currentLocation.id, whatInfo: 'area' });
 
-        
         setStats(getStats(playerSkills, player));
         setInventoryWeight(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));
-        console.log('eee')
     }, [player, currentLocation.id])
-
-    console.log(currentLocation?.currentEnemies[0])
-
 
     if(!currentLocation) return <div>Loading...</div>
     else return (
         <>
+            {
+                traderId
+                    ? <ShopModal 
+                        $traderId={traderId}
+                        $locationId={currentLocation.id}
+                        $closeModal={() => setTraderId('')}
+                        $openInfoModal={(info: IChangeInfo) => onClickOpenInfoModal(info)} />
+                    : null
+            }
             {
                 isCharacterOpen
                 ? <CharacterModal $closeModal={() => setIsCharacterOpen(false)} />
@@ -248,7 +254,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                         $isBoxShadow
                         $isBackgroundTransparent={false}>
 
-                        <NameBlock>Враги: </NameBlock>
+                        <NameBlock>Существа: </NameBlock>
                         <DescriptionText>
                             ⟳ {new Date(currentLocation.nextRespawnAreaEnemies).toLocaleString()}
                         </DescriptionText>
@@ -260,7 +266,11 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                                             key={e.idInArea + currentLocation.id}
                                             id={e.id}
                                             $idInArea={e.idInArea}
-                                            $onClickStartBattle={() => $onClickStartBattle(e)}
+                                            $onClick={
+                                                Enemies.find(fe => fe.id === e.id)!.type !== 'trader'
+                                                    ? () => $onClickStartBattle(e)
+                                                    : () => setTraderId(e.id)
+                                            }
                                             $index={ind}
                                             $level={e.level} />)
                                     : null

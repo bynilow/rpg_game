@@ -3,7 +3,7 @@ import { Items } from "../../data/AreaItems";
 import { Enemies } from "../../data/Enemies";
 import { Locations } from "../../data/Locations";
 import { IArea, IAviablePath, IPath } from "../../models/IArea";
-import { IFullItem, IFullItemWithCount } from "../../models/IAreaItem";
+import { IBuyItem, IFullItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { IAreaCurrentEnemy, IEnemy, IEnemyDead } from "../../models/IEnemy";
 import { IItemInventory } from "../../models/IInventory";
 import { IPlayer, IPlayerBaseStats, ISkillUp } from "../../models/IPlayer";
@@ -210,6 +210,11 @@ const initialState: GameSlice = {
             time: 5.25
         },
         {
+            pathA: 'central_castle',
+            pathB: 'central_castle_shopping_street',
+            time: 2.3
+        },
+        {
             pathA: 'forgotten_road',
             pathB: 'bloody_forest',
             time: 6.4
@@ -229,7 +234,7 @@ const initialState: GameSlice = {
         title: 'peesoos',
         health: 150,
         avatar: '',
-        coins: 0,
+        coins: 100,
         level: 1,
         currentXP: 0,
         skillPoints: 20,
@@ -598,7 +603,73 @@ export const gameSlice = createSlice({
 
             localStorage.inventory = JSON.stringify(state.inventory);
             localStorage.player = JSON.stringify(state.player);
-        }
+        },
+        buyItem(state, action: PayloadAction<IBuyItem>) {
+            const itemId = action.payload.item.id;
+            const foundedItemIndex = state.inventory.findIndex(i => i.item.id === itemId);
+            const date = new Date().toISOString();
+            const count = action.payload.item.count;
+            const costPerUnit = action.payload.buyingCostPerUnit;
+            const traderId = action.payload.traderId;
+            const locationId = action.payload.levelId;
+
+            if (foundedItemIndex !== -1) {
+                state.inventory[foundedItemIndex].count += count;
+                state.inventory[foundedItemIndex].item.dateReceiving = date;
+            }
+            else {
+                state.inventory.push({
+                    item: { ...action.payload.item, dateReceiving: date },
+                    count
+                })
+            }
+            state.player.coins -= count * costPerUnit;
+            state.player.coins = Number(state.player.coins.toFixed(1));
+            
+            const foundedLocationIndex = state.areas.findIndex(a => a.id === locationId)!;
+            const foundedTraderInLocationIndex = state.areas[foundedLocationIndex].currentEnemies.findIndex(e => e.id === traderId)!;
+            const foundedTrader = state.areas[foundedLocationIndex].currentEnemies[foundedTraderInLocationIndex];
+            let foundedItemIndexInTrader = foundedTrader.traderStats!.tradingItems.findIndex(i => i.id === itemId)!;
+            let foundedItemInTrader = foundedTrader.traderStats!.tradingItems.find(i => i.id === itemId)!;
+            
+            console.log("foundedLocationIndex", foundedLocationIndex)
+            console.log("foundedTraderInLocationIndex", foundedTraderInLocationIndex)
+            console.log("foundedTrader", foundedTrader)
+            if(foundedItemInTrader.count - count > 0){
+                foundedItemInTrader.count -= count;
+                state.areas[foundedLocationIndex]
+                    .currentEnemies[foundedTraderInLocationIndex]
+                        .traderStats!.tradingItems[foundedItemIndexInTrader] = foundedItemInTrader;
+            }
+            else{
+                state.areas[foundedLocationIndex]
+                    .currentEnemies[foundedTraderInLocationIndex]
+                        .traderStats!.tradingItems.splice(foundedItemIndexInTrader, 1);
+            }
+
+            
+            localStorage.areas = JSON.stringify(state.areas);
+            localStorage.player = JSON.stringify(state.player);
+            localStorage.inventory = JSON.stringify(state.inventory);
+        },
+        sellItem(state, action: PayloadAction<IBuyItem>) {
+            const itemId = action.payload.item.id;
+            const itemIndex = state.inventory.findIndex(i => i.item.id === itemId);
+            const count = action.payload.item.count;
+            const costPerUnit = action.payload.buyingCostPerUnit;
+
+            if(state.inventory[itemIndex].count - count > 0){
+                state.inventory[itemIndex].count -= count;
+            }
+            else{
+                state.inventory.splice(itemIndex, 1)
+            }
+
+            state.player.coins += count * costPerUnit;
+
+            localStorage.player = JSON.stringify(state.player);
+            localStorage.inventory = JSON.stringify(state.inventory);
+        },
 
     }
 })

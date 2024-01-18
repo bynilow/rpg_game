@@ -135,6 +135,7 @@ const ModalBlock = styled.div<IModalBlockProps>`
     justify-content: ${ p => p.$justifyContent };
     align-items: ${ p => p.$alignItems };
     gap: ${ p => p.$gap };
+    overflow: hidden;
 
     animation: ${p => p.$isEnableAnims ? ModalBlockAnim : null} 0.5s ease;
     animation-direction: ${ 

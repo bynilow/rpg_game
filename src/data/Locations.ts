@@ -25,6 +25,14 @@ export const Locations: IArea[] = [
         ],
         "enemies": [
           {
+            "id": "garold",
+            "levelMin": 1,
+            "levelMax": 1,
+            "countMin": 1,
+            "countMax": 1,
+            "spawnChance": 100
+          },
+          {
             "id": "bandit",
             "levelMin": 1,
             "levelMax": 10,
@@ -269,6 +277,36 @@ export const Locations: IArea[] = [
         ],
         "timeToRespawnAreaItems": 100,
         "timeToRespawnAreaEnemies": 120,
+        "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
+        "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z",
+        "nextRespawnAreaItems": "2000-12-25T23:07:27.462Z",
+        "nextRespawnAreaEnemies": "2000-12-25T23:07:27.462Z"
+      },
+      {
+        "id": "central_castle_shopping_street",
+        "avatar": "icons/areas/central_castle_shopping_street.png",
+        "title": "Торговая улица",
+        "color": "green",
+        "description": "Торговая улица представляет собой важное и оживленное место, где игроки могут обмениваться товарами с торговцами. Здесь расположены многочисленные палатки, магазины и торговые дома, каждый из которых управляется определенным торговцем.",
+        "areaItems": [
+         
+        ],
+        "currentAreaItems": [
+
+        ],
+        "enemies": [
+          {
+            "id": "garold",
+            "levelMin": 1,
+            "levelMax": 1,
+            "countMin": 1,
+            "countMax": 1,
+            "spawnChance": 100
+          },
+        ],
+        "currentEnemies": [],
+        "timeToRespawnAreaItems": 100,
+        "timeToRespawnAreaEnemies": 100,
         "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
         "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z",
         "nextRespawnAreaItems": "2000-12-25T23:07:27.462Z",

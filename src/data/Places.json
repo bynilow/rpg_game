@@ -197,6 +197,23 @@
         "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z" 
     },
     {
+        "id": "central_castle_shopping_street",
+        "avatar": "",
+        "title": "Торговая улица",
+        "description": "",
+        "areaItems": [
+
+        ],
+        "currentAreaItems": [
+
+        ],
+        "enemies": [],
+        "timeToRespawnAreaItems": 100,
+        "timeToRespawnAreaEnemies": 100,
+        "lastRespawnAreaItems": "2023-12-25T23:07:27.462Z",
+        "lastRespawnAreaEnemies": "2023-12-25T23:07:27.462Z" 
+    },
+    {
         "id": "bloody_forest",
         "avatar": "",
         "title": "Кровавые леса",

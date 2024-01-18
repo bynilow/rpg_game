@@ -576,6 +576,8 @@ const StartScreen = styled.div`
 
     animation: ${StartAnim} 4s ease;
     animation-fill-mode: forwards;
+
+    /* #e7b13d */
 `
 
 const StartText = styled.p`

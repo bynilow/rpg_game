@@ -40,4 +40,11 @@ export interface ICraftItem {
     count: number;
 }
 
+export interface IBuyItem{
+    item: IFullItemWithCount,
+    buyingCostPerUnit: number;
+    levelId: string;
+    traderId: string;
+}
+
 ///types - food, ore, tree

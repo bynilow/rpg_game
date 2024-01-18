@@ -11,10 +11,10 @@ interface IAreaEnemyProps {
     $idInArea: string;
     $level: number;
     $index: number;
-    $onClickStartBattle: Function;
+    $onClick: Function;
 }
 
-function AreaEnemy({ id, $idInArea, $level, $index, $onClickStartBattle }: IAreaEnemyProps) {
+function AreaEnemy({ id, $idInArea, $level, $index, $onClick }: IAreaEnemyProps) {
 
     const {enemies} = useAppSelector(state => state.userReducer);
 
@@ -25,16 +25,20 @@ function AreaEnemy({ id, $idInArea, $level, $index, $onClickStartBattle }: IArea
             color={getEnemyBackground(enemy.type)} 
             $hoveredColor={getHoveredEnemyBackground(enemy.type)}
             $index={$index} >
-            <EnemyClickableBlock onClick={() => $onClickStartBattle()} />
+            <EnemyClickableBlock onClick={() => $onClick()} />
             <Avatar 
                 $image={enemy.avatar} 
                 width={'90px'} 
                 height={'90px'} />
 
             <Title>{enemy.title}</Title>
-            <Level>
-                УР: {$level}
-            </Level>
+            {
+                enemy.type !== 'trader'
+                    ? <Level>
+                        УР: {$level}
+                    </Level>
+                    : null
+            }
         </AreaEnemyBlock>
     );
 }

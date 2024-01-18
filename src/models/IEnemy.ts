@@ -1,6 +1,6 @@
-import { IFullItem } from "./IAreaItem";
+import { IFullItem, IFullItemWithCount } from "./IAreaItem";
 
-export type IEnemyType = 'enemy' | 'neutral' | 'boss'
+export type IEnemyType = 'enemy' | 'neutral' | 'boss' | 'trader'
 
 export interface IEnemyDead {
     levelId: string;
@@ -45,6 +45,7 @@ export interface IEnemy{
     possibleLoot: IEnemyLoot[];
     actionText: IActionTexts;
     baseCountXP: number;
+    traderStats?: ITrader;
 }
 
 export interface IAreaEnemy{
@@ -54,6 +55,7 @@ export interface IAreaEnemy{
     countMin: number;
     countMax: number;
     spawnChance: number;
+    traderStats?: ITrader;
 }
 
 export interface IAreaCurrentEnemy{
@@ -61,4 +63,11 @@ export interface IAreaCurrentEnemy{
     idInArea: string;
     level: number;
     levelId: string;
+    traderStats?: ITrader;
+}
+
+export interface ITrader {
+    extraPriceMultiplier: number;
+    updateTimeInMinutes: number;
+    tradingItems: IFullItemWithCount[];
 }

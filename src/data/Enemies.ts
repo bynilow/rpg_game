@@ -94,5 +94,126 @@ export const Enemies: IEnemy[] = [
             "dodgeText": "#name применяет уловку и уклоняется от удара.",
             "missText": "Запутавшись в собственных ногах падает и не наносит никакого урона."
         }
+    },
+    {
+        "id": "garold",
+        "idInArea": "",
+        "title": "Торговец Гарольд",
+        "description": "Седые волосы и прекрасная борода добавляют ему мудрости и опыта, а добрый взгляд говорит о его заботе о своих клиентах. Гарольд продает все подряд, от обычных товаров до редких предметов, и всегда старается предложить своим клиентам наилучшие условия.",
+        "avatar": "icons/enemies/traders/garold_trader.png",
+        "baseCountXP": 0,
+        "level": 1,
+        "attackSpeed": 0,
+        "damage": 0,
+        "critDamageMultiplier": 0,
+        "critChance": 0,
+        "maxHealth": 0,
+        "dodgeChance": 0,
+        "blockingChance": 0,
+        "blockingMultiplier": 0,
+        "missChance": 0,
+        "type": "trader",
+        "possibleLoot": [
+            {
+                "id": "bottle",
+                "countMin": 4,
+                "countMax": 18,
+                "dropChance": 80
+            },
+            {
+                "id": "wool",
+                "countMin": 8,
+                "countMax": 46,
+                "dropChance": 70
+            },
+            {
+                "id": "bone",
+                "countMin": 9,
+                "countMax": 30,
+                "dropChance": 95
+            },
+            {
+                "id": "glue",
+                "countMin": 3,
+                "countMax": 13,
+                "dropChance": 75
+            },
+            {
+                "id": "birch_plank",
+                "countMin": 3,
+                "countMax": 15,
+                "dropChance": 75
+            },
+            {
+                "id": "oak_plank",
+                "countMin": 4,
+                "countMax": 13,
+                "dropChance": 60
+            },
+            {
+                "id": "willow_plank",
+                "countMin": 2,
+                "countMax": 11,
+                "dropChance": 45
+            },
+            {
+                "id": "cedar_plank",
+                "countMin": 2,
+                "countMax": 7,
+                "dropChance": 30
+            },
+            {
+                "id": "teak_plank",
+                "countMin": 1,
+                "countMax": 5,
+                "dropChance": 10
+            },
+            {
+                "id": "iron_ingot",
+                "countMin": 3,
+                "countMax": 15,
+                "dropChance": 75
+            },
+            {
+                "id": "tungsten_ingot",
+                "countMin": 3,
+                "countMax": 13,
+                "dropChance": 60
+            },
+            {
+                "id": "platinum_ingot",
+                "countMin": 3,
+                "countMax": 11,
+                "dropChance": 45
+            },
+            {
+                "id": "titanium_ingot",
+                "countMin": 2,
+                "countMax": 7,
+                "dropChance": 30
+            },
+            {
+                "id": "adamantite_ingot",
+                "countMin": 1,
+                "countMax": 5,
+                "dropChance": 15
+            },
+            
+        ],
+        "traderStats": {
+            "extraPriceMultiplier": 1.4,
+            "updateTimeInMinutes": 120,
+            "tradingItems": []
+        },
+        "actionText": {
+            "communicationText": [],
+            "combatText": [],
+            "critDamageText": "",
+            "successBlockingText": "",
+            "successBlockingCritText": "",
+            "failedBlockingText": "",
+            "dodgeText": "",
+            "missText": ""
+        }
     }
 ]

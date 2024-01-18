@@ -122,6 +122,8 @@ export const getEnemyBackground = (type: IEnemyType) => {
             return `linear-gradient(225deg, ${baseBackgroundColor} 95%, #70b5d1 95%)`
         case 'boss':
             return `linear-gradient(225deg, ${baseBackgroundColor} 95%, #cf6060 95%)`
+        case 'trader':
+            return `linear-gradient(225deg, ${baseBackgroundColor} 95%, #e7b13d 95%)`
         default:
             return ``
     }
@@ -135,6 +137,8 @@ export const getHoveredEnemyBackground = (type: IEnemyType) => {
             return `linear-gradient(225deg, ${baseHoveredBackgroundColor} 95%, #70b5d1 95%)`
         case 'boss':
             return `linear-gradient(225deg, ${baseHoveredBackgroundColor} 95%, #cf6060 95%)`
+        case 'trader':
+            return `linear-gradient(225deg, ${baseHoveredBackgroundColor} 95%, #e7b13d 95%)`
         default:
             return ``
     }
@@ -148,6 +152,8 @@ export const getEnemyColor = (type: IEnemyType) => {
             return `#70b5d1`
         case 'boss':
             return `#cf6060`
+        case 'trader':
+            return `#e7b13d`
         default:
             return ``
     }

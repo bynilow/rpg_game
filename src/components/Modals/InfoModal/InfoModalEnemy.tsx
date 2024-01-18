@@ -57,66 +57,80 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
                             ? "Враг"
                             : thisEnemy.type === 'neutral'
                                 ? "Нейтральный"
-                                : "Босс"
+                                : thisEnemy.type === 'trader'
+                                    ? 'Торговец'
+                                    : 'Босс'
 
                     }
                 </ColorText>
                 <Description>
                     {thisEnemy.description}
                 </Description>
-                <Title>
-                    Характеристики
-                </Title>
-                <Property>
-                    <ProperyName>
-                        Жизни:
-                    </ProperyName> {thisEnemy.maxHealth}
-                </Property>
-                <Property>
-                    <ProperyName>
-                        Скорость атаки:
-                    </ProperyName> {thisEnemy.attackSpeed}s
-                </Property>
-                <Property>
-                    <ProperyName>
-                        Урон:
-                    </ProperyName> {thisEnemy.damage}
-                </Property>
-                <Property>
-                    <ProperyName>
-                        Множитель крит. урона:
-                    </ProperyName> x{thisEnemy.critDamageMultiplier}
-                </Property>
-                <Property>
-                    <ProperyName>
-                        Шанс крит. урона:
-                    </ProperyName> {thisEnemy.critChance}%
-                </Property>
-                <Property>
-                    <ProperyName>
-                        Шанс промаха:
-                    </ProperyName> {thisEnemy.missChance}%
-                </Property>
-                <Property>
-                    <ProperyName>
-                        Шанс уклонения:
-                    </ProperyName> {thisEnemy.dodgeChance}%
-                </Property>
-                <Property>
-                    <ProperyName>
-                        Шанс блокирования:
-                    </ProperyName> {thisEnemy.blockingChance}%
-                </Property>
-                <Property>
-                    <ProperyName>
-                        Множитель блокирования:
-                    </ProperyName> x{thisEnemy.blockingMultiplier}
-                </Property>
+                {
+                    thisEnemy.type === 'enemy' || thisEnemy.type === 'boss'
+                        ? <>
+                            <Title>
+                                Характеристики
+                            </Title>
+                            <Property>
+                                <ProperyName>
+                                    Жизни:
+                                </ProperyName> {thisEnemy.maxHealth}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Скорость атаки:
+                                </ProperyName> {thisEnemy.attackSpeed}s
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Урон:
+                                </ProperyName> {thisEnemy.damage}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Множитель крит. урона:
+                                </ProperyName> x{thisEnemy.critDamageMultiplier}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс крит. урона:
+                                </ProperyName> {thisEnemy.critChance}%
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс промаха:
+                                </ProperyName> {thisEnemy.missChance}%
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс уклонения:
+                                </ProperyName> {thisEnemy.dodgeChance}%
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс блокирования:
+                                </ProperyName> {thisEnemy.blockingChance}%
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Множитель блокирования:
+                                </ProperyName> x{thisEnemy.blockingMultiplier}
+                            </Property>
+                        </>
+                        : null
+                }
             </Section>
 
             <Section>
                 <Title>
-                    Возможный лут
+                    {
+                        thisEnemy.type === 'boss' || thisEnemy.type === 'enemy'
+                            ? 'Возможный лут'
+                            : thisEnemy.type === 'trader'
+                                ? 'Возможные товары'
+                                : 'Предметы'
+                    }
                 </Title>
                 <List>
                     {
