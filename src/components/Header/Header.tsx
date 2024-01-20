@@ -1,9 +1,11 @@
 import styled from 'styled-components'
 import Container from '../Container/Container';
-import { useAppSelector } from '../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import Avatar from '../Avatar/Avatar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getRandomNumber } from '../../functions/Random';
+import { getStats } from '../../functions/Stats';
+import { setHealthPoints } from '../../store/reducers/ActionCreators';
 
 interface IHeader{
     $openInventory: Function;
@@ -16,11 +18,29 @@ function Header({$openInventory, $openSkills, $openCraft, $openCharacter}: IHead
 
     const {player, playerSkills} = useAppSelector(state => state.userReducer);
 
+    const dispatch = useAppDispatch();
+
     const needXP = (player.level ** 2.7) + 10;
 
     useEffect(() => {
+        const addHealth = setInterval(() => {
+            const stats = getStats(playerSkills, player);
+            if(player.health < stats.baseHealth){
+                dispatch(setHealthPoints(player.health + stats.healthRegenerationScore));
+            }
+            else{
+                var highestTimeoutId = setTimeout(";");
+                for (var i = 0; i < highestTimeoutId; i++) {
+                    clearTimeout(i);
+                };
+                clearInterval(addHealth);
+            }
+        }, 1000);
 
-    }, [player.currentXP])
+        return () => {
+            clearInterval(addHealth);
+        }
+    }, [player, playerSkills])
 
     return ( 
         <Block>
@@ -49,9 +69,9 @@ function Header({$openInventory, $openSkills, $openCraft, $openCharacter}: IHead
                                 {
                                     needXP >= 1_000
                                         ? needXP.toString().length >= 1_000_000
-                                            ? `${(needXP / 1000000).toFixed(1)}m / ${(player.currentXP / 1000000).toFixed(1)}m`
-                                            : `${(needXP / 1000).toFixed(1)}k / ${(player.currentXP / 1000).toFixed(1)}k`
-                                        : `${needXP.toFixed(1)} / ${player.currentXP.toFixed(1)}`
+                                            ? `${(player.currentXP / 1000000).toFixed(1)}m / ${(needXP / 1000000).toFixed(1)}m`
+                                            : `${(player.currentXP / 1000).toFixed(1)}k / ${(needXP / 1000).toFixed(1)}k`
+                                        : `${player.currentXP.toFixed(1)} / ${needXP.toFixed(1)}`
                                 }
                             </LineText>
                         </LineBlock>
@@ -66,12 +86,12 @@ function Header({$openInventory, $openSkills, $openCraft, $openCharacter}: IHead
                             </LineText>
                         </LineBlock> */}
                         <LineBlock>
-                            <HealthLine max={playerSkills.baseHealth.baseCount} value={player.health} />
+                            <HealthLine max={getStats(playerSkills, player).baseHealth} value={player.health} />
                             <LineText>
                                 {
                                     playerSkills.baseHealth.baseCount.toString().length >= 4
-                                        ? `${(playerSkills.baseHealth.baseCount / 1000).toFixed(1)}k / ${(player.health / 1000).toFixed(1)}k`
-                                        : `${playerSkills.baseHealth.baseCount} / ${player.health.toFixed(0)}`
+                                        ? `${(player.health / 1000).toFixed(1)}k / ${(getStats(playerSkills, player).baseHealth / 1000).toFixed(1)}k`
+                                        : `${player.health.toFixed(0)} / ${getStats(playerSkills, player).baseHealth}`
                                 }
                             </LineText>
                         </LineBlock>

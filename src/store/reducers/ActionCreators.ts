@@ -299,6 +299,15 @@ export const sellItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) 
     }
 }
 
+export const setHealthPoints = (health: number) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.setHealthPoints(health));
+    }
+    catch{
+
+    }
+}
+
 
 
 

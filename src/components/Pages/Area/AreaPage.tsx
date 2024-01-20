@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IArea, IAviablePath, IChangeInfo } from '../../../models/IArea';
 import { IFullItem } from '../../../models/IAreaItem';
@@ -21,6 +21,11 @@ import CharacterModal from '../../Modals/Character/CharacterModal';
 import { getStats } from '../../../functions/Stats';
 import { Enemies } from '../../../data/Enemies';
 import ShopModal from '../../Modals/ShopModal/ShopModal';
+import AreaBackground from './AreaBackground';
+import MinutesRemaining from './UpdatedMinutes/UpdatedMinutes';
+import AreaItemsSection from './Sections/AreaItemsSection';
+import AreaEnemiesSection from './Sections/AreaEnemiesSection';
+import AreaPathsSection from './Sections/AreaPathsSection';
 
 
 interface IAreaPage {
@@ -31,10 +36,6 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const dispatch = useAppDispatch();
     const { areas, availablePaths, currentLocation, playerSkills, inventory, player } = useAppSelector(state => state.userReducer);
-
-    const getAreaFromId = (id: string) => {
-        return areas[areas.findIndex(i => i.id === id)];
-    }
 
     const [isInventoryOpen, setIsInventoryOpen] = useState(false);
 
@@ -62,30 +63,6 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
         setWhatInfo('area');
     }
 
-    const [moveAreaId, setMoveAreaId] = useState<string>('');
-
-    const onClickGoLevel = (selectedPath: IAviablePath) => {
-        dispatch(goLevel(selectedPath.pathId));
-    }
-
-    const [miningItemId, setMiningItemId] = useState<string>('');
-
-    const onClickItem = (miningItem: IFullItem) => {
-        const chanceExtraLootTree = playerSkills['treeDoubleLootPercentChance']['currentScores'];
-        const chanceExtraLootOre = playerSkills['oreDoubleLootPercentChance']['currentScores'];
-        const countLoot = getRandomNumberForLoot( miningItem.type === 'ore' ? chanceExtraLootOre : chanceExtraLootTree );
-        console.log(countLoot)
-        dispatch(mineItem({ 
-            ...miningItem, 
-            count: countLoot }));
-        dispatch(addXP(miningItem.baseCountXP * playerSkills['experienceMultiplier']['currentScores']));
-    }
-
-    const getNameAreaById = (lvlId: string) => {
-        const name = areas.find(p => p.id === lvlId)?.title;
-        return name
-    }
-
     const [isSkillsOpen, setIsSkillsOpen] = useState(false);
 
     const [isCraftOpen, setIsCraftOpen] = useState(false);
@@ -97,8 +74,6 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
     const [stats, setStats] = useState(getStats(playerSkills, player));
 
     const [inventoryWeight, setInventoryWeight] = useState(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));
-
-
 
     useEffect(() => {
         if (!availablePaths.length && currentLocation) {
@@ -126,7 +101,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
         setStats(getStats(playerSkills, player));
         setInventoryWeight(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));
-    }, [player, currentLocation.id])
+    }, [player, currentLocation.id, areas])
 
     if(!currentLocation) return <div>Loading...</div>
     else return (
@@ -171,7 +146,9 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                         $changeInfo={(info: IChangeInfo) => onChangeInfo(info)} />
                     : null
             }
-            <Background $image={require('../../../' + currentLocation.avatar)} />
+
+            <AreaBackground $image={currentLocation.avatar} />
+
             <Header 
                 $openInventory={() => setIsInventoryOpen(true)}
                 $openSkills={() => setIsSkillsOpen(true)}
@@ -186,97 +163,23 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                 </LevelName>
 
                 <AreaActionMenu>
-                    <Section
-                        $isBlocked={miningItemId !== ''}
-                        $isBoxShadow
-                        $isBackgroundTransparent={false}>
+                    <AreaPathsSection
+                        $inventoryWeight={inventoryWeight}
+                        $playerStats={stats} />
 
-                        <NameBlock>Доступные пути:</NameBlock>
-                        <LevelsList>
-                            {
-                                availablePaths.map((p, ind) => <AreaPath
-                                    key={
-                                        p.pathId 
-                                            + stats.movementSpeed 
-                                            + stats.capacity
-                                            + inventoryWeight}
-                                    $index={ind}
-                                    $areaId={p.pathId}
-                                    $setMoveAreaId={() => setMoveAreaId(p.pathId)}
-                                    $clearMoveAreaId={() => setMoveAreaId('')}
-                                    $moveAreaId={moveAreaId}
-                                    $avatarUrl={getAreaFromId(p.pathId).avatar}
-                                    $title={getNameAreaById(p.pathId) || ''}
-                                    $timeToMove={p.time}
-                                    $goLevel={() => onClickGoLevel(p)}
-                                    $playerInventoryWeight={inventoryWeight}
-                                    $playerInventoryMaxWeight={stats.capacity}
-                                    $playerMovementSpeed={stats.movementSpeed} />)
-                            }
-                        </LevelsList>
-                    </Section>
+                    <AreaItemsSection 
+                        $playerStats={stats}
+                        $currentAreaItems={currentLocation.currentAreaItems}
+                        $currentLocationId={currentLocation.id}
+                        $isBlocked={false}
+                        $nextRespawnItems={currentLocation.nextRespawnAreaItems} />
 
-                    <Section
-                        $isBlocked={moveAreaId !== ''}
-                        $isBoxShadow
-                        $isBackgroundTransparent={false}>
-
-                        <NameBlock>Местность: </NameBlock>
-                        <DescriptionText>
-                            ⟳ {new Date(currentLocation.nextRespawnAreaItems).toLocaleString()}
-                        </DescriptionText>
-
-                        <LevelsList>
-                            {
-                                currentLocation.currentAreaItems.map((i: IFullItem, ind) =>
-                                    <AreaItem
-                                        key={
-                                            i.idInArea 
-                                            + currentLocation.id 
-                                            + stats.treeSpeedMining
-                                            + stats.oreSpeedMining }
-                                        $index={ind}
-                                        $setIsMiningId={() => setMiningItemId(i.idInArea)}
-                                        $clearIsMiningId={() => setMiningItemId('')}
-                                        $miningId={miningItemId}
-                                        $item={i}
-                                        $mineItem={() => onClickItem(i)}
-                                        $playerSpeedMining={
-                                            i.type === 'tree'
-                                                ? stats.treeSpeedMining
-                                                : stats.oreSpeedMining} />)
-                            }
-                        </LevelsList>
-                    </Section>
-
-                    <Section
-                        $isBlocked={miningItemId !== '' || moveAreaId !== ''}
-                        $isBoxShadow
-                        $isBackgroundTransparent={false}>
-
-                        <NameBlock>Существа: </NameBlock>
-                        <DescriptionText>
-                            ⟳ {new Date(currentLocation.nextRespawnAreaEnemies).toLocaleString()}
-                        </DescriptionText>
-                        <LevelsList >
-                            {
-                                currentLocation.currentEnemies
-                                    ? currentLocation.currentEnemies.map((e, ind) =>
-                                        <AreaEnemy
-                                            key={e.idInArea + currentLocation.id}
-                                            id={e.id}
-                                            $idInArea={e.idInArea}
-                                            $onClick={
-                                                Enemies.find(fe => fe.id === e.id)!.type !== 'trader'
-                                                    ? () => $onClickStartBattle(e)
-                                                    : () => setTraderId(e.id)
-                                            }
-                                            $index={ind}
-                                            $level={e.level} />)
-                                    : null
-                            }
-                        </LevelsList>
-                    </Section>
+                    <AreaEnemiesSection 
+                        $currentEnemies={currentLocation.currentEnemies}
+                        $isBlocked={false} 
+                        $nextRespawnEnemies={currentLocation.nextRespawnAreaEnemies}
+                        $onClickStartBattle={(e: IAreaCurrentEnemy) => $onClickStartBattle(e)}
+                        $setTraderId={(id: string) => setTraderId(id)} />
 
 
                 </AreaActionMenu>
@@ -285,34 +188,6 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
     );
 }
 
-interface IBackgroundProps {
-    $image: string;
-  }
-  
-  const Background = styled.div<IBackgroundProps>`
-    z-index: -1;
-    position: fixed;
-    top: -80%;
-    left: -15%;
-    width: 130%;
-    height: 250%;
-    transition: 5s ease;
-    background-image: ${p => `url( ${p.$image} )`};
-    background-size: cover;
-    background-repeat: no-repeat;
-    filter: blur(5px);
-  
-    &::after{
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgb(255,255,255);
-      background: linear-gradient(180deg, rgba(255,255,255,0) 60%, rgba(0,0,0,1) 80%);
-    }
-  `
 
 const Area = styled.div`
     display: flex;
@@ -330,6 +205,7 @@ const LevelsList = styled.div`
   gap: 20px;
   justify-content: center;
   align-items: left;
+  margin-top: 10px;
 
 `
 
@@ -372,11 +248,6 @@ const LevelName = styled.div<LevelNameProps>`
   #978414 */
 `
 
-const DescriptionText = styled.p`
-  font-size: 14px;
-  line-height: 0;
-  margin: 0;
-`
 interface IBlockProps {
     $update: number;
     $isBlocked: boolean;

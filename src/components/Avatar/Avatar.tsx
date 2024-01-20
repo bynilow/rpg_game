@@ -1,4 +1,5 @@
-import styled from 'styled-components'
+import { useEffect, useState } from 'react';
+import styled, { css, keyframes } from 'styled-components'
 
 interface IAvatar{
     $image: string;
@@ -27,6 +28,16 @@ function Avatar({
     $isCircle,
     children} : IAvatar) {
 
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+    useEffect(() => {
+        const img = new Image();
+        img.onload = () => {
+            setIsImageLoaded(true);
+        };
+        img.src = require('../../' + $image);
+    },[$image])
+
     return ( 
         <Block 
             $image={$image}
@@ -36,7 +47,8 @@ function Avatar({
             $minHeight={$minHeight}
             $isMovingOther={$isMovingOther}
             $isMiningOther={$isMiningOther}
-            $isCircle={$isCircle}>
+            $isCircle={$isCircle}
+            $isLoaded={isImageLoaded} >
             {children}
             {
                 $isDoSomething
@@ -70,9 +82,25 @@ const StopAction = styled.div`
     }
 `
 
-///${ p => `url( ${require(p.$image)} )` }
+// /${ p => `url( ${require(p.$image)} )` }
 
-const Block = styled.div<IAvatar>`
+const SkeletonAnim = keyframes`
+    0%{
+        background-color: #e2e2e2;
+    }
+    50%{
+        background-color: #a3a3a3;
+    }
+    100%{
+        background-color: #e2e2e2;
+    }
+`
+
+interface IBlockProps {
+    $isLoaded: boolean;
+}
+
+const Block = styled.div<IAvatar & IBlockProps>`
     position: relative;
     display: flex;
     justify-content: center;
@@ -89,12 +117,32 @@ const Block = styled.div<IAvatar>`
         p => p.$minHeight ? `min-height: ${p.$minHeight};` : null
     }
 
-    background-image: ${ p => `url( ${ require('../../'+p.$image) } )` };
+    /* animation: ${p => !p.$isLoaded ? SkeletonAnim : ''} 5s linear infinite; */
+
+    ${
+        p => !p.$isLoaded
+            && css`&::after{
+                content: '';
+                z-index: 9;
+                position: absolute;
+                width: ${p.width};
+                height: ${p.height};
+                top: 0;
+                left: 0;
+                background: gray;
+                border-radius: 50%;
+                transform: scale(0.9);
+                animation: ${SkeletonAnim} 5s linear infinite;
+            };`
+    }
+
+
+    background-image: ${p => p.$isLoaded && `url( ${require('../../' + p.$image)} )`};
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     border-radius: ${p => p.$isCircle ? '50%' : '0'};
-    
+
     ${p => p.$isMovingOther || p.$isMiningOther
         ? `width: 50px;
         height: 50px;`

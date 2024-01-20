@@ -164,12 +164,12 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
             selectedLevel: 0
         },
         {
-            id: 'healthRegenerationMultiplier',
-            title: 'Множитель регенерации ОЗ',
+            id: 'healthRegenerationScore',
+            title: 'Регенерация ОЗ',
             description: 'Навык, определяющий скорость восстановления очков здоровья персонажа. Чем выше уровень этого навыка, тем быстрее персонаж может восстанавливать свои ОЗ.',
             branch: 'agility',
-            type: 'multiplier',
-            count: 0.5,
+            type: 'score',
+            count: 1.5,
             selectedLevel: 0
         },
         {

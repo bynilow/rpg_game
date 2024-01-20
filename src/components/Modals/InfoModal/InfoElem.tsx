@@ -20,6 +20,7 @@ interface IInfoElem {
     $itemsToCraft?: ICraftItem[];
     $isCrafting?: boolean;
     $changeWhatInfo: Function;
+    $isTraderItem?: boolean;
 }
 
 function InfoElem({
@@ -34,7 +35,8 @@ function InfoElem({
     $levelMax,
     $count,
     $itemsToCraft,
-    $isCrafting = false}:IInfoElem) {
+    $isCrafting = false,
+    $isTraderItem = false}:IInfoElem) {
 
     const {areas, areaItems, enemies} = useAppSelector(state => state.userReducer);
 
@@ -110,7 +112,7 @@ function InfoElem({
                     <AboutText>
                         {
                             $dropChance
-                                ? `Шанс дропа: ${$dropChance}%`
+                                ? `Шанс ${$isTraderItem ? 'наличия' : 'дропа'}: ${$dropChance}%`
                                 : null
                         }
                     </AboutText>

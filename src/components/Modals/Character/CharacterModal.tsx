@@ -184,7 +184,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                             Максимальное ОЗ: {stats.baseHealth}
                         </Char>
                         <Char>
-                            Скорость регенирации ОЗ: {stats.healthRegenerationMultiplier}/s
+                            Скорость регенирации ОЗ: {stats.healthRegenerationScore}/s
                         </Char>
                         <Char>
                             Общий урон: {stats.baseDamage}

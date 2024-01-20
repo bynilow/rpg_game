@@ -48,13 +48,14 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
     }
 
     const [sortedInventoryItems, setSortedInventoryItems] = useState<IFullItemWithCount[]>(
-        inventory.map(i => ({...i.item, count: i.count}))
+        inventory.filter(i => !i.isEquipped).map(i => ({...i.item, count: i.count}))
     );
 
     const sortInventoryItems = () => {
         let filteredItems = 
-            inventory.map(i => ({...i.item, count: i.count})).filter(i => 
-                i.title.toLocaleLowerCase().includes(inputText.toLocaleLowerCase()));
+            inventory.filter(i => !i.isEquipped)
+                .map(i => ({...i.item, count: i.count})).filter(i => 
+                    i.title.toLocaleLowerCase().includes(inputText.toLocaleLowerCase()));
         
         setSortedInventoryItems(filteredItems.sort((a,b) => a.cost - b.cost));
     }

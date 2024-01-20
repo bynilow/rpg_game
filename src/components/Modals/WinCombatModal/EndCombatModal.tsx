@@ -16,7 +16,9 @@ interface IEndCombatModal {
 function EndCombatModal({ $items, $finishBattle, $isWin }: IEndCombatModal) {
 
     return (
-        <Modal $flexDirection='column' >
+        <Modal 
+            $flexDirection='column' 
+            $size={$isWin ? 'medium' : 'small'}>
             <TextBlock>
                 <Title>
                     {

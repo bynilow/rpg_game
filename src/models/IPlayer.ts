@@ -27,7 +27,7 @@ export interface IPlayerBaseStats{
     attackSpeed: IPlayerStat;
     baseHealth: IPlayerStat;
     maxHealthMultiplier: IPlayerStat;
-    healthRegenerationMultiplier: IPlayerStat; 
+    healthRegenerationScore: IPlayerStat; 
 
     experienceMultiplier: IPlayerStat;
     craftSpeed: IPlayerStat;

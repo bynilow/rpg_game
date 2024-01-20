@@ -1,7 +1,35 @@
 import { IPlayer, IPlayerBaseStats } from "../models/IPlayer";
 
 
-export const getStats = (playerSkills: IPlayerBaseStats, player: IPlayer) => ({
+export interface IStats {
+    baseDamage: number,
+    damageMultiplier: number,
+    critDamageMultiplier: number,
+    critChance: number,
+    oreSpeedMining: number,
+    oreDoubleLootPercentChance: number,
+    treeSpeedMining: number,
+    treeDoubleLootPercentChance: number,
+    capacity: number,
+
+    blockingChancePercent: number,
+    blockingMultiplier: number,
+    dodgePercentChance: number,
+    missPercentChance: number,
+    movementSpeed: number,
+    attackSpeed: number,
+    baseHealth: number,
+    maxHealthMultiplier: number,
+    healthRegenerationScore: number,
+
+    experienceMultiplier: number,
+    craftSpeed: number,
+    craftDoubleLootPercentChance: number,
+    buyPricePercent: number,
+    sellPricePercent: number
+}
+
+export const getStats = (playerSkills: IPlayerBaseStats, player: IPlayer): IStats => ({
     baseDamage: 
         Number(((
             playerSkills.baseDamage.currentScores
@@ -82,9 +110,9 @@ export const getStats = (playerSkills: IPlayerBaseStats, player: IPlayer) => ({
     maxHealthMultiplier:
         Number((
             playerSkills.maxHealthMultiplier.currentScores).toFixed(2)),
-    healthRegenerationMultiplier:
+    healthRegenerationScore:
         Number((
-            playerSkills.healthRegenerationMultiplier.currentScores).toFixed(0)),
+            playerSkills.healthRegenerationScore.currentScores).toFixed(0)),
 
     experienceMultiplier:
         Number((

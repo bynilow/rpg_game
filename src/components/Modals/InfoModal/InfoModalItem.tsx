@@ -193,6 +193,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                                     key={ef.id}
                                     id={ef.id}
                                     $type={'enemy'}
+                                    $isTraderItem={ef.type === 'trader'}
                                     $dropChance={ef.possibleLoot.find(pl => pl.id === $id)!.dropChance}
                                     $countMax={ef.possibleLoot.find(pl => pl.id === $id)!.countMax}
                                     $countMin={ef.possibleLoot.find(pl => pl.id === $id)!.countMin}

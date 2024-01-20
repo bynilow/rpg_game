@@ -7,7 +7,7 @@ import Avatar from '../../Avatar/Avatar';
 import Container from '../../Container/Container';
 import EndCombatModal from '../../Modals/WinCombatModal/EndCombatModal';
 import CombatText from './CombatText';
-import { addItemsToInventory, addXP, setDeadEnemy, setPlayer } from '../../../store/reducers/ActionCreators';
+import { addItemsToInventory, addXP, setDeadEnemy, setHealthPoints, setPlayer } from '../../../store/reducers/ActionCreators';
 import { IFullItemWithCount } from '../../../models/IAreaItem';
 import { IPlayer } from '../../../models/IPlayer';
 import Section from '../../Section/Section';
@@ -18,19 +18,19 @@ interface ICombatPage {
     $enemyId: string;
     $enemyIdInArea: string;
     $level: number;
-    $currentLocationId: string;
     $finishBattle: (isWin: boolean) => void;
 }
 
-function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInArea, $level }: ICombatPage) {
-
+function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombatPage) {
     const {
         enemies,
         areaItems,
         player,
-        playerSkills } = useAppSelector(state => state.userReducer);
+        playerSkills,
+        currentLocation } = useAppSelector(state => state.userReducer);
 
     const dispatch = useAppDispatch();
+
     const foundedEnemy = enemies.find(e => e.id === $enemyId)!;
 
     const [enemy, setEnemy] = useState<IEnemy>({
@@ -44,7 +44,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
 
     const [playerStats, setPlayerStats] = useState(getStats(playerSkills, player));
 
-    const [playerHealth, setPlayerHealth] = useState(playerStats.baseHealth);
+    const [playerHealth, setPlayerHealth] = useState(player.health);
     const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerStats.attackSpeed < 0 ? 0.1 : playerStats.attackSpeed);
 
 
@@ -115,9 +115,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
     const attackSomeone = (enemyAttack: boolean) => {
 
         const playerCurrentDamage = playerStats.baseDamage;
-        console.log(playerSkills.baseDamage)
-        console.log(playerSkills.damageMultiplier)
-        console.log(playerSkills.baseDamage.currentScores * playerSkills.damageMultiplier.currentScores)
+
         const avatar =
             enemyAttack
                 ? enemy.avatar
@@ -215,8 +213,6 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
             damage = blockedCritDamage;
         }
 
-        console.log(textDamage)
-
         const history: ICombatHistory = {
             isEnemyAttack: enemyAttack,
             isSay: false,
@@ -243,7 +239,6 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
 
         if (!enemyAttack && enemyHealth - damage < 0) {
             winCombat();
-            
         }
     }
 
@@ -286,16 +281,27 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
         })
         dispatch(addItemsToInventory(items));
         dispatch(addXP(experienceCount));
-        dispatch(setDeadEnemy({ levelId: $currentLocationId, enemyIdInArea: $enemyIdInArea }));
+        dispatch(setHealthPoints(playerHealth));
+        dispatch(setDeadEnemy({ levelId: currentLocation.id, enemyIdInArea: $enemyIdInArea }));
 
         setReceivedItems(items);
         setIsWin(true);
         setIsModalEndOpened(true);
+
+        var highestTimeoutId = setTimeout(";");
+        for (var i = 0; i < highestTimeoutId; i++) {
+            clearTimeout(i);
+        }
     }
 
     const loseCombat = () => {
-        setIsWin(false);
         setIsModalEndOpened(true);
+        var highestTimeoutId = setTimeout(";");
+        for (var i = 0; i < highestTimeoutId; i++) {
+            clearTimeout(i);
+        }
+        setIsWin(false);
+        
     }
 
     const onClickedFinishBattle = () => {
@@ -306,14 +312,13 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
         
     }
 
-    if (playerHealth < 0 && !isBattleEnded) {
+    if (playerHealth <= 0 && !isBattleEnded && !isModalEndOpened) {
         loseCombat();
     }
 
 
     useEffect(() => {
         const timeToEnemySay = ((Math.random() * 100000) + 50000);
-        console.log(timeToEnemySay / 1000)
         const enemyTimerAttackInterval = setInterval(() => {
             if (enemyHealth < 0 || playerHealth < 0) {
                 clearInterval(enemyTimerAttackInterval);
@@ -348,7 +353,7 @@ function CombatPage({ $enemyId, $finishBattle, $currentLocationId, $enemyIdInAre
             clearInterval(enemySayInterval);
         }
 
-    }, [isWin])
+    }, [])
 
     const playerCurrentMaxHealth = playerSkills.baseHealth.currentScores * playerSkills.maxHealthMultiplier.currentScores;
 

@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useAppDispatch } from '../../../hooks/redux';
 import Avatar from '../../Avatar/Avatar';
+import { IArea } from '../../../models/IArea';
 
-interface IArea {
-    $title: string;
+interface IAreaPathProps {
+    $area: IArea;
     $timeToMove: number;
-    $areaId: string;
     $goLevel: Function;
-    $avatarUrl: string;
     $index: number;
     $moveAreaId: string;
     $setMoveAreaId: Function;
@@ -21,18 +20,16 @@ interface IArea {
 
 
 function AreaPath({ 
-    $title, 
+    $area, 
     $timeToMove, 
     $goLevel, 
-    $avatarUrl = '', 
     $index, 
     $moveAreaId,
     $setMoveAreaId,
     $clearMoveAreaId,
-    $areaId,
     $playerMovementSpeed,
     $playerInventoryWeight,
-    $playerInventoryMaxWeight }: IArea) {
+    $playerInventoryMaxWeight }: IAreaPathProps) {
 
     const dispatch = useAppDispatch();
 
@@ -83,22 +80,22 @@ function AreaPath({
 
     useEffect(() => {
         setBaseTimeToMovement(baseTimeToMovement < 0 ? 0.1 : baseTimeToMovement);
-    }, [])
+    }, [$playerInventoryWeight])
 
     return (
         <Area
-            $$index={$index} 
-            $isMovingOther={($moveAreaId !== $areaId && $moveAreaId !== '')}>
+            $index={$index} 
+            $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '')}>
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
             <Avatar 
-                $image={$avatarUrl}
+                $image={$area.avatar}
                 width={'90px'} 
                 height={'90px'}
                 $onClicked={() => onClickStopMove()} 
                 $isDoSomething={isMoving}
-                $isMovingOther={($moveAreaId !== $areaId && $moveAreaId !== '')} />
+                $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '')} />
                 
-            <Name>{$title}</Name>
+            <Name>{$area.title}</Name>
             <Timer $isOverweight={overweight > 0}>
                 {
                     isMoving
@@ -159,7 +156,7 @@ const Name = styled.p`
 
 
 interface IAreaBlockProps {
-    $$index: number;
+    $index: number;
     $isMovingOther: boolean;
 }
 
@@ -187,7 +184,7 @@ const Area = styled.div<IAreaBlockProps>`
 
     transform: scale(0) rotate(-45deg);
     animation: ${AreaBlockAnim} 1s ease;
-    animation-delay: ${p => p.$$index/3}s;
+    animation-delay: ${p => p.$index/3}s;
     animation-fill-mode: forwards;
     transition: 0.1s;
 

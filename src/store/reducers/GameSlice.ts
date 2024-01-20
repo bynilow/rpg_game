@@ -114,10 +114,10 @@ const baseStats: IPlayerBaseStats = {
         countScores: 0.3,
         level: 1
     },
-    healthRegenerationMultiplier: {
+    healthRegenerationScore: {
         baseCount: 1,
         currentScores: 1,
-        countScores: 0.5,
+        countScores: 1.5,
         level: 1
     },
 
@@ -181,7 +181,7 @@ interface IUpdateAreaEnemies {
 }
 
 const initialState: GameSlice = {
-    currentLocation: localStorage.areas ? JSON.parse(localStorage.areas)[0] : Locations[0],
+    currentLocation: localStorage.currentLocation ? JSON.parse(localStorage.currentLocation) : Locations[0],
     availablePaths: [],
     paths: [
         {
@@ -299,6 +299,8 @@ export const gameSlice = createSlice({
     reducers: {
         goLevel(state, action: PayloadAction<string>) {
             state.currentLocation = state.areas.find(p => p.id === action.payload)!;
+
+            localStorage.currentLocation = JSON.stringify(state.currentLocation);
         },
         getAvailablePaths(state, action: PayloadAction<string>) {
             const levelId = action.payload;
@@ -332,6 +334,8 @@ export const gameSlice = createSlice({
             
             state.areas[foundedIndex].currentAreaItems = items!;
             state.currentLocation = state.areas[foundedIndex];
+
+            localStorage.currentLocation = JSON.stringify(state.currentLocation);
             localStorage.areas = JSON.stringify(state.areas);
         },
         updateAreaEnemies(state, action: PayloadAction<IUpdateAreaEnemies>) {
@@ -353,6 +357,8 @@ export const gameSlice = createSlice({
 
             state.areas[foundedIndex].currentEnemies = enemies!;
             state.currentLocation = state.areas[foundedIndex];
+
+            localStorage.currentLocation = JSON.stringify(state.currentLocation);
             localStorage.areas = JSON.stringify(state.areas);
         },
         mineItem(state, action: PayloadAction<IFullItem>) {
@@ -364,6 +370,8 @@ export const gameSlice = createSlice({
                 filter(i => i.idInArea !== idInArea);
 
             state.currentLocation = state.areas[indexLevel];
+
+            localStorage.currentLocation = JSON.stringify(state.currentLocation);
             localStorage.areas = JSON.stringify(state.areas);
 
         },
@@ -440,6 +448,8 @@ export const gameSlice = createSlice({
                 foundAreaEnemies.filter(e => e.idInArea !== enemyIdInArea);
 
             state.currentLocation = state.areas[foundIndexArea];
+
+            localStorage.currentLocation = JSON.stringify(state.currentLocation);
             localStorage.areas = JSON.stringify(state.areas);
         },
         setPlayerFromStorage(state, action: PayloadAction<IPlayer>) {
@@ -670,6 +680,12 @@ export const gameSlice = createSlice({
             localStorage.player = JSON.stringify(state.player);
             localStorage.inventory = JSON.stringify(state.inventory);
         },
+        setHealthPoints(state, action: PayloadAction<number>){
+            const payloadHealth = action.payload;
+            state.player.health = payloadHealth;
+
+            localStorage.player = JSON.stringify(state.player);
+        }
 
     }
 })

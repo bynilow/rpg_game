@@ -139,12 +139,13 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
                                 key={i.id}
                                 id={i.id}
                                 $type={'item'}
+                                $isTraderItem={thisEnemy.type === 'trader'}
                                 $countMax={thisEnemy.possibleLoot.find(pl => pl.id === i.id)!.countMax}
                                 $countMin={thisEnemy.possibleLoot.find(pl => pl.id === i.id)!.countMin}
                                 $dropChance={thisEnemy.possibleLoot.find(pl => pl.id === i.id)!.dropChance}
                                 $changeWhatInfo={() => $changeWhatInfo({
                                     whatInfo: 'item',
-                                    itemId: i.id
+                                    id: i.id
                                 })} />)
                     }
                 </List>
@@ -167,7 +168,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
                                     $countMin={a.enemies.find(e => e.id === $id)!.countMin}
                                     $changeWhatInfo={() => $changeWhatInfo({
                                         whatInfo: 'area',
-                                        area: a
+                                        id: a.id
                                     })} />)
                     }
                 </List>

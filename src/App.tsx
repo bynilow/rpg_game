@@ -10,9 +10,7 @@ import CreatorPageItem from './components/Pages/Creator/CreatorPage';
 
 function App() {
 
-  const {
-    areas,
-    currentLocation } = useAppSelector(state => state.userReducer)
+  const {} = useAppSelector(state => state.userReducer)
 
   const dispatch = useAppDispatch();
 
@@ -45,7 +43,6 @@ function App() {
       <>
         <GlobalStyle />
         <CombatPage
-          $currentLocationId={currentLocation.id}
           $enemyId={battleEnemy!.id}
           $enemyIdInArea={battleEnemy!.idInArea}
           $level={battleEnemy!.level}
@@ -58,7 +55,7 @@ function App() {
   //   <CreatorPageItem />
   // )
 
-  if (currentLocation) {
+  if (true) {
     return (
       <>
         <GlobalStyle />

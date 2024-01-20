@@ -154,7 +154,7 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
 
                 <CraftPlace>
                     <CraftTitle>Создание</CraftTitle>
-                    <Bar>
+                    <Bar $isDisable={!!craftingId} >
                         <InputName
                             type='text'
                             placeholder='Название'
@@ -507,7 +507,7 @@ const DropdownOptions = styled.div`
 const SelectDropdown = styled.div`
     position: relative;
     z-index: 999;
-    min-width: 200px;
+    min-width: 180px;
     
 
     &:hover ${DropdownOptions} {
@@ -548,9 +548,6 @@ const DropdownButton = styled.button`
     }
 `
 
-
-
-
 const InputName = styled.input`
     font-size: 16px;
     height: 40px;
@@ -560,10 +557,35 @@ const InputName = styled.input`
     box-shadow: 0 0 5px #0000005a;
 `
 
-const Bar = styled.div`
+interface IBarProps{
+    $isDisable: boolean;
+}
+
+const Bar = styled.div<IBarProps>`
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     gap: 10px;
+    position: relative;
+    ${
+        p => p.$isDisable
+            ? ` &::after{
+                content: '';
+                position: absolute;
+                z-index: 999;
+                width: 100%;
+                height: 100%;
+                padding: 5px;
+                border-radius: 5px;
+                top: 0;
+                bottom: 0;
+                left: -5px;
+                right: 0;
+                margin: auto;
+                background: #00000075;
+            }`
+            : null
+    }
 `
 
 const EmptyItem = styled.div`
