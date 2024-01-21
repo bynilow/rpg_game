@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useAppDispatch } from '../../../hooks/redux';
-import Avatar from '../../Avatar/Avatar';
-import { IArea } from '../../../models/IArea';
+import { useAppDispatch } from '../../../../../hooks/redux';
+import Avatar from '../../../../Avatar/Avatar';
+import { IArea } from '../../../../../models/IArea';
 
 interface IAreaPathProps {
     $area: IArea;

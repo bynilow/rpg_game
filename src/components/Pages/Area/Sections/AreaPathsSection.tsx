@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import Section from '../../../Section/Section';
 import { IAviablePath, IPath } from '../../../../models/IArea';
-import AreaPath from '../AreaPath';
+import AreaPath from './Mapped/AreaPath';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { IStats } from '../../../../functions/Stats';
 import { useState } from 'react';
@@ -11,16 +11,32 @@ import { getAreaFromId } from '../../../../functions/Areas';
 interface IAreaPathsSectionProps {
     $playerStats: IStats;
     $inventoryWeight: number;
+    $isBlocked: boolean;
+    $changeActionType: Function;
+    $clearActionType: Function;
 }
 
 function AreaPathsSection({
     $playerStats,
-    $inventoryWeight}: IAreaPathsSectionProps) {
+    $inventoryWeight,
+    $isBlocked,
+    $changeActionType,
+    $clearActionType}: IAreaPathsSectionProps) {
 
     const {availablePaths, areas} = useAppSelector(state => state.userReducer);
     const dispatch = useAppDispatch();
 
     const [moveAreaId, setMoveAreaId] = useState<string>('');
+
+    const onClickMove = (id: string) => {
+        setMoveAreaId(id);
+        $changeActionType();
+    }
+
+    const onClickCancelMove = () => {
+        setMoveAreaId('');
+        $clearActionType();
+    }
 
     const onClickGoLevel = (selectedPath: IAviablePath) => {
         dispatch(goLevel(selectedPath.pathId));
@@ -29,7 +45,7 @@ function AreaPathsSection({
 
     return (
         <Section
-            $isBlocked={false}
+            $isBlocked={$isBlocked}
             $isBoxShadow
             $isBackgroundTransparent={false}>
 
@@ -43,8 +59,8 @@ function AreaPathsSection({
                             + $playerStats.capacity
                             + ($inventoryWeight > $playerStats.capacity ? $inventoryWeight : '')}
                         $index={ind}
-                        $setMoveAreaId={() => setMoveAreaId(p.pathId)}
-                        $clearMoveAreaId={() => setMoveAreaId('')}
+                        $setMoveAreaId={() => onClickMove(p.pathId)}
+                        $clearMoveAreaId={() => onClickCancelMove()}
                         $moveAreaId={moveAreaId}
                         $area={getAreaFromId(areas, p.pathId)}
                         $timeToMove={p.time}

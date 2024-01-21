@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useAppDispatch } from '../../../hooks/redux';
-import { IFullItem } from '../../../models/IAreaItem';
-import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
-import Avatar from '../../Avatar/Avatar';
+import { IFullItem } from '../../../../../models/IAreaItem';
+import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../../../styles/backgrounds';
+import Avatar from '../../../../Avatar/Avatar';
 
 
 interface IAreaItemProps {
@@ -24,8 +23,6 @@ function Area({
     $setIsMiningId, 
     $clearIsMiningId, 
     $playerSpeedMining}: IAreaItemProps) {
-
-    const dispatch = useAppDispatch();
 
     const [isMining, setIsMining] = useState(false);
     const isMiningRef = useRef(isMining);

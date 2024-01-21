@@ -150,7 +150,7 @@ export const updateAreaEnemies = (updatedLevel: IUpdateAreaEnemies) => async (di
     }
 }
 
-export const mineItem = (miningItem: IFullItemWithCount) => async (dispatch: AppDispatch) => {
+export const addMinedItem = (miningItem: IFullItemWithCount) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.mineItem(miningItem));
         dispatch(gameSlice.actions.addItemToInventory(miningItem));

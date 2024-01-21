@@ -1,30 +1,21 @@
 import { useEffect, useState } from 'react';
-import styled, { css, keyframes } from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { IArea, IAviablePath, IChangeInfo } from '../../../models/IArea';
-import { IFullItem } from '../../../models/IAreaItem';
-import { IAreaCurrentEnemy } from '../../../models/IEnemy';
-import { addXP, getAvailablePaths, goLevel, mineItem, setAreasFromStorage, setInventoryFromStorage, setPlayerFromStorage, setSkillsFromStorage, updateAreaEnemies, updateAreaItems } from '../../../store/reducers/ActionCreators';
-import { scrollBarX } from '../../../styles/scrollbars';
-import CircleButton from '../../Buttons/CircleButton';
-import AreaEnemy from './AreaEnemy';
-import AreaItem from './AreaItem';
-import AreaPath from './AreaPath';
-import InventoryModal from '../../Modals/InventoryModal/InventoryModal';
-import InfoModal from '../../Modals/InfoModal/InfoModal';
-import Header from '../../Header/Header';
-import Section from '../../Section/Section';
-import SkillsModal from '../../Modals/SkillsModal/SkillsModal';
-import { getRandomNumberForLoot } from '../../../functions/Random';
-import CraftModal from '../../Modals/CraftModal/CraftModal';
-import CharacterModal from '../../Modals/Character/CharacterModal';
+import styled from 'styled-components';
 import { getStats } from '../../../functions/Stats';
-import { Enemies } from '../../../data/Enemies';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { IChangeInfo } from '../../../models/IArea';
+import { IAreaCurrentEnemy } from '../../../models/IEnemy';
+import { getAvailablePaths, setInventoryFromStorage, setPlayerFromStorage, setSkillsFromStorage, updateAreaEnemies, updateAreaItems } from '../../../store/reducers/ActionCreators';
+import CircleButton from '../../Buttons/CircleButton';
+import Header from '../../Header/Header';
+import CharacterModal from '../../Modals/Character/CharacterModal';
+import CraftModal from '../../Modals/CraftModal/CraftModal';
+import InfoModal from '../../Modals/InfoModal/InfoModal';
+import InventoryModal from '../../Modals/InventoryModal/InventoryModal';
 import ShopModal from '../../Modals/ShopModal/ShopModal';
+import SkillsModal from '../../Modals/SkillsModal/SkillsModal';
 import AreaBackground from './AreaBackground';
-import MinutesRemaining from './UpdatedMinutes/UpdatedMinutes';
-import AreaItemsSection from './Sections/AreaItemsSection';
 import AreaEnemiesSection from './Sections/AreaEnemiesSection';
+import AreaItemsSection from './Sections/AreaItemsSection';
 import AreaPathsSection from './Sections/AreaPathsSection';
 
 
@@ -75,6 +66,8 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const [inventoryWeight, setInventoryWeight] = useState(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));
 
+    const [actionType, setActionType] = useState('');
+
     useEffect(() => {
         if (!availablePaths.length && currentLocation) {
             dispatch(getAvailablePaths(currentLocation.id));
@@ -83,19 +76,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
             dispatch(setSkillsFromStorage());
         }
 
-        if (new Date(currentLocation!.nextRespawnAreaItems).getTime() < (new Date()).getTime()) {
-            dispatch(updateAreaItems({
-                levelId: currentLocation.id,
-                date: new Date().toISOString(),
-                itemsToUpdate: currentLocation.areaItems || []
-            }));
-        }
-        if (currentLocation && new Date(currentLocation.nextRespawnAreaEnemies).getTime() < (new Date()).getTime()) {
-            dispatch(updateAreaEnemies({
-                levelId: currentLocation.id,
-                enemies: currentLocation.enemies
-            }));
-        }
+        
 
         onChangeInfo({ id: currentLocation.id, whatInfo: 'area' });
 
@@ -104,7 +85,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
     }, [player, currentLocation.id, areas])
 
     if(!currentLocation) return <div>Loading...</div>
-    else return (
+    return (
         <>
             {
                 traderId
@@ -165,19 +146,19 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                 <AreaActionMenu>
                     <AreaPathsSection
                         $inventoryWeight={inventoryWeight}
-                        $playerStats={stats} />
+                        $playerStats={stats}
+                        $isBlocked={actionType !== 'path' && !!actionType}
+                        $changeActionType={() => setActionType('path')}
+                        $clearActionType={() => setActionType('')} />
 
                     <AreaItemsSection 
                         $playerStats={stats}
-                        $currentAreaItems={currentLocation.currentAreaItems}
-                        $currentLocationId={currentLocation.id}
-                        $isBlocked={false}
-                        $nextRespawnItems={currentLocation.nextRespawnAreaItems} />
+                        $isBlocked={actionType !== 'items' && !!actionType}
+                        $changeActionType={() => setActionType('items')}
+                        $clearActionType={() => setActionType('')} />
 
                     <AreaEnemiesSection 
-                        $currentEnemies={currentLocation.currentEnemies}
-                        $isBlocked={false} 
-                        $nextRespawnEnemies={currentLocation.nextRespawnAreaEnemies}
+                        $isBlocked={!!actionType} 
                         $onClickStartBattle={(e: IAreaCurrentEnemy) => $onClickStartBattle(e)}
                         $setTraderId={(id: string) => setTraderId(id)} />
 
@@ -198,17 +179,6 @@ const Area = styled.div`
     box-sizing: border-box;
 `
 
-const LevelsList = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  justify-content: center;
-  align-items: left;
-  margin-top: 10px;
-
-`
-
 const AreaActionMenu = styled.div`
   z-index: 1;
   display: flex;
@@ -217,11 +187,6 @@ const AreaActionMenu = styled.div`
   gap: 50px;
   width: 100%;
   transition: 1s;
-`
-
-const NameBlock = styled.p`
-  font-size: 20px;
-  margin: 0;
 `
 
 interface LevelNameProps {
@@ -252,21 +217,5 @@ interface IBlockProps {
     $update: number;
     $isBlocked: boolean;
 }
-
-// const PlaceBlock = styled(Section)`
-//   overflow-y: auto;
-//   height: ${p => 70 + p.$update * 100}px;
-  
-// `
-
-// const EmeniesBlock = styled(Section)`
-//   overflow-y: auto;
-//   height: ${p => 100 + p.$update * 100}px;
-// `
-
-// const AreasBlock = styled(Section)`
-//   overflow-y: auto;
-//   height: ${p => 50 + p.$update * 100}px;
-// `
 
 export default AreaPage;

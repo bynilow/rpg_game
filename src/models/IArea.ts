@@ -9,6 +9,7 @@ export interface IArea {
     color: IAreaColor;
     avatar: string;
     title: string;
+    stateId: string;
     description: string;
     areaItems: IAreaItem[];
     currentAreaItems: IFullItem[];

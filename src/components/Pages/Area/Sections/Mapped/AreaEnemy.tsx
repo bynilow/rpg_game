@@ -1,9 +1,9 @@
 import styled, { keyframes } from 'styled-components'
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { IFullItem } from '../../../models/IAreaItem';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
+import { IFullItem } from '../../../../../models/IAreaItem';
 import { useRef, useState } from 'react';
-import { getEnemyBackground, getHoveredEnemyBackground, getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
-import Avatar from '../../Avatar/Avatar';
+import { getEnemyBackground, getHoveredEnemyBackground, getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../../../styles/backgrounds';
+import Avatar from '../../../../Avatar/Avatar';
 
 
 interface IAreaEnemyProps {
