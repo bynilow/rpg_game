@@ -8,6 +8,7 @@ import { IAreaCurrentEnemy } from '../../../../models/IEnemy';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { updateAreaEnemies } from '../../../../store/reducers/ActionCreators';
+import Title from '../../../Title/Title';
 
 interface IAreaEnemiesSectionProps {
     $isBlocked: boolean;
@@ -25,7 +26,7 @@ function AreaEnemiesSection({
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (currentLocation && new Date(currentLocation.nextRespawnAreaEnemies).getTime() < (new Date()).getTime()) {
+        if (new Date(currentLocation.nextRespawnAreaEnemies).getTime() < (new Date()).getTime()) {
             dispatch(updateAreaEnemies({
                 levelId: currentLocation.id,
                 enemies: currentLocation.enemies
@@ -39,8 +40,11 @@ function AreaEnemiesSection({
             $isBoxShadow
             $isBackgroundTransparent={false}>
 
-            <Title>Существа: </Title>
+            <Title $size='1.5rem'>
+                Существа: 
+            </Title>
             <MinutesRemaining
+                $timeToUpdate={currentLocation.timeToRespawnAreaEnemies}
                 $nextUpdateDateTime={currentLocation.nextRespawnAreaEnemies} />
             <List >
                 {
@@ -68,16 +72,11 @@ const List = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.5rem;
   justify-content: center;
   align-items: left;
   margin-top: 10px;
 
-`
-
-const Title = styled.p`
-  font-size: 20px;
-  margin: 0;
 `
 
 export default AreaEnemiesSection;

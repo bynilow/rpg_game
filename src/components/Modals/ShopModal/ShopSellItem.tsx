@@ -6,6 +6,7 @@ import { IFullItem, IFullItemWithCount } from '../../../models/IAreaItem';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
+import Title from '../../Title/Title';
 
 interface IShopSellItemProps {
     $fullItem: IFullItem;
@@ -60,12 +61,12 @@ function ShopSellItem({
             <CircleButton symbol='?' click={() => $openInfoModal({id: $fullItem.id, whatInfo: 'item'})} />
             <Avatar 
                 $image={$fullItem.avatar} 
-                width={'100px'} 
+                width={'5rem'} 
                 height={'100%'}
                 $isMiningOther={false} />
 
             <InfoBlock>
-                <Title>
+                <Title $size='1.3rem'>
                     {$fullItem.title} ({$count})
                 </Title>
                 <CraftBlock>
@@ -119,15 +120,15 @@ const Cost = styled.p`
     bottom: 0;
     right: 0;
     margin: 10px;
-    font-size: 16px;
+    font-size: 1rem;
     background: #cfcfcf;
     padding: 5px 10px;
     border-radius: 10px;
 `
 
 const CountRangeText = styled.p`
-    font-size: 20px;
-    width: 50px;
+    font-size: 1.3rem;
+    width: 2rem;
 `
 
 const RangeBlock = styled.div`
@@ -140,8 +141,8 @@ const RangeBlock = styled.div`
 `
 
 const CountRange = styled.input`
-    min-width: 200px;
-    max-width: 200px;
+    min-width: 20rem;
+    max-width: 20rem;
     transition: 0.1s;
     accent-color: #4494df;
     align-items: center;
@@ -164,10 +165,10 @@ const CountRange = styled.input`
 `
 
 const Button = styled.div`
-    font-size: 30px;
+    font-size: 1.5em;
     line-height: 0;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -207,36 +208,19 @@ const AreaItemBlockClickable = styled.div`
     left: 0;
 `
 
-const Title = styled.p`
-    font-size: 20px;
-    transition: .1s;
-`
-
-
-const AreaItemBlockAnim = keyframes`
-    from{
-        transform: scale(0) rotate(-50deg);
-    }
-    to{
-        transform: scale(1) rotate(0deg);
-    }
-`
-
 interface IAreaItemBlockProps{
     color: string;
     $hoveredColor: string;
 }
 
-
-
 const Item = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
-    padding: 20px;
+    padding: 1.3em;
     border-radius: 5px 5px 0 0;
     width: 100%;
     height: 130px;
     display: flex;
-    gap: 20px;
+    gap: 1.3em;
     position: relative;
     cursor: pointer;
     background: ${ p => p.color};
@@ -244,6 +228,5 @@ const Item = styled.div<IAreaItemBlockProps>`
     transition: 0.1s;
 
 `
-
 
 export default ShopSellItem;

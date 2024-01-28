@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IActionTexts, IEnemy } from '../../../models/IEnemy';
 import { scrollBarX } from '../../../styles/scrollbars';
 import Avatar from '../../Avatar/Avatar';
-import Container from '../../Container/Container';
 import EndCombatModal from '../../Modals/WinCombatModal/EndCombatModal';
 import CombatText from './CombatText';
 import { addItemsToInventory, addXP, setDeadEnemy, setHealthPoints, setPlayer } from '../../../store/reducers/ActionCreators';
@@ -66,9 +65,9 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
     const [isStartingAnimLost, setIsStartingAnimLost] = useState(false);
     const [combatHistory, setCombatHistory] = useState<ICombatHistory[]>([]);
 
-    const [enemyTime, setEnemyTime] = useState<number>(enemy.attackSpeed + 5);
+    const [enemyTime, setEnemyTime] = useState<number>(enemy.attackSpeed);
 
-    
+
 
     const enemyAttack = () => {
         setEnemyTime(enemy.attackSpeed);
@@ -257,8 +256,8 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
     const winCombat = () => {
         const possibleItems = enemy.possibleLoot;
         const experienceCount = Number((
-            enemy.baseCountXP 
-            * playerStats.experienceMultiplier 
+            enemy.baseCountXP
+            * playerStats.experienceMultiplier
             + (enemy.level / 2)).toFixed(0));
         const experienceItem: IFullItemWithCount = {
             ...areaItems.find(i => i.id === 'experience')!,
@@ -301,7 +300,8 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
             clearTimeout(i);
         }
         setIsWin(false);
-        
+        dispatch(setHealthPoints(0));
+
     }
 
     const onClickedFinishBattle = () => {
@@ -309,7 +309,7 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
         setTimeout(() => {
             $finishBattle(isWin)
         }, 2000)
-        
+
     }
 
     if (playerHealth <= 0 && !isBattleEnded && !isModalEndOpened) {
@@ -345,7 +345,7 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
 
         setTimeout(() => {
             setIsStartingAnimLost(true);
-        }, 4000)
+        }, 4100)
 
         return () => {
             clearInterval(enemyTimerAttackInterval);
@@ -366,28 +366,29 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
             }
             <Background />
             <Page>
-                {
-                    !isStartingAnimLost
-                        ? <StartScreen>
-                            <StartText>
-                                Сражение
-                            </StartText>
-                            <StartNameEnemy>
-                                {enemy.title}
-                            </StartNameEnemy>
-                        </StartScreen>
-                        : null
-                }
-                {
-                    isModalEndOpened
-                        ? <EndCombatModal
-                            $items={isWin ? receivedItems : null}
-                            $isWin={isWin}
-                            $finishBattle={() => onClickedFinishBattle()} />
-                        : null
-                }
                 <Container>
-                    <ContainerInner>
+                    {
+                        !isStartingAnimLost
+                            ? <StartScreen>
+                                <StartText>
+                                    Сражение
+                                </StartText>
+                                <StartNameEnemy>
+                                    {enemy.title}
+                                </StartNameEnemy>
+                            </StartScreen>
+                            : null
+                    }
+                    {
+                        isModalEndOpened
+                            ? <EndCombatModal
+                                $items={isWin ? receivedItems : null}
+                                $isWin={isWin}
+                                $finishBattle={() => onClickedFinishBattle()} />
+                            : null
+                    }
+
+                    <CharacterBlock>
                         <Section
                             $isBoxShadow
                             $isBackgroundTransparent={false}>
@@ -410,19 +411,13 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
                                     }s
                                 </BlockText>
                             </BlockLine>
-                            <ButtonsBlock>
-                                <ButtonAttack onClick={() => onClickAttack()}>
+                            <ButtonAttack onClick={() => onClickAttack()}>
                                     Удар
                                 </ButtonAttack>
-                                <ButtonLeave>
-                                    Сбежать
-                                </ButtonLeave>
-                            </ButtonsBlock>
-                            <ButtonInventory>
-                                Инвентарь
-                            </ButtonInventory>
                         </Section>
+                    </CharacterBlock>
 
+                    <HistoryBattle>
                         <Section
                             $isBoxShadow
                             $isBackgroundTransparent={false}>
@@ -449,7 +444,8 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
                                 }
                             </List>
                         </Section>
-
+                    </HistoryBattle>
+                    <CharacterBlock>
                         <Section
                             $isBoxShadow
                             $isBackgroundTransparent={false}>
@@ -487,19 +483,22 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
                                 </BlockText>
                             </BlockLine>
                         </Section>
-                    </ContainerInner>
+                    </CharacterBlock>
+
                 </Container>
             </Page>
         </>
     );
 }
 
+
+
 const EndBattleAnim = keyframes`
   0%{
     transform: scale(0);
   }
   100%{
-    transform: scale(1.5);
+    transform: scale(1.7);
   }
 `
 
@@ -532,15 +531,20 @@ const EndBattleBlock = styled.div`
     
     background: rgba(0,0,0,0);
   }
+
+  @media (max-width: 1025px) {
+    width: 100vh;
+    height: 100vh;
+  }
+  @media (max-width: 426px) {
+    left: -50%;
+    right: 50%;
+  }
 `
 
 const StartAnim = keyframes`
     0%{
         background: #000000;
-        top: 0;
-    }
-    60%{
-        background: #000000c1;
     }
     100%{
         background: rgba(0,0,0,0);
@@ -572,14 +576,14 @@ const StartScreen = styled.div`
     height: 100vh;
     top: 0;
     left: 0;
-    background: #000000a0;
+    background: #0000009f;
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    animation: ${StartAnim} 4s ease;
+    animation: ${StartAnim} 4s cubic-bezier(0,-0.02,1,.24);
     animation-fill-mode: forwards;
 
     /* #e7b13d */
@@ -603,7 +607,7 @@ const StartNameEnemy = styled.p`
 `
 
 const Background = styled.div`
-    position: absolute;
+    position: fixed;
     width: 110vw;
     height: 110vh;
     top: -5%;
@@ -651,16 +655,8 @@ const Button = styled.div`
     }
 `
 
-const ButtonInventory = styled(Button)`
-    background: #5491ad;
-`
-
 const ButtonAttack = styled(Button)`
     background: #54ad54;
-`
-
-const ButtonLeave = styled(Button)`
-    background: #a85151;
 `
 
 const ButtonsBlock = styled.div`
@@ -674,12 +670,11 @@ const BlockText = styled.p`
     margin-right: 10px;
     text-align: right;
     width: 30%;
-    
 `
 
 const BlockLine = styled.div`
     box-shadow: 0 0 5px black;
-    min-height: 20px;
+    min-height: 1.3em;
     border-radius: 5px;
     display: flex;
     align-items: center;
@@ -689,18 +684,7 @@ const BlockLine = styled.div`
 const List = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    
-`
-
-const ContainerInner = styled.div`
-    width: 100%;
-    height: 100%;
-    padding: 30px;
-
-    display: flex;
-    gap: 30px;
-    justify-content: space-between;
+    gap: 1.5em;
 `
 
 const AttackLine = styled.progress`
@@ -747,16 +731,50 @@ const HealthLine = styled.progress`
 `
 
 const Title = styled.p`
-    font-size: 20px;
+    font-size: 1.3em;
     margin: 0;
     transition: .1s;
 `
 
+const CharacterBlock = styled.div`
+    flex: 1;
+    max-height: 50%;
+`
+
+const HistoryBattle = styled.div`
+    flex: 1;
+    max-height: 100%;
+
+    @media (max-width: 1025px) {
+        order: 3;
+        max-height: 40%;
+    }
+
+    @media (max-width: 426px) {
+        max-height: 30%;
+    }
+`
+
+const Container = styled.div`
+    width: 90%;
+    max-height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 3rem;
+    margin-bottom: 5rem;
+
+`
+
 const Page = styled.div`
+    padding: 1rem;
     width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center;
+    overflow-y: auto;
+
+    ${scrollBarX}
 `
 
 export default CombatPage;

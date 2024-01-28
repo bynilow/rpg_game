@@ -65,10 +65,9 @@ const StopAction = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 50px;
-    padding: 30px;
-    width: 50%;
-    height: 50%;
+    font-size: 3rem;
+    width: 70%;
+    height: 70%;
     z-index: 99;
     line-height: 0;
     color: white;

@@ -42,7 +42,6 @@ function AreaPath({
             : ($playerInventoryMaxWeight - $playerInventoryWeight) / 10 * -1);
     const [baseTimeToMovement, setBaseTimeToMovement] = useState(($timeToMove + $playerMovementSpeed) + overweight);
     const [currentTimeToMove, setCurrentTimeToMove] = useState(baseTimeToMovement);
-    
 
     const onClickLevel = (e:React.MouseEvent<HTMLDivElement>) => {
         if(!isMoving){
@@ -89,8 +88,8 @@ function AreaPath({
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
             <Avatar 
                 $image={$area.avatar}
-                width={'90px'} 
-                height={'90px'}
+                width='6rem' 
+                height='6rem' 
                 $onClicked={() => onClickStopMove()} 
                 $isDoSomething={isMoving}
                 $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '')} />
@@ -172,12 +171,12 @@ const AreaBlockAnim = keyframes`
 const Area = styled.div<IAreaBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
     background-color: white;
-    padding: 20px;
+    padding: 1.3em;
     border-radius: 5px;
     width: 100%;
-    height: 70px;
+    height: 4.5rem;
     display: flex;
-    gap: 20px;
+    gap: 1.3em;
     align-items: center;
     position: relative;
     cursor: pointer;
@@ -207,7 +206,7 @@ const Area = styled.div<IAreaBlockProps>`
     &:hover ${Name} {
         ${p => p.$isMovingOther 
             ? null 
-            : `padding: 20px;`
+            : `padding: 1.3em;`
         }
     }
 

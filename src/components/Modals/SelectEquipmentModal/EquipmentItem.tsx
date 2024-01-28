@@ -5,6 +5,7 @@ import Avatar from '../../Avatar/Avatar';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../../hooks/redux';
 import { equipItem } from '../../../store/reducers/ActionCreators';
+import Title from '../../Title/Title';
 
 interface IEquipmentItemProps {
     $item: IFullItem;
@@ -65,7 +66,7 @@ function EquipmentItem({ $item, $isEquipped }: IEquipmentItemProps) {
                 width='150px'
                 $image={$item.avatar} />
             <Info>
-                <Title>
+                <Title $size='1.6rem'>
                     {$item.title}
                 </Title>
                 <Characteristic>
@@ -79,7 +80,7 @@ function EquipmentItem({ $item, $isEquipped }: IEquipmentItemProps) {
 }
 
 const Char = styled.p`
-    font-size: 16px;
+    font-size: 1rem;
 `
 
 const Characteristic = styled.p`
@@ -87,10 +88,6 @@ const Characteristic = styled.p`
     flex-direction: column;
     margin-left: 10px;
     gap: 5px;
-`
-
-const Title = styled.p`
-    font-size: 24px;
 `
 
 const Info = styled.div`
@@ -121,7 +118,7 @@ const Item = styled.div<IItemColor>`
     width: 100%;
     padding: 10px;
     display: flex;
-    gap: 20px;
+    gap: 1.3rem;
 
 
     transition: 0.1s;

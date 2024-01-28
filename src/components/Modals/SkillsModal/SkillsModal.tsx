@@ -7,6 +7,7 @@ import { scrollBarX } from '../../../styles/scrollbars';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { useEffect, useState } from 'react';
 import { addSkills, decrementSkillPoints } from '../../../store/reducers/ActionCreators';
+import Title from '../../Title/Title';
 
 interface ISkillsModalProps {
     $closeModal: Function;
@@ -314,11 +315,12 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
             $flexDirection='column'
             $isCloseButton
             $closeButtonFunction={() => $closeModal()}
+            $size='large'
             $gap='10px'
             $justifyContent='baseline' >
-            <SkillsTitle>
+            <Title $size='2rem'>
                 Навыки
-            </SkillsTitle>
+            </Title>
             <PointsCount>
                 {
                     countPoints
@@ -393,10 +395,12 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
                     }
 
                 </SkillsList>
-                <Section $isBoxShadow $gap='15px'>
-                    <DescriptionTitle>
+                <Section 
+                    $isBoxShadow 
+                    $gap='15px'>
+                    <Title $size='1.3rem'>
                         Описание
-                    </DescriptionTitle>
+                    </Title>
                     <SkillName>
                         {
                             infoSkill.title
@@ -449,11 +453,11 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
 }
 
 const NameBranch = styled.p`
-    font-size: 20px;
+    font-size: 2rem;
 `
 
 const PointsCount = styled.p`
-    font-size: 20px;
+    font-size: 1.3rem;
 `
 
 const ButtonsBlock = styled.div`
@@ -462,15 +466,16 @@ const ButtonsBlock = styled.div`
 `
 
 const ButtonCancel = styled.div`
-    height: 50px;
-    width: 50px;
+    height: 3rem;
+    width: 3rem;
     color: white;
     background-color: #9b4545;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 2rem;
+    line-height: 0;
     user-select: none;
     cursor: pointer;
     
@@ -482,15 +487,16 @@ const ButtonCancel = styled.div`
 `
 
 const ButtonConfirm = styled.div`
-    height: 50px;
-    width: 50px;
+    height: 3rem;
+    width: 3rem;
     color: white;
     background-color: #578a5b;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 2rem;
+    line-height: 0;
     user-select: none;
     cursor: pointer;
     
@@ -507,38 +513,39 @@ const NextSkillLevelSpan = styled.span`
 `
 
 const SkillLevel = styled.p`
-    
+    font-size: 1rem;
 `
 
 const SkillName = styled.p`
-    font-size: 25px;
+    font-size: 1.5rem;
 `
 
 const NextSkillLevel = styled.p`
-    
+    font-size: 1rem;
 `
 
 const Description = styled.p`
-    
+    font-size: 1rem;
 `
 
 const SkillsBlock = styled.div`
     display: flex;
     gap: 10px;
-    max-height: 70%;
-    width: 100%;    
+    max-height: 75%;
+    width: 100%;
+    
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
 `
 
 const DescriptionTitle = styled.p`
-    font-size: 20px;
-`
-
-const SkillsTitle = styled.p`
-    font-size: 30px;
+    font-size: 1.3rem;
 `
 
 const SkillsList = styled.div`
     width: 100%;
+    min-width: 50%;
     padding: 10px;
     height: auto;
     flex: 2;
@@ -547,12 +554,15 @@ const SkillsList = styled.div`
     box-sizing: border-box;
     justify-content: baseline;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.3rem;
     overflow-y: scroll;
+    overflow-x: hidden;
 
     ${
         scrollBarX
     }
+
+    
     
 `
 

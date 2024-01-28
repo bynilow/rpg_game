@@ -33,13 +33,13 @@ interface IBackgroundProps {
 }
 
 const Background = styled.div<IBackgroundProps>`
-    position: absolute;
+    position: fixed;
     z-index: 9999;
     
-    width: 200vw;
-    height: 200vh;
-    top: -50%;
-    left: -50%;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
 
     background-color: #0000006f;
     backdrop-filter: blur(5px);

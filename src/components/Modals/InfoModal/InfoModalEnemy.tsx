@@ -10,6 +10,7 @@ import CircleButton from '../../Buttons/CircleButton';
 import Modal from '../Modal';
 import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
+import Title from '../../Title/Title';
 
 interface IEnemyModal {
     $id: string;
@@ -22,15 +23,16 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
 
     const { areaItems, areas, enemies } = useAppSelector(state => state.userReducer);
 
+    console.log($id)
+
     const [thisEnemy, setThisEnemy] = useState(enemies.find(e => e.id === $id)!)
     let enemyItems: IFullItem[] = [];
 
-    if (thisEnemy) {
+    if (thisEnemy.possibleLoot.length) {
         enemyItems = thisEnemy.possibleLoot.map(i => areaItems.find(ai => ai.id === i.id)!)!;
     }
-
-    console.log('thisEnemy id:'+$id, 'thisEnemy: '+thisEnemy)
-
+    console.log(thisEnemy)
+    console.log(enemyItems)
     const backgroundColor = getEnemyBackground(thisEnemy.type);
     const backgroundHoveredColor = getHoveredEnemyBackground(thisEnemy.type);
 
@@ -48,7 +50,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
                     height={'150px'}
                     $minWidth={'200px'}
                     $minHeight={'200px'} />
-                <Title>
+                <Title $size='2rem'>
                     "{thisEnemy.title}"
                 </Title>
                 <ColorText color={getEnemyColor(thisEnemy.type)}>
@@ -69,7 +71,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
                 {
                     thisEnemy.type === 'enemy' || thisEnemy.type === 'boss'
                         ? <>
-                            <Title>
+                            <Title $size='1.5rem'>
                                 Характеристики
                             </Title>
                             <Property>
@@ -123,7 +125,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
             </Section>
 
             <Section>
-                <Title>
+                <Title $size='2rem'>
                     {
                         thisEnemy.type === 'boss' || thisEnemy.type === 'enemy'
                             ? 'Возможный лут'
@@ -152,7 +154,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
             </Section>
 
             <Section>
-                <Title>
+                <Title $size='2em'>
                     Где найти
                 </Title>
                 <List>
@@ -181,19 +183,11 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
 
 const ProperyName = styled.span`
     color: black;
+    font-size: 1rem;
 `
 
 const Property = styled.p`
-    
-`
-
-const Cost = styled.p`
-    color: black;
-    width: min-content;
-    background-color: #dddddd;
-    border-radius: 5px;
-    padding: 5px;
-    margin: 0;
+    font-size: 1rem;
 `
 
 const List = styled.div`
@@ -207,28 +201,14 @@ interface IColorText {
 }
 
 const ColorText = styled.p<IColorText>`
-    font-size: 16px;
+    font-size: 1rem;
     margin: 0;
     color: ${props => props.color};
 `
 
-const UpdateText = styled.p`
-    font-size: 16px;
-    margin: 0;
-`
-
 const Description = styled.p`
-    font-size: 18px;
+    font-size: 1.3rem;
     margin: 0;
 `
-
-const Title = styled.p`
-    font-size: 30px;
-    margin: 0;
-`
-
-interface IInfoProps {
-    color: string;
-}
 
 export default EnemyModal;

@@ -76,8 +76,8 @@ function Area({
             <AreaItemBlockClickable onClick={e => onClickStartMining(e)} />
             <Avatar 
                 $image={$item.avatar} 
-                width={'90px'} 
-                height={'90px'}
+                width='6rem' 
+                height='6rem' 
                 $isDoSomething={isMining}
                 $onClicked={() => onClickStopMining()} 
                 $isMiningOther={($miningId !== $item.idInArea && $miningId !== '')} />
@@ -148,27 +148,6 @@ const Title = styled.p`
     transition: .1s;
 `
 
-const StopMiningCross = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 50px;
-    padding: 30px;
-    width: 50%;
-    height: 50%;
-    z-index: 99;
-    line-height: 0;
-    color: white;
-    background-color: #00000050;
-    border-radius: 50%;
-    transition: 0.1s;
-
-    &:hover{
-        transform: scale(1.5);
-        background-color: #00000084;
-    }
-`
-
 const AreaItemBlockAnim = keyframes`
     from{
         transform: scale(0) rotate(-50deg);
@@ -186,16 +165,14 @@ interface IAreaItemBlockProps{
     
 }
 
-
-
 const AreaItemBlock = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
-    padding: 20px;
+    padding: 1.3rem;
     border-radius: 5px 5px 0 0;
     width: 100%;
-    height: 70px;
+    height: 4.5rem;
     display: flex;
-    gap: 20px;
+    gap: 1.3rem;
     align-items: center;
     position: relative;
     cursor: pointer;
@@ -227,7 +204,7 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
     &:hover ${Title} {
         ${p => p.$isMiningOther 
             ? null 
-            : `padding: 20px;`
+            : `padding: 1.3em;`
         }
     }
 

@@ -46,14 +46,17 @@ const SkeletonAnim = keyframes`
 const Background = styled.div<IBackgroundProps>`
     z-index: -1;
     position: fixed;
-    top: -80%;
-    left: -15%;
-    width: 130vw;
-    height: 250vh;
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    width: 300vh;
+    height: 300vh;
     transition: 1s ease;
     background-image: ${p => `url( ${p.$image} )`};
-    background-size: cover;
+    background-position: center;
+    background-size: contain;
     background-repeat: no-repeat;
+    background-color: white;
     filter: blur(5px);
 
     ${

@@ -17,6 +17,7 @@ import AreaBackground from './AreaBackground';
 import AreaEnemiesSection from './Sections/AreaEnemiesSection';
 import AreaItemsSection from './Sections/AreaItemsSection';
 import AreaPathsSection from './Sections/AreaPathsSection';
+import TextModal from '../../Modals/TextModal/TextModal';
 
 
 interface IAreaPage {
@@ -50,7 +51,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const onClickCloseModalInfo = () => {
         setIsInfoOpen(false);
-        setInfoId(areas[0].id);
+        setInfoId(currentLocation.id);
         setWhatInfo('area');
     }
 
@@ -64,25 +65,34 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const [stats, setStats] = useState(getStats(playerSkills, player));
 
-    const [inventoryWeight, setInventoryWeight] = useState(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));
-
     const [actionType, setActionType] = useState('');
 
-    useEffect(() => {
-        if (!availablePaths.length && currentLocation) {
-            dispatch(getAvailablePaths(currentLocation.id));
-            dispatch(setInventoryFromStorage());
-            dispatch(setPlayerFromStorage());
-            dispatch(setSkillsFromStorage());
+    const [isHpFailModalOpened, setIsHpFailModalOpened] = useState(false);
+
+    const onClickStartBattle = (e: IAreaCurrentEnemy) => {
+        if(player.health / stats.baseHealth * 100 > 10){
+            $onClickStartBattle(e);
         }
-
+        else{
+            setIsHpFailModalOpened(true);
+        }
         
+    }
 
-        onChangeInfo({ id: currentLocation.id, whatInfo: 'area' });
+    useEffect(() => {
+        dispatch(setInventoryFromStorage());
+        dispatch(setPlayerFromStorage());
+        dispatch(setSkillsFromStorage());
+    }, [])
 
+    useEffect(() => {
         setStats(getStats(playerSkills, player));
-        setInventoryWeight(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));
-    }, [player, currentLocation.id, areas])
+    }, [player])
+
+    useEffect(() => {
+        dispatch(getAvailablePaths(currentLocation.id));
+        onChangeInfo({ id: currentLocation.id, whatInfo: 'area' });
+    }, [currentLocation.id])
 
     if(!currentLocation) return <div>Loading...</div>
     return (
@@ -127,6 +137,14 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                         $changeInfo={(info: IChangeInfo) => onChangeInfo(info)} />
                     : null
             }
+            {
+                isHpFailModalOpened
+                    ? <TextModal
+                        $onClickCloseModal={() => setIsHpFailModalOpened(false)}>
+                        Количество ОЗ должно быть больше 10% !
+                    </TextModal>
+                    : null
+            }
 
             <AreaBackground $image={currentLocation.avatar} />
 
@@ -145,7 +163,6 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
                 <AreaActionMenu>
                     <AreaPathsSection
-                        $inventoryWeight={inventoryWeight}
                         $playerStats={stats}
                         $isBlocked={actionType !== 'path' && !!actionType}
                         $changeActionType={() => setActionType('path')}
@@ -159,7 +176,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
                     <AreaEnemiesSection 
                         $isBlocked={!!actionType} 
-                        $onClickStartBattle={(e: IAreaCurrentEnemy) => $onClickStartBattle(e)}
+                        $onClickStartBattle={(e: IAreaCurrentEnemy) => onClickStartBattle(e)}
                         $setTraderId={(id: string) => setTraderId(id)} />
 
 
@@ -173,19 +190,19 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 const Area = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 1.5rem;
     width: 90%;
-    height: 75%;
-    box-sizing: border-box;
+    height: 80%;
 `
 
 const AreaActionMenu = styled.div`
   z-index: 1;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
-  max-height: 100%;
-  gap: 50px;
+  gap: 3rem;
   width: 100%;
+  max-height: 80%;
   transition: 1s;
 `
 
@@ -195,8 +212,8 @@ interface LevelNameProps {
 
 const LevelName = styled.div<LevelNameProps>`
   position: relative;
-  font-size: 30px;
-  padding: 10px;
+  font-size: 2em;
+  padding: 0.5rem;
   background: ${p =>
         p.color === 'green'
             ? "linear-gradient(225deg, #ffffff 95%, #51973f 95%);"
@@ -212,10 +229,5 @@ const LevelName = styled.div<LevelNameProps>`
   #8a2496
   #978414 */
 `
-
-interface IBlockProps {
-    $update: number;
-    $isBlocked: boolean;
-}
 
 export default AreaPage;

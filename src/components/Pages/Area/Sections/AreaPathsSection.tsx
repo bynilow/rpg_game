@@ -7,10 +7,10 @@ import { IStats } from '../../../../functions/Stats';
 import { useState } from 'react';
 import { goLevel } from '../../../../store/reducers/ActionCreators';
 import { getAreaFromId } from '../../../../functions/Areas';
+import Title from '../../../Title/Title';
 
 interface IAreaPathsSectionProps {
     $playerStats: IStats;
-    $inventoryWeight: number;
     $isBlocked: boolean;
     $changeActionType: Function;
     $clearActionType: Function;
@@ -18,13 +18,14 @@ interface IAreaPathsSectionProps {
 
 function AreaPathsSection({
     $playerStats,
-    $inventoryWeight,
     $isBlocked,
     $changeActionType,
     $clearActionType}: IAreaPathsSectionProps) {
 
-    const {availablePaths, areas} = useAppSelector(state => state.userReducer);
+    const {availablePaths, areas, inventory} = useAppSelector(state => state.userReducer);
     const dispatch = useAppDispatch();
+
+    const [inventoryWeight, setInventoryWeight] = useState(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));
 
     const [moveAreaId, setMoveAreaId] = useState<string>('');
 
@@ -42,14 +43,15 @@ function AreaPathsSection({
         dispatch(goLevel(selectedPath.pathId));
     }
 
-
     return (
         <Section
             $isBlocked={$isBlocked}
             $isBoxShadow
             $isBackgroundTransparent={false}>
 
-            <Title>Доступные пути:</Title>
+            <Title $size='1.5rem'>
+                Доступные пути:
+            </Title>
             <List>
                 {
                     availablePaths.map((p, ind) => <AreaPath
@@ -57,7 +59,7 @@ function AreaPathsSection({
                             p.pathId
                             + $playerStats.movementSpeed
                             + $playerStats.capacity
-                            + ($inventoryWeight > $playerStats.capacity ? $inventoryWeight : '')}
+                            + (inventoryWeight > $playerStats.capacity ? inventoryWeight : '')}
                         $index={ind}
                         $setMoveAreaId={() => onClickMove(p.pathId)}
                         $clearMoveAreaId={() => onClickCancelMove()}
@@ -65,7 +67,7 @@ function AreaPathsSection({
                         $area={getAreaFromId(areas, p.pathId)}
                         $timeToMove={p.time}
                         $goLevel={() => onClickGoLevel(p)}
-                        $playerInventoryWeight={$inventoryWeight}
+                        $playerInventoryWeight={inventoryWeight}
                         $playerInventoryMaxWeight={$playerStats.capacity}
                         $playerMovementSpeed={$playerStats.movementSpeed} />)
                 }
@@ -79,16 +81,11 @@ const List = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.5em;
   justify-content: center;
   align-items: left;
   margin-top: 10px;
 
-`
-
-const Title = styled.p`
-  font-size: 20px;
-  margin: 0;
 `
 
 export default AreaPathsSection;

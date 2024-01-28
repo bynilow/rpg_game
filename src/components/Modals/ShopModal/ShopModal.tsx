@@ -10,6 +10,8 @@ import Avatar from '../../Avatar/Avatar';
 import Modal from '../Modal';
 import ShopBuyItem from './ShopBuyItem';
 import ShopSellItem from './ShopSellItem';
+import Input from '../../SearchBar/Input';
+import Title from '../../Title/Title';
 
 interface IShopModal {
     $closeModal: Function;
@@ -86,7 +88,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
     }
 
     const getSellPrice = (cost: number) => {
-        return cost - (cost / 100 * getStats(playerSkills, player).sellPricePercent)
+        return cost + (cost / 100 * getStats(playerSkills, player).sellPricePercent)
     }
 
     const [isBuying, setIsBuying] = useState(true);
@@ -114,12 +116,12 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
         <>  
             <Modal
                 $flexDirection={'row'}
-                $gap='20px'
+                $gap='1.3em'
                 $size='large'
                 $justifyContent='baseline'
                 $isCloseButton
                 $closeButtonFunction={() => $closeModal()}>
-                <CraftTypesPlace>
+                <TypesPlace>
                     <TraderTypeButton
                         onClick={() => setIsBuying(true)}
                         $isBuying={isBuying}>
@@ -130,31 +132,28 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                         $isBuying={!isBuying}>
                         -
                     </TraderTypeButton>
-                </CraftTypesPlace>
+                </TypesPlace>
 
                 <Divider />
 
-                <CraftPlace>
+                <TraderPlace>
                     <TraderInfo>
                         <Avatar
                             $image={traderData.trader.avatar}
-                            width='120px'
-                            height='120px' />
+                            width='8rem'
+                            height='8rem' />
                         <InfoBlock>
-                            <Title>{traderData.trader.title} - {isBuying ? 'Покупка' : 'Продажа'}</Title>
+                            <Title $size='2rem'>
+                                {traderData.trader.title} - {isBuying ? 'Покупка' : 'Продажа'}
+                            </Title>
                             <InputCoinsBlock>
-                                <InputName
-                                    type='text'
-                                    placeholder='Я ищу...'
-                                    maxLength={30}
-                                    value={inputText}
-                                    onChange={e => setInputText(e.currentTarget.value)} />
+                                <Input $onChange={(e: string) => setInputText(e)} />
                                 <Coins>
                                     {player.coins.toFixed(1)}$
                                     <Avatar
                                         $image={areaItems.find(c => c.id === 'coin')!.avatar}
-                                        width='30px'
-                                        height='30px' />
+                                        width='2rem'
+                                        height='100%' />
                                 </Coins>
                             </InputCoinsBlock>
                         </InfoBlock>
@@ -192,7 +191,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                                         $cost={getSellPrice(i.cost)} />)
                         }
                     </ItemsList>
-                </CraftPlace>
+                </TraderPlace>
             </Modal>
         </>
 
@@ -210,13 +209,13 @@ const Coins = styled.div`
     padding: 5px 10px;
     display: flex;
     gap: 10px;
-    font-size: 20px;
+    font-size: 1.3rem;
     align-items: center;
 `
 
 const TraderInfo = styled.div`
     display: flex;
-    gap: 20px;
+    gap: 1.3rem;
 `
 
 const Divider = styled.div`
@@ -229,12 +228,12 @@ interface ITraderTypeButton{
 }
 
 const TraderTypeButton = styled.div<ITraderTypeButton>`
-    width: 50px;
-    height: 50px;
+    width: 4rem;
+    height: 4rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
+    font-size: 1.5rem;
     font-weight: bold;
     border-radius: 10px;
     box-shadow: 0 0 5px black;
@@ -251,40 +250,20 @@ const TraderTypeButton = styled.div<ITraderTypeButton>`
     }
 `
 
-const CraftTypesPlace = styled.div`
+const TypesPlace = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    gap: 20px;
+    gap: 1.3em;
 `
 
-const CraftPlace = styled.div`
+const TraderPlace = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    gap: 20px;
-`
-
-interface IRareIconProps {
-    color: string;
-}
-const RareIcon = styled.div<IRareIconProps>`
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    background-color: ${p => p.color};
-`
-
-const InputName = styled.input`
-    width: 100%;
-    font-size: 16px;
-    height: 40px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid black;
-    box-shadow: 0 0 5px #0000005a;
+    gap: 1.3rem;
 `
 
 const InfoBlock = styled.div`
@@ -296,7 +275,7 @@ const InfoBlock = styled.div`
 
 const ItemsList = styled.div`
     gap: 10px;
-    padding: 20px;
+    padding: 1.3rem;
     height: 70%;
     display: flex;
     flex-direction: column;
@@ -304,10 +283,6 @@ const ItemsList = styled.div`
     overflow-x: hidden;
 
     ${scrollBarX}
-`
-
-const Title = styled.p`
-    font-size: 30px;
 `
 
 export default ShopModal;

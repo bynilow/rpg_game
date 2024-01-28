@@ -9,6 +9,7 @@ import CircleButton from '../../Buttons/CircleButton';
 import Modal from '../Modal';
 import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
+import Title from '../../Title/Title';
 
 interface IModalItem {
     $id: string;
@@ -40,7 +41,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                     height={'250px'}
                     $minWidth={'200px'}
                     $minHeight={'200px'} />
-                <Title>
+                <Title $size='2rem'>
                     "{thisItem.title}"
                 </Title>
                 <ColorText color={getRareColor(thisItem.rare)}>
@@ -96,7 +97,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                             </Property>
                             <Property>
                                 <ProperyName>
-                                    Опыт:
+                                    Опыт создания:
                                 </ProperyName> {thisItem.baseCountXP}
                             </Property>
                             <Property>
@@ -149,7 +150,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                             </Property>
                             <Property>
                                 <ProperyName>
-                                    Опыт:
+                                    Опыт создания:
                                 </ProperyName> {thisItem.baseCountXP}
                             </Property>
                             <Property>
@@ -165,10 +166,94 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                         </>
                         : null
                 }
+
+                {
+                    thisItem.type === 'material'
+                        ? <>
+                            <Title>
+                                Характеристики
+                            </Title>
+                            <Property>
+                                <ProperyName>
+                                    Скорость создания:
+                                </ProperyName> {thisItem.timeToMining}s
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Опыт создания:
+                                </ProperyName> {thisItem.baseCountXP}
+                            </Property>
+
+                        </>
+                        : null
+                }
+
+                {
+                    thisItem.type === 'weapon'
+                        ? <>
+                            <Title $size='2rem'>
+                                Характеристики
+                            </Title>
+                            <Property>
+                                <ProperyName>
+                                    Скорость создания:
+                                </ProperyName> {thisItem.timeToMining}s
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Опыт создания:
+                                </ProperyName> {thisItem.baseCountXP}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Урон:
+                                </ProperyName> +{thisItem.weaponStats?.damage}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс промаха:
+                                </ProperyName> {thisItem.weaponStats!.missChance > 0
+                                    ? '+' + thisItem.weaponStats?.missChance
+                                    : thisItem.weaponStats?.missChance}%
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс блокирования:
+                                </ProperyName> {thisItem.weaponStats!.blockingChancePercent > 0
+                                    ? '+' + thisItem.weaponStats!.blockingChancePercent
+                                    : thisItem.weaponStats!.blockingChancePercent}%
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Множитель блокирования:
+                                </ProperyName> +x{thisItem.weaponStats?.blockingMultiplier}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Шанс крит. атаки:
+                                </ProperyName> {thisItem.weaponStats!.critChance > 0
+                                    ? '+' + thisItem.weaponStats!.critChance
+                                    : thisItem.weaponStats!.critChance}%
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Множитель крит. атаки:
+                                </ProperyName> +x{thisItem.weaponStats?.critDamageMultiplier}
+                            </Property>
+                            <Property>
+                                <ProperyName>
+                                    Скорость атаки:
+                                </ProperyName> {thisItem.weaponStats!.speedAttack > 0
+                                    ? '+' + thisItem.weaponStats?.speedAttack
+                                    : thisItem.weaponStats?.speedAttack}s
+                            </Property>
+                        </>
+                        : null
+                }
             </Section>
 
             <Section>
-                <Title>
+                <Title $size='2rem'>
                     Где найти
                 </Title>
                 <List>
@@ -222,7 +307,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
             </Section>
 
             <Section>
-                <Title>
+                <Title $size='2rem'>
                     Используется
                 </Title>
                 <List>
@@ -250,7 +335,7 @@ const ProperyName = styled.span`
 `
 
 const Property = styled.p`
-    
+    font-size: 1rem;
 `
 
 const Cost = styled.p`
@@ -260,12 +345,13 @@ const Cost = styled.p`
     border-radius: 5px;
     padding: 5px;
     margin: 0;
+    font-size: 1rem;
 `
 
 const List = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 1rem;
 `
 
 interface IColorText {
@@ -273,28 +359,15 @@ interface IColorText {
 }
 
 const ColorText = styled.p<IColorText>`
-    font-size: 16px;
+    font-size: 1rem;
     margin: 0;
     color: ${props => props.color};
 `
 
-const UpdateText = styled.p`
-    font-size: 16px;
-    margin: 0;
-`
-
 const Description = styled.p`
-    font-size: 18px;
+    font-size: 1.3rem;
     margin: 0;
 `
 
-const Title = styled.p`
-    font-size: 30px;
-    margin: 0;
-`
-
-interface IInfoProps {
-    color: string;
-}
 
 export default ItemModal;

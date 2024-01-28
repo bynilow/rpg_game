@@ -5,51 +5,56 @@ import { addXP } from '../../../../store/reducers/ActionCreators';
 
 interface IMinutesRemainingProps {
     $nextUpdateDateTime: string;
+    $timeToUpdate: number;
 }
 
 function MinutesRemaining({
-    $nextUpdateDateTime}: IMinutesRemainingProps) {
+    $nextUpdateDateTime,
+    $timeToUpdate }: IMinutesRemainingProps) {
 
-    const [secondsToUpdate, setSecondsToUpdate] = useState<number>(() => {
-        const currentDateTime = new Date().getTime();
-        const nextUpdate = new Date($nextUpdateDateTime).getTime();
-        return Math.round((nextUpdate - currentDateTime) / 1000);
-      });
-    
-    useEffect(() => {
-        console.log('mount')
-        const updateRespawnInterval = setInterval(() => {
-            console.log('interval')
-            changeMinutesToUpdate();
-        }, 1000);
-        
-        return () => {
-            console.log('unmount')
-            clearInterval(updateRespawnInterval);
-        }
-    }, []);
+    const currentDateTime = new Date().getTime();
+    const nextUpdate = new Date($nextUpdateDateTime).getTime();
+    const testTime = Math.round((nextUpdate - currentDateTime) / 1000);
 
-    const changeMinutesToUpdate = () => {
-        setSecondsToUpdate((prevSeconds) => {
-            if (prevSeconds > 0) {
-                return prevSeconds - 1;
-            } else {
-                return 0;
-            }
-        });
+    const [secondsToUpdate, setSecondsToUpdate] = useState<number>(testTime);
+    const [tick, setTick] = useState(false);
+
+    // useEffect(() => {
+    //     if (secondsToUpdate < 0) return; // время вышло
+    //     setSecondsToUpdate((prevSeconds) => {
+    //         if (prevSeconds > 0) {
+    //             return prevSeconds - 1;
+    //         } else {
+    //             return 0;
+    //         }
+    //     });
+    // }, [tick, secondsToUpdate]);
+
+    const onClickedTimer = () => {
+
     }
+
+    useEffect(() => {
+        const timerID = setInterval(() => setSecondsToUpdate(Math.round((new Date($nextUpdateDateTime).getTime() - new Date().getTime()) / 1000)), 1000);
+        return () => clearInterval(timerID);
+    }, [secondsToUpdate, $nextUpdateDateTime]);
 
     return (
         <Minutes>
-            ⟳ {secondsToUpdate}s
+            ⟳ {$timeToUpdate}m
+            {/* <button onClick={() => setSecondsToUpdate(Math.round((new Date($nextUpdateDateTime).getTime() - new Date().getTime()) / 1000))}>
+                upd
+            </button> */}
         </Minutes>
     );
 }
 
 const Minutes = styled.p`
-  font-size: 20px;
-  line-height: 0;
-  margin: 0;
+    position: absolute;
+    top: 0%;
+    right: 0;
+    font-size: 16px;
+    margin: 10px;
 `
 
 export default MinutesRemaining;

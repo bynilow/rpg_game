@@ -7,13 +7,14 @@ import { IBuyItem, IFullItem, IFullItemWithCount } from "../../models/IAreaItem"
 import { IAreaCurrentEnemy, IEnemy, IEnemyDead } from "../../models/IEnemy";
 import { IItemInventory } from "../../models/IInventory";
 import { IPlayer, IPlayerBaseStats, ISkillUp } from "../../models/IPlayer";
+import { Paths } from "../../data/Paths";
 
 
 
 const baseStats: IPlayerBaseStats = {
     baseDamage: {
-        baseCount: 50,
-        currentScores: 50,
+        baseCount: 5,
+        currentScores: 5,
         countScores: 1,
         level: 1
     },
@@ -103,8 +104,8 @@ const baseStats: IPlayerBaseStats = {
         level: 1
     },
     baseHealth: {
-        baseCount: 150,
-        currentScores: 150,
+        baseCount: 100,
+        currentScores: 100,
         countScores: 1,
         level: 1
     },
@@ -183,61 +184,19 @@ interface IUpdateAreaEnemies {
 const initialState: GameSlice = {
     currentLocation: localStorage.currentLocation ? JSON.parse(localStorage.currentLocation) : Locations[0],
     availablePaths: [],
-    paths: [
-        {
-            pathA: 'south_beach',
-            pathB: 'low_hills',
-            time: 5
-        },
-        {
-            pathA: 'low_hills',
-            pathB: 'sharp_mountains',
-            time: 6.5
-        },
-        {
-            pathA: 'sharp_mountains',
-            pathB: 'fish_ponds',
-            time: 5.5
-        },
-        {
-            pathA: 'south_beach',
-            pathB: 'forgotten_road',
-            time: 4.6
-        },
-        {
-            pathA: 'forgotten_road',
-            pathB: 'central_castle',
-            time: 5.25
-        },
-        {
-            pathA: 'central_castle',
-            pathB: 'central_castle_shopping_street',
-            time: 2.3
-        },
-        {
-            pathA: 'forgotten_road',
-            pathB: 'bloody_forest',
-            time: 6.4
-        },
-        {
-            pathA: 'central_castle',
-            pathB: 'fish_ponds',
-            time: 5.3
-        },
-
-    ],
+    paths: Paths,
     areas: localStorage.areas ? JSON.parse(localStorage.areas) : Locations,
     enemies: Enemies,
     areaItems: Items,
     inventory: [],
     player: {
-        title: 'peesoos',
-        health: 150,
+        title: 'player',
+        health: 100,
         avatar: '',
-        coins: 100,
+        coins: 0,
         level: 1,
         currentXP: 0,
-        skillPoints: 20,
+        skillPoints: 5,
         actionText: {
             combatText: [
                 "Сжимает свой кулак и бьет #name прямо по лицу нанеся #damage урона."
@@ -510,18 +469,25 @@ export const gameSlice = createSlice({
             const foundedItemIsEquiped = state.inventory.find(i => i.item.id === itemId)!.isEquipped;
             const foundedType = foundedItem?.item.subType || foundedItem?.item.type;
 
-            state.inventory = state.inventory.map(i =>
-                i.item.subType === foundedType || i.item.type === foundedType
-                    ? i.item.id === itemId
-                        ? {
+            state.inventory = state.inventory.map(i => {
+                if(i.item.subType === foundedType || i.item.type === foundedType){
+                    if(i.item.id === itemId){
+                        return {
                             ...i,
                             isEquipped: !foundedItemIsEquiped
                         }
-                        : {
+                    }
+                    else{
+                        return {
                             ...i,
                             isEquipped: false
                         }
-                    : i)
+                    }
+                }
+                else{
+                    return i
+                }
+            })
 
             const armorStats = foundedItem?.item.armorStats;
             const weaponStats = foundedItem?.item.weaponStats;
@@ -529,7 +495,7 @@ export const gameSlice = createSlice({
 
 
             switch(foundedType){
-                case 'head':
+                case 'helmet':
                     if(!foundedItemIsEquiped){
                         state.player.headStats = { ...armorStats! }
                     }
@@ -685,6 +651,20 @@ export const gameSlice = createSlice({
             state.player.health = payloadHealth;
 
             localStorage.player = JSON.stringify(state.player);
+        },
+        removeItemFromInventory(state, action: PayloadAction<IFullItemWithCount>) {
+            const itemId = action.payload.id;
+            const itemIndex = state.inventory.findIndex(i => i.item.id === itemId);
+            const count = action.payload.count;
+
+            if(state.inventory[itemIndex].count - count > 0){
+                state.inventory[itemIndex].count -= count;
+            }
+            else{
+                state.inventory.splice(itemIndex, 1)
+            }
+
+            localStorage.inventory = JSON.stringify(state.inventory);
         }
 
     }

@@ -7,7 +7,7 @@ export interface IEnemyDead {
     enemyIdInArea: string;
 }
 
-interface IEnemyLoot{
+export interface IEnemyLoot{
     id: string,
     countMin: number;
     countMax: number;
@@ -68,6 +68,6 @@ export interface IAreaCurrentEnemy{
 
 export interface ITrader {
     extraPriceMultiplier: number;
-    updateTimeInMinutes: number;
+    updateTimeInMinutes?: number;
     tradingItems: IFullItemWithCount[];
 }

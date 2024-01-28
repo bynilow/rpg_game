@@ -8,6 +8,7 @@ import { IStats } from '../../../../functions/Stats';
 import { getRandomNumberForLoot } from '../../../../functions/Random';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { addMinedItem, addXP, getAvailablePaths, setInventoryFromStorage, setPlayerFromStorage, setSkillsFromStorage, updateAreaItems } from '../../../../store/reducers/ActionCreators';
+import Title from '../../../Title/Title';
 
 interface IAreaItemsSectionProps {
     $isBlocked: boolean;
@@ -67,8 +68,11 @@ function AreaItemsSection({
             $isBoxShadow
             $isBackgroundTransparent={false} >
 
-            <Title>Местность: </Title>
+            <Title $size='1.5rem'>
+                Местность: 
+            </Title>
             <MinutesRemaining
+                $timeToUpdate={currentLocation.timeToRespawnAreaItems}
                 $nextUpdateDateTime={"2024-01-22T12:00:00"} />
 
             <List>
@@ -101,17 +105,11 @@ const List = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.5em;
   justify-content: center;
   align-items: left;
   margin-top: 10px;
 
 `
-
-const Title = styled.p`
-  font-size: 20px;
-  margin: 0;
-`
-
 
 export default AreaItemsSection;

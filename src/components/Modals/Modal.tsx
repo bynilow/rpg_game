@@ -11,7 +11,7 @@ interface IModal {
     $isEnableAnims?: boolean;
     $closeButtonFunction?: Function;
     $gap?: string;
-    $size?: 'small' | 'medium' | 'large';
+    $size?: 'auto' | 'small' | 'medium' | 'large';
     $justifyContent?: 'space-between' | 'space-around' | 'center' | 'baseline' | 'end';
     children?: React.ReactNode;
 }
@@ -24,7 +24,7 @@ function Modal({
     $isEnableAnims = true,
     $isCloseButton,
     $closeButtonFunction,
-    $gap = '20px',
+    $gap = '1.3em',
     $justifyContent = 'space-between',
     $size = 'medium', }: IModal) {
 
@@ -102,31 +102,37 @@ const ModalBlockAnim = keyframes`
 
 const ModalBlock = styled.div<IModalBlockProps>`
     z-index: 9999;
-    position: absolute;
+    position: fixed;
     width: ${ p => 
         p.$size === 'small'
         ? '40vw'
         : p.$size === 'medium'
         ? '70vw'
-        : '80vw' };
+        : p.$size === 'large'
+        ? '80vw'
+        : 'fit-content' };
     max-height: ${ p => 
         p.$size === 'small'
         ? '60vh'
         : p.$size === 'medium'
         ? '80vh'
-        : '90vh' };
+        : p.$size === 'large'
+        ? '90vh'
+        : 'fit-content' };
     height: ${ p => 
         p.$size === 'small'
         ? '60vh'
         : p.$size === 'medium'
         ? '80vh'
-        : '90vh' };
+        : p.$size === 'large'
+        ? '90vh'
+        : 'fit-content' };
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     margin: auto;
-    padding: 20px;
+    padding: 1.3rem;
     background-color: white;
     box-shadow: 0 0 10px #00000050;
     border-radius: 15px;
@@ -147,6 +153,33 @@ const ModalBlock = styled.div<IModalBlockProps>`
     transition: .1s;
 
     background: ${p => p.$backgroundColor};
+
+    @media (max-width: 768px) {
+        width: ${ p =>
+        p.$size === 'small'
+            ? '80vw'
+            : p.$size === 'medium'
+                ? '90vw'
+                : p.$size === 'large'
+                    ? '95vw'
+                    : 'fit-content'};
+    max-height: ${p =>
+        p.$size === 'small'
+            ? '80vh'
+            : p.$size === 'medium'
+                ? '90vh'
+                : p.$size === 'large'
+                    ? '95vh'
+                    : 'fit-content'};
+    height: ${p =>
+        p.$size === 'small'
+            ? '80vh'
+            : p.$size === 'medium'
+                ? '90vh'
+                : p.$size === 'large'
+                    ? '95vh'
+                    : 'fit-content' };
+    }
 `
 
 export default Modal;

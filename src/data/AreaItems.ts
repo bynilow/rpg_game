@@ -1131,7 +1131,7 @@ export const Items: IFullItem[] = [
         "weight": 35.5,
         "itemsToCraft": [
             {
-                "id": "adamntite_ingot",
+                "id": "adamantite_ingot",
                 "count": 3
             },
             {
@@ -1535,7 +1535,7 @@ export const Items: IFullItem[] = [
                 "count": 2
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 2
             }
         ],
@@ -1571,7 +1571,7 @@ export const Items: IFullItem[] = [
                 "count": 2
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 2
             }
         ],
@@ -1607,7 +1607,7 @@ export const Items: IFullItem[] = [
                 "count": 2
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 2
             }
         ],
@@ -1643,7 +1643,7 @@ export const Items: IFullItem[] = [
                 "count": 3
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 2
             }
         ],
@@ -1679,7 +1679,7 @@ export const Items: IFullItem[] = [
                 "count": 3
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 2
             }
         ],
@@ -1715,7 +1715,7 @@ export const Items: IFullItem[] = [
                 "count": 2
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 2
             }
         ],
@@ -1751,7 +1751,7 @@ export const Items: IFullItem[] = [
                 "count": 2
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 2
             }
         ],
@@ -1787,7 +1787,7 @@ export const Items: IFullItem[] = [
                 "count": 2
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 2
             }
         ],
@@ -1823,7 +1823,7 @@ export const Items: IFullItem[] = [
                 "count": 3
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 3
             }
         ],
@@ -1859,7 +1859,7 @@ export const Items: IFullItem[] = [
                 "count": 3
             },
             {
-                "id": "wool",
+                "id": "leather",
                 "count": 3
             }
         ],
@@ -3120,6 +3120,48 @@ export const Items: IFullItem[] = [
             "critDamageMultiplier": 3,
             "speedAttack": 3.1
         }
+    },
+    {
+        "id": "leather",
+        "idInArea": "",
+        "title": "Кожа",
+        "rare": "common",
+        "avatar": "icons/items/materials/leather.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 1,
+        "cost": 17,
+        "timeToMining": 1,
+        "type": "material",
+        "weight": 2,
+    },
+    {
+        "id": "crab_claw",
+        "idInArea": "",
+        "title": "Клешня краба",
+        "rare": "uncommon",
+        "avatar": "icons/items/other/crab_claw.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 1,
+        "cost": 35,
+        "timeToMining": 1,
+        "type": "other",
+        "weight": 1,
+    },
+    {
+        "id": "wolf_fang",
+        "idInArea": "",
+        "title": "Волчий клык",
+        "rare": "common",
+        "avatar": "icons/items/other/wolf_fang.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 1,
+        "cost": 6,
+        "timeToMining": 1,
+        "type": "other",
+        "weight": 0.3,
     }
 
 

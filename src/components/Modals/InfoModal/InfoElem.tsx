@@ -6,6 +6,7 @@ import { IEnemy } from '../../../models/IEnemy';
 import { getAreaBackground, getEnemyBackground, getHoveredAreaBackground, getHoveredEnemyBackground, getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 import { useEffect, useState } from 'react';
+import Title from '../../Title/Title';
 
 interface IInfoElem {
     id: string
@@ -85,8 +86,10 @@ function InfoElem({
             onClick={() => $changeWhatInfo()}>
             <Avatar
                 $image={thisObject.avatar}
-                width={'80px'}
-                height={'80px'} >
+                width='5rem'
+                height='5rem'
+                $minWidth='5rem'
+                $minHeight='5rem' >
                 {
                     $isCrafting
                         ? <Crafting>🔨</Crafting>
@@ -94,7 +97,7 @@ function InfoElem({
                 }
             </Avatar>
             <Info>
-                <Title>
+                <Title $size='1.3rem'>
                     {
                         thisObject.title
                     }
@@ -143,11 +146,7 @@ function InfoElem({
 }
 
 const Crafting = styled.div`
-    font-size: 40px;
-`
-
-const itemForCraft = styled.p`
-    
+    font-size: 3rem;
 `
 
 const About = styled.div`
@@ -167,22 +166,14 @@ const AboutText = styled.p`
     margin: 0;
 `
 
-const Title = styled.p`
-    font-size: 20px;
-    margin: 0;
-    transition: .1s;
-`
-
 interface IItemProps {
     color: string;
     $hoveredColor: string;
 }
 
 const Item = styled.div<IItemProps>`
-    
     width: 100%;
-    min-height: 70px;
-    height: auto;
+    min-height: 7rem;
     box-shadow: 0 0 5px black;
     border-radius: 5px;
     padding: 10px;

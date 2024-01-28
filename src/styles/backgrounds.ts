@@ -53,7 +53,7 @@ export const getRareColor = (rare: IRare) => {
         case 'legendary':
             return `#caab05`
         default:
-            return ``
+            return `white`
     }
 }
 

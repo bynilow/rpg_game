@@ -3,20 +3,44 @@ import { IItemInventory } from '../../../models/IInventory';
 import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
 import { useState } from 'react';
+import { equipItem, removeItemFromInventory } from '../../../store/reducers/ActionCreators';
+import { IFullItemWithCount } from '../../../models/IAreaItem';
+import { useAppDispatch } from '../../../hooks/redux';
+import Title from '../../Title/Title';
 
 
 function InventoryItem({item, count}:IItemInventory) {
 
+    const dispatch = useAppDispatch();
+
     const [isCanUse, setIsCanUse] = useState(item.type === 'food');
-    const [isCanEquip, setIsCanEquip] = useState(item.type === 'armor' || item.type === 'weapon');
+    const [isCanEquip, setIsCanEquip] = useState(item.type === 'armor' || item.type === 'weapon' || item.type === 'tool');
     const [isSelectToDelete, setIsSelectToDelete] = useState(false);
+    const [rangeCount, setRangeCount] = useState(1);
+
+    console.log(item.title, item.type, isCanEquip)
+
+    const onClickCancelDelete = () => {
+        setIsSelectToDelete(false);
+        setRangeCount(1);
+    }
+
+    const onClickDeleteItem = (item: IFullItemWithCount) => {
+        dispatch(removeItemFromInventory(item));
+    }
+
+    const onClickEquip = () => {
+        dispatch(equipItem(item.id));
+    }
 
     return ( 
-        <Item $rare={item.rare}>
-            <Avatar $image={item.avatar} width={'150px'} height={'150px'}  />
-            <CircleButton symbol='?' />
+        <Item $rare={item.rare} onMouseLeave={() => onClickCancelDelete()}>
+            <Avatar $image={item.avatar} width={'100px'} height={'100%'}  />
+            <InfoButton>
+                <CircleButton symbol='?' />
+            </InfoButton>
             <Info>
-                <Title>
+                <Title $size='1.2rem'>
                     { item.title } x{count}
                 </Title>
                 <ButtonsGroup>
@@ -27,27 +51,61 @@ function InventoryItem({item, count}:IItemInventory) {
                         </Button>
                     }
                     {
-                        true
-                        && <Button>
-                            Экпировать
+                        isCanEquip && !isSelectToDelete
+                        ? <Button onClick={() => onClickEquip()}>
+                            Экипировать
                         </Button>
+                        : null
                     }
-                    <Button>
-                        Выбросить
-                    </Button>
+                    <DeleteBlock>
+                        <Button onClick={
+                            isSelectToDelete
+                                ? () => onClickDeleteItem({...item, count: rangeCount})
+                                : () => setIsSelectToDelete(true)}>
+                            {
+                                isSelectToDelete
+                                    ? '🗸'
+                                    : 'Удалить'
+                            }
+                        </Button>
+
+                        {
+                            isSelectToDelete
+                                ? <Button onClick={() => onClickCancelDelete()}>
+                                    ✕
+                                </Button>
+                                : null
+                        }
+                        {
+                            isSelectToDelete && count > 1
+                                ? <RangeBlock>
+                                    <CountRangeText>
+                                        x{rangeCount}
+                                    </CountRangeText>
+                                    <CountRange
+                                        type='range'
+                                        min={1}
+                                        max={count}
+                                        value={rangeCount}
+                                        onChange={e => setRangeCount(Number(e.currentTarget.value))} />
+                                </RangeBlock>
+                                : null
+
+                        }
+                    </DeleteBlock>
                 </ButtonsGroup>
                 <AboutItemBlock>
+                    <Cost>
+                        ${
+                            item.cost
+                        }
+                    </Cost>
                     <Weight>
                         kg
                         {
                             ' ' + item.weight
                         }
                     </Weight>
-                    <Cost>
-                        ${
-                            item.cost
-                        }
-                    </Cost>
                 </AboutItemBlock>
                 
             </Info>
@@ -55,12 +113,84 @@ function InventoryItem({item, count}:IItemInventory) {
      );
 }
 
+const InfoButton = styled.div`
+    position: absolute;
+    top: 0;
+    right: -30%;
+
+    transition: .3s;
+`
+
+const DeleteBlock = styled.div`
+    z-index: 9;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+`
+
+
+const CountRangeText = styled.p`
+    font-size: 1rem;
+`
+
+const RangeBlock = styled.div`
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 5px;
+    box-shadow: 0 0 5px black;
+    background-color: white;
+    border-radius: 5px;
+    width: 50%;
+
+    @media (max-width: 1025px) {
+        min-width: 100%;
+    }
+    @media (max-width: 376px) {
+        min-width: 100%;
+    }
+`
+
+const CountRange = styled.input`
+    transition: 0.1s;
+    accent-color: #4494df;
+    align-items: center;
+    z-index: 9;
+    width: 100%;
+
+    &::-webkit-slider-thumb{
+        transform: translateY(-30%) scale(1.2);
+        transition: 0.1s;
+    }
+
+    &::-webkit-slider-thumb:hover {
+        transform: scale(1.5) translateY(-25%);
+    }
+
+    &::-webkit-slider-runnable-track{
+        border-radius: 5px;
+        background: gray;
+        height: 5px;
+    }
+
+`
+
 const Button = styled.div`
     cursor: pointer;
     box-shadow: 0 0 5px black;
     border-radius: 5px;
     background-color: white;
     padding: 10px;
+    width: fit-content;
+    font-size: 1rem;
+    min-width: 2rem;
+    min-height: 2rem;
+    line-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
 
     transition: .05s;
 
@@ -74,8 +204,13 @@ const Button = styled.div`
 const ButtonsGroup = styled.div`
     display: flex;
     gap: 10px;
+    height: 100%;
     flex-direction: column;
-    width: fit-content
+    width: fit-content;
+    transform: translateY(150%);
+    
+    transition: .3s;
+    
 `
 
 const Info = styled.div`
@@ -89,17 +224,20 @@ const Info = styled.div`
 const AboutItemBlock = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: end;
     gap: 5px;
     position: absolute;
+    z-index: -1;
     margin: 5px;
     bottom: 0;
     right: 0;
 `
 
 const Weight = styled.p`
-    color: white;
-    font-size: 14px;
+    color: black;
+    background-color: #dddddd;
+    border-radius: 5px;
+    padding: 5px;
 `
 
 const Cost = styled.p`
@@ -107,14 +245,6 @@ const Cost = styled.p`
     background-color: #dddddd;
     border-radius: 5px;
     padding: 5px;
-`
-
-const Count = styled.div`
-    color: white;
-`
-
-const Title = styled.p`
-    font-size: 20px;
 `
 
 interface IItemProps {
@@ -130,9 +260,11 @@ const Item = styled.div<IItemProps>`
     box-shadow: 0 0 5px #0000005a;
     background: white;
     border-radius: 5px;
-    width: 400px;
-    height: 150px;
+    height: 10rem;
     padding: 5px;
+    overflow: hidden;
+    width: 100%;
+    flex: 30%;
     transition: 0.3s;
 
     background: ${props => 
@@ -149,7 +281,23 @@ const Item = styled.div<IItemProps>`
 
     &:hover{
         z-index: 9999;
-        transform: scale(1.05);
+        transform: scale(1.07);
+        box-shadow: 0 0 5px 1px black;
+    }
+
+    &:hover ${InfoButton} {
+        right: 0%;
+    }
+
+    &:hover ${ButtonsGroup} {
+        transform: translateY(0%);
+    }
+
+    @media (max-width: 769px) {
+        min-width: 40%;
+    }
+    @media (max-width: 426px) {
+        min-width: 100%;
     }
 `
 

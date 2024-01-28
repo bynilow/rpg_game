@@ -4,6 +4,7 @@ import { useAppSelector } from '../../../hooks/redux';
 import { IChangeInfo } from '../../../models/IArea';
 import { getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
+import Title from '../../Title/Title';
 
 interface IWinCombatItem {
     id: string
@@ -25,7 +26,7 @@ function WinCombatItem({id, count}:IWinCombatItem) {
                 width={'100px'} 
                 height={'100px'} />
             <Info>
-                <Title>
+                <Title $size='1.5rem'>
                     {
                         item.title
                     } 
@@ -51,12 +52,6 @@ const Count = styled.p`
     margin: 0;
 `
 
-const Title = styled.p`
-    font-size: 20px;
-    margin: 0;
-    transition: .1s;
-`
-
 interface IItemProps {
     color: string;
     $hoveredColor: string;
@@ -64,8 +59,8 @@ interface IItemProps {
 
 const Item = styled.div<IItemProps>`
     
-    width: 170px;
-    height: 250px;
+    width: 12rem;
+    height: 16rem;
     box-shadow: 0 0 5px black;
     border-radius: 5px;
     padding: 10px;

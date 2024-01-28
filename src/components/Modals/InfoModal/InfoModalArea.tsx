@@ -9,6 +9,7 @@ import CircleButton from '../../Buttons/CircleButton';
 import Modal from '../Modal';
 import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
+import Title from '../../Title/Title';
 
 interface IModalArea {
     $id: string;
@@ -22,6 +23,8 @@ function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
 
     const [thisArea, setThisArea] = useState(areas.find(a => a.id === $id)!);
 
+    console.log(thisArea)
+
     const backgroundColor = getAreaBackground(thisArea.color);
     const backgroundHoveredColor = getHoveredAreaBackground(thisArea.color);
 
@@ -31,37 +34,37 @@ function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
 
     return (
         <>
+                <Section>
+                    <Avatar
+                        $image={thisArea.avatar}
+                        width='15rem'
+                        height='15rem'
+                        $minHeight='15rem'
+                        $minWidth='15rem' />
+                    <Title $size='2rem'>
+                        "{thisArea.title}"
+                    </Title>
+                    <ColorText color={getAreaColor(thisArea.color)}>
+                        {
+                            thisArea.color === 'green'
+                                ? 'Зеленная зона'
+                                : thisArea.color === 'yellow'
+                                    ? 'Желтая зона'
+                                    : 'Красная зона'
+
+                        }
+                    </ColorText>
+                    <Description>
+                        {
+                            thisArea.description
+                        }
+
+                    </Description>
+
+                </Section>
+
             <Section>
-                <Avatar
-                    $image={thisArea.avatar}
-                    width={'250px'}
-                    height={'250px'}
-                    $minWidth={'200px'}
-                    $minHeight={'200px'} />
-                <Title>
-                    "{thisArea.title}"
-                </Title>
-                <ColorText color={getAreaColor(thisArea.color)}>
-                    {
-                        thisArea.color === 'green'
-                            ? 'Зеленная зона'
-                            : thisArea.color === 'yellow'
-                                ? 'Желтая зона'
-                                : 'Красная зона'
-
-                    }
-                </ColorText>
-                <Description>
-                    {
-                        thisArea.description
-                    }
-
-                </Description>
-
-            </Section>
-
-            <Section>
-                <Title>
+                <Title $size='2rem'>
                     Местность
                 </Title>
                 <UpdateText>
@@ -86,7 +89,7 @@ function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
             </Section>
 
             <Section>
-                <Title>
+                <Title $size='2rem'>
                     Враги
                 </Title>
                 <UpdateText>
@@ -117,22 +120,6 @@ function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
     );
 }
 
-const ProperyName = styled.span`
-    color: black;
-`
-
-const Property = styled.p`
-    
-`
-
-const Cost = styled.p`
-    color: black;
-    width: min-content;
-    background-color: #dddddd;
-    border-radius: 5px;
-    padding: 5px;
-    margin: 0;
-`
 
 const List = styled.div`
     display: flex;
@@ -145,28 +132,19 @@ interface IColorText {
 }
 
 const ColorText = styled.p<IColorText>`
-    font-size: 16px;
+    font-size: 1rem;
     margin: 0;
     color: ${props => props.color};
 `
 
 const UpdateText = styled.p`
-    font-size: 16px;
+    font-size: 1rem;
     margin: 0;
 `
 
 const Description = styled.p`
-    font-size: 18px;
+    font-size: 1.3rem;
     margin: 0;
 `
-
-const Title = styled.p`
-    font-size: 30px;
-    margin: 0;
-`
-
-interface IInfoProps {
-    color: string;
-}
 
 export default AreaModal;

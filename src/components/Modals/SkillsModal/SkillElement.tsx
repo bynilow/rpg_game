@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components'
+import Title from '../../Title/Title';
 
 interface ISkillElementProps {
     id: string;
@@ -35,11 +36,11 @@ function SkillElement({
                         $level
                     }
                 </Level>
-                <Name>
+                <Title $size='1.5rem'>
                     {
                         $title
                     }
-                </Name>
+                </Title>
             </SkillInfoBlock>
             <ButtonsBlock>
                 {
@@ -62,21 +63,27 @@ function SkillElement({
 }
 
 const ButtonsBlock = styled.div`
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
     display: flex;
     gap: 10px;
     height: 100%;
+
+    
 `
 
 const Button = styled.div`
-    height: 40px;
-    width: 40px;
+    height: 2.5rem;
+    width: 2.5rem;
     color: white;
     background-color: #578a5b;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
+    font-size: 1.5rem;
     user-select: none;
     cursor: pointer;
     
@@ -91,11 +98,8 @@ const SkillInfoBlock = styled.div`
     display: flex;
     height: 100%;
     align-items: center;
-    gap: 20px;
-`
-
-const Name = styled.p`
-    font-size: 20px;
+    width: 70%;
+    gap: 1.3em;
 `
 
 interface ILevelProps{
@@ -105,14 +109,14 @@ interface ILevelProps{
 const Level = styled.div<ILevelProps>`
     position: relative;
     height: 100%;
-    width: 50px;
+    min-width: 3rem;
     object-fit: contain;
     color: #000000;
     border-right: 2px solid black;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 2rem;
 
     ${
         p => p.$selectedCount 
@@ -121,22 +125,28 @@ const Level = styled.div<ILevelProps>`
             position: absolute;
             top: -10%;
             right: -30%;
-            font-size: 15px;
+            font-size: 1rem;
+            line-height: 0;
             font-weight: bold;
-            padding: 5px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 2rem;
+            min-height: 2rem;
             border-radius: 50%;
-            color: black;
+            color: #ffffff;
             background-color: #589b5d;
-            box-shadow: 0 0 5px black;
         }`
     }
 `
 
 const Skill = styled.div`
+    position: relative;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
-    min-height: 50px;
     padding: 5px;
     border-radius: 5px;
     box-shadow: 0 0 5px black;

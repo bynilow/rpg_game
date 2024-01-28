@@ -43,30 +43,42 @@ function InfoModal({ $id, $closeModal, $whatInfo, $changeInfo }: IInfoModal) {
             $isCloseButton={true}
             $closeButtonFunction={() => $closeModal()}
             $backgroundColor={getBackgroundColor()} >
-            {
-                $whatInfo === 'area'
-                ? <AreaModal
-                    key={$id}
-                    $id={$id}
-                    $changeWhatInfo={(info: IChangeInfo) => $changeInfo(info)}
-                    $closeModal={() => $closeModal()} />
-                : $whatInfo === 'item'
-                    ? <ItemModal
-                        key={$id}
-                        $id={$id}
-                        $changeWhatInfo={(info: IChangeInfo) => $changeInfo(info)}
-                        $closeModal={() => $closeModal()} />
-                    : $whatInfo === 'enemy'
-                        ? <EnemyModal
+            <ModalInner>
+                {
+                    $whatInfo === 'area'
+                        ? <AreaModal
                             key={$id}
                             $id={$id}
                             $changeWhatInfo={(info: IChangeInfo) => $changeInfo(info)}
                             $closeModal={() => $closeModal()} />
-                        : null
-            }
+                        : $whatInfo === 'item'
+                            ? <ItemModal
+                                key={$id}
+                                $id={$id}
+                                $changeWhatInfo={(info: IChangeInfo) => $changeInfo(info)}
+                                $closeModal={() => $closeModal()} />
+                            : $whatInfo === 'enemy'
+                                ? <EnemyModal
+                                    key={$id}
+                                    $id={$id}
+                                    $changeWhatInfo={(info: IChangeInfo) => $changeInfo(info)}
+                                    $closeModal={() => $closeModal()} />
+                                : null
+                }
+            </ModalInner>
         </Modal>
         
     );
 }
+
+const ModalInner = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+
+    overflow-y: auto;
+    ${scrollBarX}
+`
 
 export default InfoModal;

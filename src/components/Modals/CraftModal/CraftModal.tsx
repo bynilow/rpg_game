@@ -9,6 +9,11 @@ import CraftItem from './CraftItem';
 import { getRandomNumberForLoot } from '../../../functions/Random';
 import InfoModal from '../InfoModal/InfoModal';
 import { IChangeInfo } from '../../../models/IArea';
+import Title from '../../Title/Title';
+import Input from '../../SearchBar/Input';
+import Dropdown from '../../SearchBar/Dropdown';
+import CheckboxSearch from '../../SearchBar/CheckboxSearch';
+import ReverseButton from '../../SearchBar/ReverseButton';
 
 interface ICraftModal {
     $closeModal: Function;
@@ -139,211 +144,56 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
         <>  
             <Modal
                 $flexDirection={'row'}
-                $gap='20px'
+                $gap='1.3em'
                 $size='large'
                 $justifyContent='baseline'
                 $isCloseButton
                 $closeButtonFunction={() => $closeModal()}>
-                <CraftTypesPlace>
-                    <CraftType />
-                    <CraftType />
-                    <CraftType />
-                </CraftTypesPlace>
-
-                <Divider />
 
                 <CraftPlace>
-                    <CraftTitle>Создание</CraftTitle>
+                    <Title $size='1.5rem'>
+                        Создание
+                    </Title>
                     <Bar $isDisable={!!craftingId} >
-                        <InputName
-                            type='text'
-                            placeholder='Название'
-                            maxLength={30}
-                            value={inputText}
-                            onChange={e => setInputText(e.currentTarget.value)} />
+                        <Input $onChange={(e: string) => setInputText(e)} />
 
-                        <SelectDropdown>
-                            <DropdownButton>
-                                {
-                                    selectedMaterial === 'all'
-                                        ? 'Все'
-                                        : selectedMaterial === 'weapon'
-                                            ? 'Оружие'
-                                            : selectedMaterial === 'helmet'
-                                                ? 'Шлемы'
-                                                : selectedMaterial === 'chest'
-                                                    ? 'Нагрудники'
-                                                    : selectedMaterial === 'foot'
-                                                        ? 'Поножи'
-                                                        : selectedMaterial === 'axe'
-                                                            ? 'Топоры'
-                                                            : selectedMaterial === 'pickaxe'
-                                                                ? 'Кирки'
-                                                                : selectedMaterial === 'material'
-                                                                    ? 'Материалы'
-                                                                    : 'Другое'
-                                }
-                            </DropdownButton>
-                            <DropdownOptions>
-                                <DropdownOption
-                                    $isSelected={selectedMaterial === 'all'}
-                                    onClick={() => setSelectedMaterial('all')}>
-                                    Все
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedMaterial === 'weapon'}
-                                    onClick={() => setSelectedMaterial('weapon')}>
-                                    Оружие
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedMaterial === 'helmet'}
-                                    onClick={() => setSelectedMaterial('helmet')}>
-                                    Шлемы
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedMaterial === 'chest'}
-                                    onClick={() => setSelectedMaterial('chest')}>
-                                    Нагрудники
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedMaterial === 'foot'}
-                                    onClick={() => setSelectedMaterial('foot')}>
-                                    Поножи
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedMaterial === 'axe'}
-                                    onClick={() => setSelectedMaterial('axe')}>
-                                    Топоры
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedMaterial === 'pickaxe'}
-                                    onClick={() => setSelectedMaterial('pickaxe')}>
-                                    Кирки
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedMaterial === 'material'}
-                                    onClick={() => setSelectedMaterial('material')}>
-                                    Материалы
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedMaterial === 'other'}
-                                    onClick={() => setSelectedMaterial('other')}>
-                                    Другое
-                                </DropdownOption>
+                        <Dropdown
+                            $selectedTypes={[
+                                { id: 'all', title: 'Все' },
+                                { id: 'weapon', title: 'Оружие' },
+                                { id: 'helmet', title: 'Шлемы' },
+                                { id: 'chest', title: 'Нагрудники' },
+                                { id: 'foot', title: 'Поножи' },
+                                { id: 'axe', title: 'Топоры' },
+                                { id: 'pickaxe', title: 'Кирки' },
+                                { id: 'material', title: 'Материалы' },
+                                { id: 'other', title: 'Другое' }]}
+                            $setSelected={(id: string) => setSelectedMaterial(id)} />
 
-                            </DropdownOptions>
-                        </SelectDropdown>
+                        <Dropdown
+                            $isRare
+                            $selectedTypes={[
+                                { id: 'all', title: 'Все' },
+                                { id: 'common', title: 'Обычное' },
+                                { id: 'uncommon', title: 'Необычное' },
+                                { id: 'rare', title: 'Редкое' },
+                                { id: 'mythical', title: 'Мифическое' },
+                                { id: 'legendary', title: 'Легендарное' }]}
+                            $setSelected={(id: string) => setSelectedRare(id)} />
 
-                        <SelectDropdown>
-                            <DropdownButton>
-                                <RareIcon
-                                    color={
-                                        selectedRare === 'all'
-                                            ? 'white'
-                                            : selectedRare === 'common'
-                                                ? '#a4a4ab'
-                                                : selectedRare === 'uncommon'
-                                                    ? '#59c87f'
-                                                    : selectedRare === 'rare'
-                                                        ? '#4d69cd'
-                                                        : selectedRare === 'mythical'
-                                                            ? '#d42be6'
-                                                            : '#caab05'
-                                    } />
-                                {
-                                    selectedRare === 'all'
-                                        ? 'Все'
-                                        : selectedRare === 'common'
-                                            ? 'Обычное'
-                                            : selectedRare === 'uncommon'
-                                                ? 'Необычное'
-                                                : selectedRare === 'rare'
-                                                    ? 'Редкое'
-                                                    : selectedRare === 'mythical'
-                                                        ? 'Мифическое'
-                                                        : 'Легендарное'
-                                }
-                            </DropdownButton>
-                            <DropdownOptions>
-                                <DropdownOption
-                                    $isSelected={selectedRare === 'all'}
-                                    onClick={() => setSelectedRare('all')}>
-                                    <RareIcon color="white" /> Все
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedRare === 'common'}
-                                    onClick={() => setSelectedRare('common')}>
-                                    <RareIcon color="#a4a4ab" /> Обычное
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedRare === 'uncommon'}
-                                    onClick={() => setSelectedRare('uncommon')}>
-                                    <RareIcon color="#59c87f" /> Необычное
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedRare === 'rare'}
-                                    onClick={() => setSelectedRare('rare')}>
-                                    <RareIcon color="#4d69cd" /> Редкое
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedRare === 'mythical'}
-                                    onClick={() => setSelectedRare('mythical')}>
-                                    <RareIcon color="#d42be6" /> Мифическое
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedRare === 'legendary'}
-                                    onClick={() => setSelectedRare('legendary')}>
-                                    <RareIcon color="#caab05" /> Легендарное
-                                </DropdownOption>
-                            </DropdownOptions>
-                        </SelectDropdown>
+                        <Dropdown
+                            $selectedTypes={[
+                                { id: 'title', title: 'По названию' },
+                                { id: 'rare', title: 'По редкости' },
+                                { id: 'cost', title: 'По цене' },
+                                { id: 'time', title: 'По скорости' }] }
+                            $setSelected={(id: string) => setSelectedSort(id)} />
 
-                        <SelectDropdown>
-                            <DropdownButton>
-                                {
-                                    selectedSort === 'title'
-                                        ? 'По названию'
-                                        : selectedSort === 'rare'
-                                            ? 'По редкости'
-                                            : selectedSort === 'cost'
-                                                ? 'По стоимости'
-                                                : 'По скорости'
-                                }
-                            </DropdownButton>
-                            <DropdownOptions>
-                                <DropdownOption
-                                    $isSelected={selectedSort === 'title'}
-                                    onClick={() => setSelectedSort('title')}>
-                                    По названию
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedSort === 'rare'}
-                                    onClick={() => setSelectedSort('rare')}>
-                                    По редкости
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedSort === 'cost'}
-                                    onClick={() => setSelectedSort('cost')}>
-                                    По стоимости
-                                </DropdownOption>
-                                <DropdownOption
-                                    $isSelected={selectedSort === 'time'}
-                                    onClick={() => setSelectedSort('time')}>
-                                    По скорости
-                                </DropdownOption>
-                            </DropdownOptions>
-                        </SelectDropdown>
-                        <CheckBoxBlock onClick={() => setIsReadyCraft(!isReadyToCraft)} >
-                            <Checkbox type='checkbox' checked={isReadyToCraft} />
-                            Готовы к крафту
-                        </CheckBoxBlock>
-                        <ReverseButton onClick={() => setIsReversed(!isReversed)}>
-                            {
-                                isReversed
-                                    ? 'ᐯ'
-                                    : 'ᐱ'
-                            }
-                        </ReverseButton>
+                        <CheckboxSearch $setChecked={() => setIsReadyCraft(!isReadyToCraft)} />
+
+                        <ReverseButton $setReversed={() => setIsReversed(!isReversed)} />
+                        
+                        
                     </Bar>
                     <ItemsList key={sortedItems.length}>
                         {
@@ -388,174 +238,14 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
     );
 }
 
-const Divider = styled.div`
-    height: 100%;
-    border: 1px solid gray;
-`
-
-const CraftType = styled.div`
-    width: 50px;
-    height: 50px;
-    background-color: gray;
-    border-radius: 10px;
-`
-
-const CraftTypesPlace = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
-    gap: 20px;
-`
-
 const CraftPlace = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    gap: 20px;
+    gap: 1em;
 `
 
-const ReverseButton = styled.div`
-    font-size: 16px;
-    line-height: 0;
-    height: 40px;
-    width: 40px;
-    border-radius: 5px;
-    border: 1px solid black;
-    box-shadow: 0 0 5px #0000005a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-`
-
-const EmptyText = styled.p`
-    font-size: 30px;
-    margin: 20px;
-`
-
-const Checkbox = styled.input`
-    
-`
-
-const CheckBoxBlock = styled.div`
-    font-size: 16px;
-    height: 40px;
-    min-width: 200px;
-    border-radius: 5px;
-    border: 1px solid black;
-    box-shadow: 0 0 5px #0000005a;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    cursor: pointer;
-    user-select: none;
-`
-
-interface IRareIconProps {
-    color: string;
-}
-const RareIcon = styled.div<IRareIconProps>`
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    background-color: ${p => p.color};
-`
-
-interface IDropdownOptionProps {
-    $isSelected: boolean;
-}
-
-const DropdownOption = styled.div<IDropdownOptionProps>`
-    font-size: 16px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 5px;
-    cursor: pointer;
-    transition: 0.1s;
-    border-bottom: ${p => p.$isSelected ? '1px solid black;' : 'none;'};
-
-    &:hover{
-        padding-left: 20px;
-        background-color: #e2e2e2;
-    }
-    
-`
-
-const DropdownOptions = styled.div`
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    position: absolute;
-    overflow: hidden;
-    box-shadow: 0 0 5px #0000005a;
-    background-color: #ffffff;
-    border: 1px solid black;
-    
-    border-radius: 5px;
-    
-    padding: 5px;
-    min-width: 200px;
-    top: 100%;    
-`
-
-const SelectDropdown = styled.div`
-    position: relative;
-    z-index: 999;
-    min-width: 180px;
-    
-
-    &:hover ${DropdownOptions} {
-        display: flex;
-    }
-`
-const DropdownButton = styled.button`
-    position: relative;
-    width: 100%;
-    height: 40px;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 16px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid black;
-    box-shadow: 0 0 5px #0000005a;
-    background-color: white;
-    transition: 0.3s;
-
-    &::after{
-        content: 'ᐯ';
-        z-index: 9999;
-        transform: scaleX(1.5) scale(0.8);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        line-height: 0;
-        width: 10px;
-        height: 10px;
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 5px;
-        margin: 10px;
-    }
-`
-
-const InputName = styled.input`
-    font-size: 16px;
-    height: 40px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid black;
-    box-shadow: 0 0 5px #0000005a;
-`
 
 interface IBarProps{
     $isDisable: boolean;
@@ -564,8 +254,7 @@ interface IBarProps{
 const Bar = styled.div<IBarProps>`
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 10px;
+    gap: 0.5rem;
     position: relative;
     ${
         p => p.$isDisable
@@ -586,6 +275,12 @@ const Bar = styled.div<IBarProps>`
             }`
             : null
     }
+
+    @media (max-width: 376px) {
+        height: 30%;
+        overflow-y: scroll;
+        justify-content: center;
+    }
 `
 
 const EmptyItem = styled.div`
@@ -596,8 +291,8 @@ const EmptyItem = styled.div`
 
 const ItemsList = styled.div`
     display: flex;
-    gap: 10px;
-    padding: 20px;
+    gap: 1.3em;
+    padding: 1em;
     height: 70%;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -606,10 +301,6 @@ const ItemsList = styled.div`
 
     ${scrollBarX
     }
-`
-
-const CraftTitle = styled.p`
-    font-size: 20px;
 `
 
 export default CraftModal;

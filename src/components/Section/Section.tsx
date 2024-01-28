@@ -14,7 +14,7 @@ function Section({
     $isBlocked, 
     $isBoxShadow, 
     $isBackgroundTransparent = true,
-    $gap = '20px'}: ISection) {
+    $gap = '1.3em'}: ISection) {
 
     return ( 
         <Block 
@@ -38,15 +38,18 @@ interface IBlockProps {
 }
 
 const Block = styled.div<IBlockProps>`
-    max-height: fit-content;
+    min-height: 50%;
+    height: fit-content;
+    max-height: 100%;
     width: 100%;
+    min-width: 300px;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: baseline;
     gap: ${ p => p.$gap };
     border-radius: 5px;
-    padding: 20px;
+    padding: 1rem;
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
@@ -65,7 +68,7 @@ const Block = styled.div<IBlockProps>`
   
     ${p => p.$isBlocked
         ? `&::before{
-            position: absolute;
+            position: fixed;
             z-index: 99;
             border-radius: 5px;
             top: 0;

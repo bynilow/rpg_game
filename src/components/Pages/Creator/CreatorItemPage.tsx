@@ -489,7 +489,7 @@ const Page = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: baseline;
-    padding: 30px;
+    padding: 1.5em;
     gap: 10px;
     overflow-y: scroll;
 

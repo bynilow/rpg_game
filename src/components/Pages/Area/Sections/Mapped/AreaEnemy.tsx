@@ -1,8 +1,6 @@
-import styled, { keyframes } from 'styled-components'
-import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
-import { IFullItem } from '../../../../../models/IAreaItem';
-import { useRef, useState } from 'react';
-import { getEnemyBackground, getHoveredEnemyBackground, getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../../../styles/backgrounds';
+import styled, { keyframes } from 'styled-components';
+import { useAppSelector } from '../../../../../hooks/redux';
+import { getEnemyBackground, getHoveredEnemyBackground } from '../../../../../styles/backgrounds';
 import Avatar from '../../../../Avatar/Avatar';
 
 
@@ -28,8 +26,8 @@ function AreaEnemy({ id, $idInArea, $level, $index, $onClick }: IAreaEnemyProps)
             <EnemyClickableBlock onClick={() => $onClick()} />
             <Avatar 
                 $image={enemy.avatar} 
-                width={'90px'} 
-                height={'90px'} />
+                width='6rem' 
+                height='6rem' />
 
             <Title>{enemy.title}</Title>
             {
@@ -49,6 +47,7 @@ const Level = styled.p`
     bottom: 0;
     right: 0;
     margin: 10px;
+    font-size: 1rem;
 `
 
 const EnemyClickableBlock = styled.div`
@@ -57,10 +56,6 @@ const EnemyClickableBlock = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    /* #b6b6b6 */
-    /* #70b5d1 */
-    /* #cf6060 */
-
 `
 
 const Title = styled.p`
@@ -87,12 +82,12 @@ interface IAreaItemBlockProps{
 
 const AreaEnemyBlock = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
-    padding: 20px;
+    padding: 1.3rem;
     border-radius: 5px 5px 0 0;
     width: 100%;
-    height: 70px;
+    height: 4rem;
     display: flex;
-    gap: 20px;
+    gap: 1.3rem;
     align-items: center;
     position: relative;
     cursor: pointer;
@@ -110,7 +105,7 @@ const AreaEnemyBlock = styled.div<IAreaItemBlockProps>`
     }
 
     &:hover ${Title} {
-        padding: 20px;
+        padding: 0.5rem;
     }
 `
 

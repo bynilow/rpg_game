@@ -32,9 +32,7 @@ function ShopBuyItem({
     $cost,
     $count}: IShopBuyItemProp) {
 
-    const {areaItems, inventory} = useAppSelector(state => state.userReducer);
-
-    const dispatch = useAppDispatch();
+    const {inventory} = useAppSelector(state => state.userReducer);
 
     const [rangeCount, setRangeCount] = useState(1);
 
@@ -62,7 +60,7 @@ function ShopBuyItem({
             <CircleButton symbol='?' click={() => $openInfoModal({id: $fullItem.id, whatInfo: 'item'})} />
             <Avatar 
                 $image={$fullItem.avatar} 
-                width={'100px'} 
+                width={'5rem'} 
                 height={'100%'}
                 $isMiningOther={false} />
 
@@ -126,7 +124,7 @@ const Cost = styled.p<ICanBuyProps>`
     bottom: 0;
     right: 0;
     margin: 10px;
-    font-size: 16px;
+    font-size: 1rem;
     background: #cfcfcf;
     color: ${p => p.$isCanBuy ? 'black' : 'gray'};
     padding: 5px 10px;
@@ -134,8 +132,8 @@ const Cost = styled.p<ICanBuyProps>`
 `
 
 const CountRangeText = styled.p`
-    font-size: 20px;
-    width: 50px;
+    font-size: 1.3rem;
+    width: 2rem;
 `
 
 const RangeBlock = styled.div`
@@ -148,8 +146,8 @@ const RangeBlock = styled.div`
 `
 
 const CountRange = styled.input`
-    min-width: 200px;
-    max-width: 200px;
+    min-width: 20rem;
+    max-width: 20rem;
     transition: 0.1s;
     accent-color: #4494df;
     align-items: center;
@@ -172,10 +170,10 @@ const CountRange = styled.input`
 `
 
 const Button = styled.div`
-    font-size: 30px;
+    font-size: 1.5rem;
     line-height: 0;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -206,30 +204,13 @@ const InfoBlock = styled.div`
     justify-content: baseline;
 `
 
-const AreaItemBlockClickable = styled.div`
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-`
 
 const Title = styled.p<ICanBuyProps>`
-    font-size: 20px;
+    font-size: 1.3rem;
     transition: .1s;
     color: ${p => p.$isCanBuy ? 'black' : 'gray'};
 `
 
-
-const AreaItemBlockAnim = keyframes`
-    from{
-        transform: scale(0) rotate(-50deg);
-    }
-    to{
-        transform: scale(1) rotate(0deg);
-    }
-`
 
 interface IAreaItemBlockProps{
     color: string;
@@ -240,13 +221,11 @@ interface IAreaItemBlockProps{
 
 const Item = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
-    padding: 20px;
+    padding: 1.3em;
     border-radius: 5px 5px 0 0;
     width: 100%;
-    min-height: 130px;
-    height: 130px;
     display: flex;
-    gap: 20px;
+    gap: 1.3rem;
     position: relative;
     cursor: pointer;
     background: ${ p => p.color};

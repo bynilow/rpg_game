@@ -308,6 +308,16 @@ export const setHealthPoints = (health: number) => async (dispatch: AppDispatch)
     }
 }
 
+export const removeItemFromInventory = (item: IFullItemWithCount) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(gameSlice.actions.removeItemFromInventory(item));
+    }
+    catch{
+
+    }
+}
+
+
 
 
 

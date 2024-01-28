@@ -5,7 +5,10 @@ import CombatPage from './components/Pages/Combat/CombatPage';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { IArea } from './models/IArea';
 import { IAreaCurrentEnemy } from './models/IEnemy';
-import CreatorPageItem from './components/Pages/Creator/CreatorPage';
+import CreatorPageItem from './components/Pages/Creator/CreatorItemPage';
+import CreatorPageArea from './components/Pages/Creator/CreatorAreaPage';
+import CreatorPageEnemy from './components/Pages/Creator/CreatorEnemiesPage';
+import { scrollBarX } from './styles/scrollbars';
 
 
 function App() {
@@ -52,7 +55,7 @@ function App() {
   }
 
   // return(
-  //   <CreatorPageItem />
+  //   <CreatorPageArea />
   // )
 
   if (true) {
@@ -89,7 +92,7 @@ const StartBattleAnim = keyframes`
     transform: scale(0);
   }
   100%{
-    transform: scale(1.5);
+    transform: scale(1.7);
   }
 `
 
@@ -98,7 +101,7 @@ interface IBattleBlockProps{
 }
 
 const BattleBlock = styled.div<IBattleBlockProps>`
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -126,12 +129,18 @@ const BattleBlock = styled.div<IBattleBlockProps>`
     
     background: rgba(0,0,0,0);
   }
+
+  @media (max-width: 1025px) {
+    width: 100vh;
+    height: 100vh;
+  }
+  @media (max-width: 426px) {
+    left: -50%;
+    right: 50%;
+  }
 `
 
 const GlobalStyle = createGlobalStyle`
-  body {
-    height: 100vh;
-  }
   *{
     box-sizing: border-box;
     margin: 0;
@@ -144,8 +153,16 @@ const Application = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100vw;
+  max-width: 100vw;
   height: 100vh;
+  max-height: 100vh;
+  
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  ${
+    scrollBarX
+  }
 `
 
 

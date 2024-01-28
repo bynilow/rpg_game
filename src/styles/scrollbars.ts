@@ -9,7 +9,8 @@ export const scrollBarX = `
     }
     &::-webkit-scrollbar-thumb {
         margin: 10px;
-        width: 20px;
+        width: 1.3em;
         background-color: #858585;    
         border-radius: 10px;       
-}`
+    }
+`

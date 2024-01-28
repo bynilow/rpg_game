@@ -46,7 +46,7 @@ function SelectEquipmentModal({$closeModal, $type}: ISelectEquipmentModalProps) 
 }
 
 const NotFoundText = styled.p`
-    font-size: 30px;
+    font-size: 1.5rem;
     text-align: center;
 `
 

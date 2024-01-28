@@ -20,9 +20,9 @@ const Button = styled.div`
   z-index: 9;
   top: 0;
   right: 0;
-  width: 30px;
-  height: 30px;
-  font-size: 20px;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.3rem;
   background: #e9e9e9;
   border-radius: 50%;
   color: black;

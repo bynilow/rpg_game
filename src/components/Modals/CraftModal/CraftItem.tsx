@@ -7,6 +7,7 @@ import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimer
 import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
 import NeedItem from './NeedItem';
+import Title from '../../Title/Title';
 
 
 interface ICraftItemProps {
@@ -122,17 +123,25 @@ function CraftItem({
             $hoveredColor={getItemHoveredBackground($fullItem.rare)}
             $isMiningOther={$craftingId !== $fullItem.id && $craftingId !== ''} >
             <AreaItemBlockClickable />
-            <CircleButton symbol='?' click={() => $openInfoModal({id: $fullItem.id, whatInfo: 'item'})} />
+            <InfoButton>
+                <CircleButton
+                    symbol='?'
+                    click={() => $openInfoModal({ id: $fullItem.id, whatInfo: 'item' })} />
+            </InfoButton>
             <Avatar 
                 $image={$fullItem.avatar} 
-                width={'120px'} 
-                height={'120px'}
+                width='8rem'
+                height='8rem'
+                $minWidth='4rem'
+                $minHeight='4rem'
                 $isDoSomething={isCrafting}
                 $onClicked={() => onClickCancelCrafting()} 
                 $isMiningOther={false} />
 
             <InfoBlock>
-                <Title>{$fullItem.title} ({inventory.find(i => $fullItem.id === i.item.id)?.count || 0})</Title>
+                <Title $size='1.3rem'>
+                    {$fullItem.title} ({inventory.find(i => $fullItem.id === i.item.id)?.count || 0})
+                </Title>
                 <NeedList>
                     {
                         $fullItem.itemsToCraft!.map(i => 
@@ -211,6 +220,14 @@ function CraftItem({
     );
 }
 
+const InfoButton = styled.div`
+    position: absolute;
+    top: 0;
+    right: -20%;
+
+    transition: .3s;
+`
+
 const InfoCrafting = styled.div`
     position: absolute;
     bottom: 0;
@@ -227,8 +244,8 @@ const CountCrafting = styled.p`
 `
 
 const CountRangeText = styled.p`
-    font-size: 20px;
-    width: 50px;
+    font-size: 1.3rem;
+    width: 2rem;
 `
 
 const RangeBlock = styled.div`
@@ -238,11 +255,18 @@ const RangeBlock = styled.div`
     padding: 5px 10px;
     box-shadow: 0 0 5px black;
     border-radius: 5px;
+    width: 60%;
+
+    @media (max-width: 769px) {
+        min-width: 80%;
+    }
+    @media (max-width: 426px) {
+        min-width: 90%;
+    }
 `
 
 const CountRange = styled.input`
-    min-width: 200px;
-    max-width: 200px;
+    width: 90%;
     transition: 0.1s;
     accent-color: #4494df;
     align-items: center;
@@ -265,10 +289,10 @@ const CountRange = styled.input`
 `
 
 const Button = styled.div`
-    font-size: 30px;
+    font-size: 1.5em;
     line-height: 0;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -286,8 +310,9 @@ const Button = styled.div`
 const CraftBlock = styled.div`
     margin-top: auto;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
-    width: fit-content;
+    width: 100%;
 `
 
 const NeedList = styled.div`
@@ -303,6 +328,9 @@ const InfoBlock = styled.div`
     height: 100%;
     flex-direction: column;
     justify-content: baseline;
+    width: 100%;
+
+
 `
 
 const AreaItemBlockClickable = styled.div`
@@ -344,40 +372,6 @@ const TimerLine = styled.progress<ITimerLineProps>`
     }
 `
 
-const Title = styled.p`
-    font-size: 20px;
-    transition: .1s;
-`
-
-const StopMiningCross = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 50px;
-    padding: 30px;
-    width: 50%;
-    height: 50%;
-    z-index: 99;
-    line-height: 0;
-    color: white;
-    background-color: #00000050;
-    border-radius: 50%;
-    transition: 0.1s;
-
-    &:hover{
-        transform: scale(1.5);
-        background-color: #00000084;
-    }
-`
-
-const AreaItemBlockAnim = keyframes`
-    from{
-        transform: scale(0) rotate(-50deg);
-    }
-    to{
-        transform: scale(1) rotate(0deg);
-    }
-`
 
 interface IAreaItemBlockProps{
     color: string;
@@ -386,19 +380,19 @@ interface IAreaItemBlockProps{
     
 }
 
-
-
 const Item = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
-    padding: 20px;
+    padding: 1rem;
     border-radius: 5px 5px 0 0;
     width: 100%;
-    min-height: 140px;
     display: flex;
-    gap: 20px;
+    gap: 1.3rem;
     position: relative;
     cursor: pointer;
     background: ${ p => p.color};
+    overflow: hidden;
+
+    transition: 0.1s;
 
     ${
         p => p.$isMiningOther
@@ -416,8 +410,6 @@ const Item = styled.div<IAreaItemBlockProps>`
             : null
     }
 
-    transition: 0.1s;
-
     &:hover{
         ${
             p => p.$isMiningOther
@@ -425,6 +417,14 @@ const Item = styled.div<IAreaItemBlockProps>`
                 : `
                     transform: scale(1.01);`
         }
+    }
+
+    &:hover ${InfoButton} {
+        right: 0%;
+    }
+
+    @media (max-width: 426px) {
+        flex-direction: column;
     }
 `
 

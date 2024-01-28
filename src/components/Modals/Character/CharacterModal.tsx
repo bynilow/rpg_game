@@ -10,6 +10,7 @@ import SelectEquipmentModal from '../SelectEquipmentModal/SelectEquipmentModal';
 import Avatar from '../../Avatar/Avatar';
 import { getItemBackground } from '../../../styles/backgrounds';
 import { getStats } from '../../../functions/Stats';
+import Title from '../../Title/Title';
 
 interface ICharacterModal {
     $closeModal: Function;
@@ -23,7 +24,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
 
     const [whatEquipmentOpen, setWhatEquipmentOpen] = useState('');
     const [equipmentCount, setEquipmentCount] = useState({
-        head: inventory.filter(i => i.item.subType === 'head').length,
+        head: inventory.filter(i => i.item.subType === 'helmet').length,
         chest: inventory.filter(i => i.item.subType === 'chest').length,
         foot: inventory.filter(i => i.item.subType === 'foot').length,
         weapon: inventory.filter(i => i.item.type === 'weapon').length,
@@ -39,7 +40,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
     }
 
     const [equippedItems, setEquippedItems] = useState({
-        head: inventory.filter(i => i.item.subType === 'head').find(i => i.isEquipped),
+        head: inventory.filter(i => i.item.subType === 'helmet').find(i => i.isEquipped),
         chest: inventory.filter(i => i.item.subType === 'chest').find(i => i.isEquipped),
         foot: inventory.filter(i => i.item.subType === 'foot').find(i => i.isEquipped),
         weapon: inventory.filter(i => i.item.type === 'weapon').find(i => i.isEquipped),
@@ -51,7 +52,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
 
     useEffect(() => {
         setEquippedItems({
-            head: inventory.filter(i => i.item.subType === 'head').find(i => i.isEquipped),
+            head: inventory.filter(i => i.item.subType === 'helmet').find(i => i.isEquipped),
             chest: inventory.filter(i => i.item.subType === 'chest').find(i => i.isEquipped),
             foot: inventory.filter(i => i.item.subType === 'foot').find(i => i.isEquipped),
             weapon: inventory.filter(i => i.item.type === 'weapon').find(i => i.isEquipped),
@@ -59,7 +60,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
             pickaxe: inventory.filter(i => i.item.subType === 'pickaxe').find(i => i.isEquipped)
         });
         setEquipmentCount({
-            head: inventory.filter(i => i.item.subType === 'head').length,
+            head: inventory.filter(i => i.item.subType === 'helmet').length,
             chest: inventory.filter(i => i.item.subType === 'chest').length,
             foot: inventory.filter(i => i.item.subType === 'foot').length,
             weapon: inventory.filter(i => i.item.type === 'weapon').length,
@@ -90,17 +91,17 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
 
             <CharacterInfo>
                 <EquipList>
-                    <Title>
+                    <Title $size='2rem'>
                         {player.title}
                     </Title>
-                    <ExtraEquipText>
+                    <Title $size='1.5rem'>
                         Броня:
-                    </ExtraEquipText>
+                    </Title>
 
                     <EquipBlock>
                         Голова
                         <EquipSlot
-                            onClick={() => setWhatEquipmentOpen('head')}
+                            onClick={() => setWhatEquipmentOpen('helmet')}
                             $equipmentCount={equipmentCount.head}
                             $background={equippedItems.head ? getItemBackground(equippedItems.head.item.rare) : 'white;'} >
                             <Avatar
@@ -134,9 +135,9 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                         </EquipSlot>
                     </EquipBlock>
 
-                    <ExtraEquipText>
+                    <Title $size='1.5rem'>
                         Инструменты и оружие:
-                    </ExtraEquipText>
+                    </Title>
 
                     <EquipBlock>
                         Руки
@@ -176,7 +177,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                     </EquipBlock>
                 </EquipList>
                 <Characteristics>
-                    <Title>
+                    <Title $size='2rem'>
                         Общие характеристики
                     </Title>
                     <CharList>
@@ -256,7 +257,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
 }
 
 const Char = styled.p`
-    font-size: 20px;
+    font-size: 1.3em;
 `
 
 const CharList = styled.div`
@@ -264,21 +265,26 @@ const CharList = styled.div`
     flex-direction: column;
     height: 100%;
     overflow-y: scroll;
-    gap: 10px;
+    gap: 1rem;
 
     ${scrollBarX}
+
+    @media (max-width: 426px) {
+        overflow-y: hidden;
+        height: auto;
+    }
 `
 
 const Characteristics = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.3rem;
     max-height: 100%;
     flex: 1;
 `
 
 const ExtraEquipText = styled.p`
-    font-size: 20px;
+    font-size: 1.3em;
 
 `
 
@@ -289,8 +295,8 @@ interface IEquipSlotProps {
 }
 
 const EquipSlot = styled.div<IEquipSlotProps>`
-    width: 70px;
-    height: 70px;
+    width: 4rem;
+    height: 4rem;
     border: 2px black solid;
     background: ${p => p.$background};
     background-size: 700%;
@@ -312,11 +318,11 @@ const EquipSlot = styled.div<IEquipSlotProps>`
                 right: -10%;
                 padding: 5px;
                 background: white;
-                width: 20px;
-                height: 20px;
+                width: 1.3rem;
+                height: 1.3rem;
                 text-align: center;
                 line-height: 1;
-                font-size: 18px;
+                font-size: 1.3rem;
                 border-radius: 5px;
                 box-shadow: 0 0 5px black;
                 
@@ -328,30 +334,32 @@ const EquipSlot = styled.div<IEquipSlotProps>`
 
 const EquipBlock = styled.div`
     position: relative;
-    font-size: 30px;
+    font-size: 1.5rem;
     line-height: 0;
     text-transform: uppercase;
     display: flex;
     justify-content: space-between;
-    gap: 10px;
+    gap: 1rem;
     align-items: center;
 `
 
 const EquipList = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.7rem;
     flex: 0.5;
 `
 
 const CharacterInfo = styled.div`
     display: flex;
-    gap: 20px;
+    gap: 1.3rem;
     max-height: 100%;
+    overflow-y: auto;
+
+    @media (max-width: 426px) {
+        flex-direction: column;
+    }
 `
 
-const Title = styled.p`
-    font-size: 30px;
-`
 
 export default CharacterModal;
