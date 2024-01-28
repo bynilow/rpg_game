@@ -10,9 +10,10 @@ interface IAreaEnemyProps {
     $level: number;
     $index: number;
     $onClick: Function;
+    $isBlocked: boolean;
 }
 
-function AreaEnemy({ id, $idInArea, $level, $index, $onClick }: IAreaEnemyProps) {
+function AreaEnemy({ id, $idInArea, $level, $index, $onClick, $isBlocked }: IAreaEnemyProps) {
 
     const {enemies} = useAppSelector(state => state.userReducer);
 
@@ -22,10 +23,12 @@ function AreaEnemy({ id, $idInArea, $level, $index, $onClick }: IAreaEnemyProps)
         <AreaEnemyBlock 
             color={getEnemyBackground(enemy.type)} 
             $hoveredColor={getHoveredEnemyBackground(enemy.type)}
+            $isBlocked={$isBlocked}
             $index={$index} >
             <EnemyClickableBlock onClick={() => $onClick()} />
             <Avatar 
                 $image={enemy.avatar} 
+                $isMiningOther={$isBlocked}
                 width='6rem' 
                 height='6rem' />
 
@@ -60,7 +63,7 @@ const EnemyClickableBlock = styled.div`
 
 const Title = styled.p`
     cursor: pointer;
-    transition: .1s;
+    transition: .2s;
 `
 
 const EnemyStartAnim = keyframes`
@@ -76,6 +79,7 @@ interface IAreaItemBlockProps{
     color: string;
     $hoveredColor: string;
     $index: number;
+    $isBlocked: boolean;
 }
 
 
@@ -83,7 +87,7 @@ interface IAreaItemBlockProps{
 const AreaEnemyBlock = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
     padding: 1.3rem;
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px;
     width: 100%;
     height: 4rem;
     display: flex;
@@ -98,14 +102,39 @@ const AreaEnemyBlock = styled.div<IAreaItemBlockProps>`
     animation-delay: ${p => p.$index/3}s;
     animation-fill-mode: forwards;
     
-    transition: 1s;
+    transition: 0.1s;
 
     &:hover{
-        background: ${p => p.$hoveredColor};
+        ${p => p.$isBlocked 
+            ? null 
+            : `background: ${p.$hoveredColor};`
+        }
     }
 
+    ${
+        p => p.$isBlocked
+            ? ` &::after{
+                position: absolute;
+                z-$index: 99;
+                border-radius: 10px;
+                top: 0;
+                left: 0;
+                content: '';
+                width: 100%;
+                height: 100%;
+                background: #00000081;
+            };`
+            : null
+    }
+
+    
+
     &:hover ${Title} {
-        padding: 0.5rem;
+        ${p => p.$isBlocked 
+            ? null 
+            : `padding-left: 1rem;
+            transform: scale(1.2);`
+        }
     }
 `
 

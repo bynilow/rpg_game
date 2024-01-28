@@ -61,6 +61,7 @@ function AreaPathsSection({
                             + $playerStats.capacity
                             + (inventoryWeight > $playerStats.capacity ? inventoryWeight : '')}
                         $index={ind}
+                        $isBlocked={$isBlocked}
                         $setMoveAreaId={() => onClickMove(p.pathId)}
                         $clearMoveAreaId={() => onClickCancelMove()}
                         $moveAreaId={moveAreaId}

@@ -1,15 +1,11 @@
-import axios from "axios";
-import { AppDispatch } from "../store";
-import { gameSlice } from "./GameSlice";
-import { ILocationToMove } from "../../models/IArea";
-import { IFullItem, IAreaItem, IFullItemWithCount, IBuyItem } from "../../models/IAreaItem";
-import { useAppSelector } from "../../hooks/redux";
-import { IItemInventory } from "../../models/IInventory";
+import { Items } from "../../data/AreaItems";
+import { Enemies } from "../../data/Enemies";
+import { getChance, getRandomNumber } from "../../functions/Random";
+import { IAreaItem, IBuyItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { IAreaCurrentEnemy, IAreaEnemy, IEnemyDead } from "../../models/IEnemy";
 import { IPlayer, ISkillUp } from "../../models/IPlayer";
-import { getChance, getRandomNumber } from "../../functions/Random";
-import { Enemies } from "../../data/Enemies";
-import { Items } from "../../data/AreaItems";
+import { AppDispatch } from "../store";
+import { gameSlice } from "./GameSlice";
 
 interface IResult {
     results: any[]
@@ -31,8 +27,8 @@ export const goLevel = (levelId:string) => async (dispatch: AppDispatch) => {
         dispatch(gameSlice.actions.goLevel(levelId));
         dispatch(gameSlice.actions.getAvailablePaths(levelId));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -40,8 +36,8 @@ export const getAvailablePaths = (levelId:string) => async (dispatch: AppDispatc
     try{
         dispatch(gameSlice.actions.getAvailablePaths(levelId));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -57,7 +53,6 @@ export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispat
             }
         });
         const filteredItems = items.filter(i => i !== undefined)!;
-        console.log('wtf')
         dispatch(gameSlice.actions.updateAreaItems({
             levelId: updatedLevel.levelId,
             date: updatedLevel.date,
@@ -66,7 +61,7 @@ export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispat
         
     }
     catch(e){
-        console.log(e)
+        console.error(e)
     }
 }
 
@@ -145,8 +140,8 @@ export const updateAreaEnemies = (updatedLevel: IUpdateAreaEnemies) => async (di
         dispatch(gameSlice.actions.updateAreaEnemies(enemiesData));
         
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -156,8 +151,8 @@ export const addMinedItem = (miningItem: IFullItemWithCount) => async (dispatch:
         dispatch(gameSlice.actions.addItemToInventory(miningItem));
         
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -165,8 +160,8 @@ export const setAreasFromStorage = () => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.setAreasFromStorage());
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -174,8 +169,8 @@ export const addItemToInventory = (item:IFullItemWithCount) => async (dispatch: 
     try{
         dispatch(gameSlice.actions.addItemToInventory(item));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -183,8 +178,8 @@ export const addItemsToInventory = (items:IFullItemWithCount[]) => async (dispat
     try{
         dispatch(gameSlice.actions.addItemsToInventory(items));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -192,8 +187,8 @@ export const removeItemsFromInventory = (items:IFullItemWithCount[]) => async (d
     try{
         dispatch(gameSlice.actions.removeItemsFromInventory(items));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -203,8 +198,8 @@ export const setInventoryFromStorage = () => async (dispatch: AppDispatch) => {
         dispatch(gameSlice.actions.setInventory(items));
         
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -212,8 +207,8 @@ export const setDeadEnemy = ({...enemy}: IEnemyDead) => async (dispatch: AppDisp
     try{
         dispatch(gameSlice.actions.setEnemyDead(enemy));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -222,8 +217,8 @@ export const setPlayerFromStorage = () => async (dispatch: AppDispatch) => {
         const player = JSON.parse(localStorage.player);
         dispatch(gameSlice.actions.setPlayerFromStorage(player));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -231,8 +226,8 @@ export const setPlayer = (player: IPlayer) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.setPlayer(player));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -240,8 +235,8 @@ export const addXP = (xp: number) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.addXP(xp));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -249,8 +244,8 @@ export const addSkills = (skills: ISkillUp[]) => async (dispatch: AppDispatch) =
     try{
         dispatch(gameSlice.actions.addSkills(skills));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -258,8 +253,8 @@ export const setSkillsFromStorage = () => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.setSkills());
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -267,8 +262,8 @@ export const decrementSkillPoints = (points: number) => async (dispatch: AppDisp
     try{
         dispatch(gameSlice.actions.decrementSkillPoints(points));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -276,8 +271,8 @@ export const equipItem = (id: string) => async (dispatch: AppDispatch) => {
     try{
         dispatch(gameSlice.actions.equipItem(id));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -286,7 +281,7 @@ export const buyItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) =
         dispatch(gameSlice.actions.buyItem(buyingItem));
     }
     catch (e){
-        console.log(e)
+        console.error(e)
     }
 }
 
@@ -295,7 +290,7 @@ export const sellItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) 
         dispatch(gameSlice.actions.sellItem(buyingItem));
     }
     catch (e){
-        console.log(e)
+        console.error(e)
     }
 }
 
@@ -303,8 +298,8 @@ export const setHealthPoints = (health: number) => async (dispatch: AppDispatch)
     try{
         dispatch(gameSlice.actions.setHealthPoints(health));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
 
@@ -312,12 +307,7 @@ export const removeItemFromInventory = (item: IFullItemWithCount) => async (disp
     try{
         dispatch(gameSlice.actions.removeItemFromInventory(item));
     }
-    catch{
-
+    catch(e){
+        console.error(e)
     }
 }
-
-
-
-
-

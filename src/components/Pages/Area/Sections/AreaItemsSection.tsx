@@ -34,7 +34,7 @@ function AreaItemsSection({
         const chanceExtraLootTree = $playerStats.treeDoubleLootPercentChance;
         const chanceExtraLootOre = $playerStats.oreDoubleLootPercentChance;
         const countLoot = getRandomNumberForLoot(miningItem.type === 'ore' ? chanceExtraLootOre : chanceExtraLootTree);
-        console.log(countLoot)
+
         dispatch(addMinedItem({
             ...miningItem,
             count: countLoot
@@ -86,6 +86,7 @@ function AreaItemsSection({
                                 + $playerStats.treeSpeedMining
                             }
                             $index={ind}
+                            $isBlocked={$isBlocked}
                             $setIsMiningId={() => onClickMine(i.idInArea)}
                             $clearIsMiningId={() => onClickCancelMine()}
                             $miningId={miningItemId}

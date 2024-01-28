@@ -103,7 +103,6 @@ function CreatorPageItem() {
                     },
                     itemsToCraft: craftingItems || []})
             }
-            console.log(items)
         }
         else if (isTool) {
            
@@ -138,9 +137,7 @@ function CreatorPageItem() {
                         },
                         itemsToCraft: craftingItems || []
                     })
-                }
-                console.log(items)
-            
+                }            
         }
         else if(isWeapon){
             const stats: IWeapon = {
@@ -184,10 +181,6 @@ function CreatorPageItem() {
                     },
                     itemsToCraft: craftingItems || []})
             }
-            console.log(items)
-        }
-        else {
-            console.log(item)
         }
         
     }

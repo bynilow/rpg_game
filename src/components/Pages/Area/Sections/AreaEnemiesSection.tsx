@@ -53,6 +53,7 @@ function AreaEnemiesSection({
                             <AreaEnemy
                                 key={e.idInArea}
                                 id={e.id}
+                                $isBlocked={$isBlocked}
                                 $idInArea={e.idInArea}
                                 $onClick={
                                     Enemies.find(fe => fe.id === e.id)!.type !== 'trader'

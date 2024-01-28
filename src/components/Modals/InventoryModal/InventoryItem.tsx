@@ -18,8 +18,6 @@ function InventoryItem({item, count}:IItemInventory) {
     const [isSelectToDelete, setIsSelectToDelete] = useState(false);
     const [rangeCount, setRangeCount] = useState(1);
 
-    console.log(item.title, item.type, isCanEquip)
-
     const onClickCancelDelete = () => {
         setIsSelectToDelete(false);
         setRangeCount(1);

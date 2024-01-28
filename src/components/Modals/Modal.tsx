@@ -41,10 +41,6 @@ function Modal({
             if(typeof $closeButtonFunction !== 'undefined') $closeButtonFunction() 
         }, 470)
     }
-    
-    useEffect(() => {
-
-    }, [])
 
     return (
         <>
@@ -150,7 +146,6 @@ const ModalBlock = styled.div<IModalBlockProps>`
                 : 'normal' };
     
 
-    transition: .1s;
 
     background: ${p => p.$backgroundColor};
 

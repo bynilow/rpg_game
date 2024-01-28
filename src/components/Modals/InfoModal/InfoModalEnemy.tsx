@@ -23,7 +23,6 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
 
     const { areaItems, areas, enemies } = useAppSelector(state => state.userReducer);
 
-    console.log($id)
 
     const [thisEnemy, setThisEnemy] = useState(enemies.find(e => e.id === $id)!)
     let enemyItems: IFullItem[] = [];
@@ -31,8 +30,6 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
     if (thisEnemy.possibleLoot.length) {
         enemyItems = thisEnemy.possibleLoot.map(i => areaItems.find(ai => ai.id === i.id)!)!;
     }
-    console.log(thisEnemy)
-    console.log(enemyItems)
     const backgroundColor = getEnemyBackground(thisEnemy.type);
     const backgroundHoveredColor = getHoveredEnemyBackground(thisEnemy.type);
 

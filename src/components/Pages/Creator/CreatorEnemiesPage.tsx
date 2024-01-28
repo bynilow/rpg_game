@@ -92,8 +92,6 @@ function CreatorPageEnemy() {
                 successBlockingText
             }
         }
-
-        console.log(enemy)
     }
 
     return (

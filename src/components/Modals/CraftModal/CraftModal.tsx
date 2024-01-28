@@ -109,7 +109,6 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
         for(let i = 0; i < itemCraft.count; i++){
             count.push(getRandomNumberForLoot(playerSkills.craftDoubleLootPercentChance.currentScores));
         }
-        console.log(count)
         const sumCount = count.reduce((a,cv) => a + cv, 0);
         dispatch(addItemToInventory({
             ...itemCraft,

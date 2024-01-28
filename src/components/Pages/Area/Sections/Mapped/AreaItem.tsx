@@ -13,12 +13,14 @@ interface IAreaItemProps {
     $mineItem: Function;
     $clearIsMiningId: Function;
     $playerSpeedMining: number;
+    $isBlocked: boolean;
 }
 
 function Area({ 
     $item, 
     $mineItem, 
     $index, 
+    $isBlocked,
     $miningId, 
     $setIsMiningId, 
     $clearIsMiningId, 
@@ -31,7 +33,7 @@ function Area({
     const [timeToMining, setTimeToMining] = useState(baseTimeToMining);
 
     const onClickStartMining = (e:React.MouseEvent<HTMLDivElement>) => {
-        if(!isMining){
+        if(!isMining && !$isBlocked){
             setIsMining(true);
             $setIsMiningId();
             startIntervalMine();
@@ -71,8 +73,8 @@ function Area({
         <AreaItemBlock 
             color={getItemBackground($item.rare)} 
             $hoveredColor={getItemHoveredBackground($item.rare)}
-            $$index={$index} 
-            $isMiningOther={($miningId !== $item.idInArea && $miningId !== '')} >
+            $index={$index} 
+            $isMiningOther={($miningId !== $item.idInArea && $miningId !== '') || $isBlocked} >
             <AreaItemBlockClickable onClick={e => onClickStartMining(e)} />
             <Avatar 
                 $image={$item.avatar} 
@@ -80,7 +82,7 @@ function Area({
                 height='6rem' 
                 $isDoSomething={isMining}
                 $onClicked={() => onClickStopMining()} 
-                $isMiningOther={($miningId !== $item.idInArea && $miningId !== '')} />
+                $isMiningOther={($miningId !== $item.idInArea && $miningId !== '') || $isBlocked} />
 
             <Title>{$item.title}</Title>
             <Timer>
@@ -145,7 +147,8 @@ const TimerLine = styled.progress<ITimerLineProps>`
 
 const Title = styled.p`
     cursor: pointer;
-    transition: .1s;
+    z-index: -1;
+    transition: .2s;
 `
 
 const AreaItemBlockAnim = keyframes`
@@ -160,7 +163,7 @@ const AreaItemBlockAnim = keyframes`
 interface IAreaItemBlockProps{
     color: string;
     $hoveredColor: string;
-    $$index: number;
+    $index: number;
     $isMiningOther: boolean;
     
 }
@@ -168,7 +171,7 @@ interface IAreaItemBlockProps{
 const AreaItemBlock = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
     padding: 1.3rem;
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
     width: 100%;
     height: 4.5rem;
     display: flex;
@@ -183,7 +186,7 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
             ? ` &::after{
                 position: absolute;
                 z-$index: 99;
-                border-radius: 5px;
+                border-radius: 10px 10px 0 0;
                 top: 0;
                 left: 0;
                 content: '';
@@ -196,7 +199,7 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
 
     transform: scale(0) rotate(-45deg);
     animation: ${AreaItemBlockAnim} .5s ease;
-    animation-delay: ${p => p.$$index/3}s;
+    animation-delay: ${p => p.$index/3}s;
     animation-fill-mode: forwards;
     
     transition: 1s;
@@ -204,7 +207,8 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
     &:hover ${Title} {
         ${p => p.$isMiningOther 
             ? null 
-            : `padding: 1.3em;`
+            : `padding-left: 1rem;
+            transform: scale(1.2);`
         }
     }
 

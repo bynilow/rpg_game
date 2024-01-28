@@ -236,10 +236,8 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
             skills[foundIndex].selectedLevel = foundSkill.selectedLevel + point;
 
             setCountPoints(p => p - point);
-            console.log(playerSkills[infoSkill.id])
 
             changeTexts();
-    
         }
     }
 

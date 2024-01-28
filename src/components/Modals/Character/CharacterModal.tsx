@@ -87,8 +87,6 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                     : null
             }
 
-            <CircleButton click={() => $closeModal()} symbol='✕' />
-
             <CharacterInfo>
                 <EquipList>
                     <Title $size='2rem'>

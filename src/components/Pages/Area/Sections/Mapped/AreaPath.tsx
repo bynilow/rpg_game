@@ -15,6 +15,7 @@ interface IAreaPathProps {
     $playerMovementSpeed: number;
     $playerInventoryWeight: number;
     $playerInventoryMaxWeight: number;
+    $isBlocked: boolean;
 }
 
 
@@ -29,6 +30,7 @@ function AreaPath({
     $clearMoveAreaId,
     $playerMovementSpeed,
     $playerInventoryWeight,
+    $isBlocked,
     $playerInventoryMaxWeight }: IAreaPathProps) {
 
     const dispatch = useAppDispatch();
@@ -44,7 +46,7 @@ function AreaPath({
     const [currentTimeToMove, setCurrentTimeToMove] = useState(baseTimeToMovement);
 
     const onClickLevel = (e:React.MouseEvent<HTMLDivElement>) => {
-        if(!isMoving){
+        if(!isMoving && !$isBlocked){
             setIsMoving(true);
             startIntervalMove();
             setCurrentTimeToMove(baseTimeToMovement);
@@ -84,7 +86,7 @@ function AreaPath({
     return (
         <Area
             $index={$index} 
-            $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '')}>
+            $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '') || $isBlocked}>
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
             <Avatar 
                 $image={$area.avatar}
@@ -92,7 +94,7 @@ function AreaPath({
                 height='6rem' 
                 $onClicked={() => onClickStopMove()} 
                 $isDoSomething={isMoving}
-                $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '')} />
+                $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '') || $isBlocked} />
                 
             <Name>{$area.title}</Name>
             <Timer $isOverweight={overweight > 0}>
@@ -150,7 +152,7 @@ const TimerLine = styled.progress`
 
 const Name = styled.p`
     cursor: pointer;
-    transition: .1s;
+    transition: .2s;
 `
 
 
@@ -172,7 +174,7 @@ const Area = styled.div<IAreaBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
     background-color: white;
     padding: 1.3em;
-    border-radius: 5px;
+    border-radius: 10px 10px 0 0;
     width: 100%;
     height: 4.5rem;
     display: flex;
@@ -192,7 +194,7 @@ const Area = styled.div<IAreaBlockProps>`
             ? `&::after{
                 position: absolute;
                 z-$index: 99;
-                border-radius: 5px;
+                border-radius: 10px 10px 0 0;
                 top: 0;
                 left: 0;
                 content: '';
@@ -206,7 +208,8 @@ const Area = styled.div<IAreaBlockProps>`
     &:hover ${Name} {
         ${p => p.$isMovingOther 
             ? null 
-            : `padding: 1.3em;`
+            : `padding-left: 1rem;
+            transform: scale(1.2);`
         }
     }
 

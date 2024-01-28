@@ -429,7 +429,6 @@ export const gameSlice = createSlice({
                 gainedXP -= needXP;
                 needXP = (state.player.level ** 2.7) + 10;
                 state.player.skillPoints += 5;
-                console.log(state.player.level, gainedXP)
             }
 
             state.player.currentXP += gainedXP;
@@ -607,10 +606,7 @@ export const gameSlice = createSlice({
             const foundedTrader = state.areas[foundedLocationIndex].currentEnemies[foundedTraderInLocationIndex];
             let foundedItemIndexInTrader = foundedTrader.traderStats!.tradingItems.findIndex(i => i.id === itemId)!;
             let foundedItemInTrader = foundedTrader.traderStats!.tradingItems.find(i => i.id === itemId)!;
-            
-            console.log("foundedLocationIndex", foundedLocationIndex)
-            console.log("foundedTraderInLocationIndex", foundedTraderInLocationIndex)
-            console.log("foundedTrader", foundedTrader)
+
             if(foundedItemInTrader.count - count > 0){
                 foundedItemInTrader.count -= count;
                 state.areas[foundedLocationIndex]

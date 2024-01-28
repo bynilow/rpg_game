@@ -54,8 +54,6 @@ function CreatorPageArea() {
             lastRespawnAreaItems: '0',
             lastRespawnAreaEnemies: '0'
         }
-
-        console.log(area)
     }
 
     return (

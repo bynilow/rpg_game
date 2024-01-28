@@ -48,7 +48,7 @@ const Block = styled.div<IBlockProps>`
     flex-direction: column;
     justify-content: baseline;
     gap: ${ p => p.$gap };
-    border-radius: 5px;
+    border-radius: 15px;
     padding: 1rem;
     overflow-y: auto;
     overflow-x: hidden;
@@ -66,9 +66,9 @@ const Block = styled.div<IBlockProps>`
         : null
     }
   
-    ${p => p.$isBlocked
+    /* ${p => p.$isBlocked
         ? `&::before{
-            position: fixed;
+            position: absolute;
             z-index: 99;
             border-radius: 5px;
             top: 0;
@@ -76,17 +76,15 @@ const Block = styled.div<IBlockProps>`
             left: 0;
             content: '';
             width: 100%;
+            min-height: 100%;
             background: #00000071;
         };`
         : null
-    }
+    } */
 
     ${
         scrollBarX
     }  
 `
-
-            // height: ${100 + p.$update * 100}px;
-
 
 export default Section;

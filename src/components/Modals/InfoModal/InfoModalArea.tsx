@@ -23,19 +23,11 @@ function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
 
     const [thisArea, setThisArea] = useState(areas.find(a => a.id === $id)!);
 
-    console.log(thisArea)
-
-    const backgroundColor = getAreaBackground(thisArea.color);
-    const backgroundHoveredColor = getHoveredAreaBackground(thisArea.color);
-
-    useEffect(() => {
-
-    }, [])
-
     return (
         <>
                 <Section>
                     <Avatar
+                        key='avatar'
                         $image={thisArea.avatar}
                         width='15rem'
                         height='15rem'

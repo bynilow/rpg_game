@@ -19,8 +19,9 @@ function SelectEquipmentModal({$closeModal, $type}: ISelectEquipmentModalProps) 
         <Modal
             $size='small'
             $flexDirection='column'
-            $justifyContent='center'>
-            <CircleButton click={() => $closeModal()} symbol='✕' />
+            $justifyContent='center'
+            $closeButtonFunction={() => $closeModal()}
+            $isCloseButton >
             {
                 inventory.find(i => i.item.type === $type || i.item.subType === $type)
                     ? null
