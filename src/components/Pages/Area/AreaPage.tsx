@@ -175,34 +175,41 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                         $clearActionType={() => setActionType('')} />
 
                     <AreaEnemiesSection 
-                        $isBlocked={!!actionType} 
+                        $isBlocked={!!actionType}
                         $onClickStartBattle={(e: IAreaCurrentEnemy) => onClickStartBattle(e)}
                         $setTraderId={(id: string) => setTraderId(id)} />
 
+                    <Empty />
 
                 </AreaActionMenu>
+                
             </Area>
         </>
     );
 }
 
+const Empty = styled.div`
+    height: 1rem;
+    width: 100%;
+`
 
 const Area = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     width: 90%;
-    height: 80%;
+    height: 80%;    
 `
 
 const AreaActionMenu = styled.div`
   z-index: 1;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: space-between;
   gap: 3rem;
   width: 100%;
   max-height: 80%;
+  padding-bottom: 3rem;
   transition: 1s;
 `
 

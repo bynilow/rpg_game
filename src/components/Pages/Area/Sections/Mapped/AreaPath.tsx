@@ -152,6 +152,7 @@ const TimerLine = styled.progress`
 
 const Name = styled.p`
     cursor: pointer;
+    z-index: -1;
     transition: .2s;
 `
 

@@ -452,6 +452,8 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
 
                             <Avatar
                                 $image={enemy.avatar}
+                                $minWidth='100px'
+                                $minHeight='100px'
                                 width={'200px'}
                                 height={'200px'} />
                             <Title>
@@ -483,15 +485,20 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
                                 </BlockText>
                             </BlockLine>
                         </Section>
+                        
                     </CharacterBlock>
-
+                    <Empty />          
                 </Container>
             </Page>
         </>
     );
 }
 
-
+const Empty = styled.div`
+    height: 1rem;
+    width: 100%;
+    order: 4;
+`
 
 const EndBattleAnim = keyframes`
   0%{
@@ -751,7 +758,7 @@ const HistoryBattle = styled.div`
     }
 
     @media (max-width: 426px) {
-        max-height: 30%;
+        min-height: 50%;
     }
 `
 
