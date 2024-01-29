@@ -132,8 +132,6 @@ function CraftItem({
                 $image={$fullItem.avatar} 
                 width='8rem'
                 height='8rem'
-                $minWidth='4rem'
-                $minHeight='4rem'
                 $isDoSomething={isCrafting}
                 $onClicked={() => onClickCancelCrafting()} 
                 $isMiningOther={false} />

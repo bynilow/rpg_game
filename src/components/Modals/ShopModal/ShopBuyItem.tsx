@@ -62,6 +62,8 @@ function ShopBuyItem({
                 $image={$fullItem.avatar} 
                 width={'5rem'} 
                 height={'100%'}
+                $minWidth='5rem'
+                $minHeight='5rem'
                 $isMiningOther={false} />
 
             <InfoBlock>
@@ -138,16 +140,26 @@ const CountRangeText = styled.p`
 
 const RangeBlock = styled.div`
     display: flex;
+    z-index: 9;
+    background-color: white;
     gap: 10px;
     align-items: center;
     padding: 5px 10px;
     box-shadow: 0 0 5px black;
     border-radius: 5px;
+    width: 50%;
+
+    @media (max-width: 1025px) {
+        min-width: 100%;
+    }
+    @media (max-width: 426px) {
+        width: 50%;
+    }
+
 `
 
 const CountRange = styled.input`
-    min-width: 20rem;
-    max-width: 20rem;
+    width: 100%;
     transition: 0.1s;
     accent-color: #4494df;
     align-items: center;
@@ -192,8 +204,10 @@ const Button = styled.div`
 const CraftBlock = styled.div`
     margin-top: auto;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
-    width: fit-content;
+    width: 100%;
+    z-index: 9;
 `
 
 const InfoBlock = styled.div`

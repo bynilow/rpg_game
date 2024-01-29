@@ -107,7 +107,7 @@ const DropdownOptions = styled.div`
 
 const SelectDropdown = styled.div`
     position: relative;
-    z-index: -1;
+    z-index: 1;
     min-width: 13rem;
 
     &:hover ${DropdownOptions} {

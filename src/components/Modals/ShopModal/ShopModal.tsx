@@ -116,11 +116,10 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
         <>  
             <Modal
                 $flexDirection={'row'}
-                $gap='1.3em'
                 $size='large'
-                $justifyContent='baseline'
                 $isCloseButton
                 $closeButtonFunction={() => $closeModal()}>
+                <ModalInner>
                 <TypesPlace>
                     <TraderTypeButton
                         onClick={() => setIsBuying(true)}
@@ -192,11 +191,25 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                         }
                     </ItemsList>
                 </TraderPlace>
+                </ModalInner>
             </Modal>
         </>
 
     );
 }
+
+const ModalInner = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    
+    gap: 1.5rem;
+
+    @media (max-width: 426px) {
+        flex-direction: column;
+        gap: 1rem;
+    }
+`
 
 const InputCoinsBlock = styled.div`
     display: flex;
@@ -216,11 +229,18 @@ const Coins = styled.div`
 const TraderInfo = styled.div`
     display: flex;
     gap: 1.3rem;
+
+    
 `
 
 const Divider = styled.div`
     height: 100%;
     border: 1px solid gray;
+
+    @media (max-width: 426px) {
+        width: 100%;
+        height: 0;
+    }
 `
 
 interface ITraderTypeButton{
@@ -255,7 +275,13 @@ const TypesPlace = styled.div`
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    gap: 1.3em;
+    gap: 1.3rem;
+
+    @media (max-width: 426px) {
+        flex-direction: row;
+        height: auto;
+        gap: 1rem;
+    }
 `
 
 const TraderPlace = styled.div`

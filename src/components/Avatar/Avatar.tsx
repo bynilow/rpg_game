@@ -62,12 +62,14 @@ function Avatar({
 }
 
 const StopAction = styled.div`
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 3rem;
-    width: 70%;
+    object-fit: cover;
     height: 70%;
+    width: 70%;
+    font-size: 3rem;
     z-index: 99;
     line-height: 0;
     color: white;
