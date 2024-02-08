@@ -70,8 +70,6 @@ const ButtonsBlock = styled.div`
     display: flex;
     gap: 10px;
     height: 100%;
-
-    
 `
 
 const Button = styled.div`

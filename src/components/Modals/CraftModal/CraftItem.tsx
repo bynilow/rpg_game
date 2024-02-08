@@ -368,6 +368,13 @@ const TimerLine = styled.progress<ITimerLineProps>`
     &::-webkit-progress-bar {
         background-color: ${p => p.$backgroundColor};
     }
+    &::-moz-progress-value {
+        background-color: ${p => p.color};
+        transition: 0.2s;
+    }
+    &::-moz-progress-bar {
+        background-color: ${p => p.$backgroundColor};
+    }
 `
 
 

@@ -124,13 +124,21 @@ const LevelLine = styled.progress`
 
    &::-webkit-progress-value {
     background-color: #FF9933;
-
     border-radius: 5px;
     transition: 0.2s;
    }
    &::-webkit-progress-bar {
     background-color: #c2762a;
+    border-radius: 5px;
+   }
 
+   &::-moz-progress-value {
+    background-color: #FF9933;
+    border-radius: 5px;
+    transition: 0.2s;
+   }
+   &::-moz-progress-bar {
+    background-color: #c2762a;
     border-radius: 5px;
    }
 `
@@ -174,13 +182,20 @@ const HealthLine = styled.progress`
 
    &::-webkit-progress-value {
     background-color: #ce4646;
-
     border-radius: 5px;
     transition: 0.2s;
    }
    &::-webkit-progress-bar {
     background-color: #8a3939;
-
+    border-radius: 5px;
+   }
+   &::-moz-progress-value {
+    background-color: #ce4646;
+    border-radius: 5px;
+    transition: 0.2s;
+   }
+   &::-moz-progress-bar {
+    background-color: #8a3939;
     border-radius: 5px;
    }
 `
@@ -237,7 +252,6 @@ const Block = styled.div`
     display: flex;
     justify-content: end;
     align-items: center;
-
 `
 
 export default Header;

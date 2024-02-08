@@ -298,8 +298,7 @@ const ItemsList = styled.div`
     overflow-y: scroll;
     overflow-x: hidden;
 
-    ${scrollBarX
-    }
+    ${scrollBarX}
 `
 
 export default CraftModal;

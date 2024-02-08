@@ -159,7 +159,7 @@ const Info = styled.div`
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    transition: .1s;
+    transition: 0.1s;
 `
 
 const AboutText = styled.p`
@@ -182,7 +182,7 @@ const Item = styled.div<IItemProps>`
     gap: 10px;
     cursor: pointer;
     user-select: none;
-    transition: .1s;
+    transition: 0.1s;
 
     background: ${p => p.color};
 

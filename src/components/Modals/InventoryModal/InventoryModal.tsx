@@ -170,9 +170,7 @@ const Bar = styled.div`
     flex-wrap: wrap;
     gap: 1rem;
 
-    ${
-        scrollBarX
-    }
+    ${scrollBarX}
 
     @media (max-width: 376px) {
         max-height: 25%;
@@ -194,9 +192,7 @@ const ItemsList = styled.div`
     overflow-y: scroll;
     overflow-x: hidden;
 
-    ${
-        scrollBarX
-    }
+    ${scrollBarX}
 `
 
 export default InventoryModal;

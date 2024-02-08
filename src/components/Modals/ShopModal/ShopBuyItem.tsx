@@ -168,12 +168,23 @@ const CountRange = styled.input`
         transform: translateY(-30%) scale(1.2);
         transition: 0.1s;
     }
-
     &::-webkit-slider-thumb:hover {
         transform: scale(1.5) translateY(-25%);
     }
-
     &::-webkit-slider-runnable-track{
+        border-radius: 5px;
+        background: gray;
+        height: 5px;
+    }
+
+    &::-moz-range-thumb{
+        transform: translateY(-30%) scale(1.2);
+        transition: 0.1s;
+    }
+    &::-moz-range-thumb:hover{
+        transform: scale(1.5) translateY(-25%);
+    }
+    &::-moz-range-track{
         border-radius: 5px;
         background: gray;
         height: 5px;

@@ -148,6 +148,13 @@ const TimerLine = styled.progress`
    &::-webkit-progress-bar {
     background-color: #A9A9A9;
    }
+   &::-moz-progress-value {
+    background-color: #4682B4;
+    transition: 0.2s;
+   }
+   &::-moz-progress-bar {
+    background-color: #A9A9A9;
+   }
 `
 
 const Name = styled.p`

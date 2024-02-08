@@ -16,13 +16,37 @@ function CheckboxSearch({$setChecked}: ICheckboxProps) {
 
     return (
         <CheckBoxBlock onClick={() => onChangeChecked()} >
-            <Checkbox type='checkbox' checked={isChecked} />
+            <Checkbox $isChecked={isChecked}>
+                {
+                    isChecked && '🗸'
+                }
+            </Checkbox>
             Готовы к крафту
         </CheckBoxBlock>
     );
 }
 
-const Checkbox = styled.input`
+interface ICheckbox {
+    $isChecked: boolean;
+}
+
+const Checkbox = styled.div<ICheckbox>`
+    width: 1.5em;
+    height: 1.5em;
+    font-size: 1.2rem;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+
+    ${
+        p => p.$isChecked
+        ? `
+        border: 2px solid #455a48;
+        color: #455a48; `
+        : 
+        `border: 1px solid black;
+        color: black; `
+    }
     
 `
 
