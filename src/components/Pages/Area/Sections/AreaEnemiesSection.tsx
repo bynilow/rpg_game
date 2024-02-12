@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import Section from '../../../Section/Section';
 import MinutesRemaining from '../UpdatedMinutes/MinutesRemaining';
 import AreaEnemy from './Mapped/AreaEnemy';
@@ -9,15 +9,18 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { updateAreaEnemies } from '../../../../store/reducers/ActionCreators';
 import Title from '../../../Title/Title';
+import { scrollBarX } from '../../../../styles/scrollbars';
 
 interface IAreaEnemiesSectionProps {
     $isBlocked: boolean;
+    $isUpdatingLevel: boolean;
     $onClickStartBattle: (e: IAreaCurrentEnemy) => void;
     $setTraderId: (id: string) => void;
 }
 
 function AreaEnemiesSection({
     $isBlocked,
+    $isUpdatingLevel,
     $onClickStartBattle,
     $setTraderId}: IAreaEnemiesSectionProps) {
 
@@ -46,7 +49,7 @@ function AreaEnemiesSection({
             <MinutesRemaining
                 $timeToUpdate={currentLocation.timeToRespawnAreaEnemies}
                 $nextUpdateDateTime={currentLocation.nextRespawnAreaEnemies} />
-            <List >
+            <List key={$isUpdatingLevel.toString()} $isUpdatingLevel={$isUpdatingLevel}>
                 {
                     currentLocation.currentEnemies
                         ? currentLocation.currentEnemies.map((e, ind) =>
@@ -69,14 +72,42 @@ function AreaEnemiesSection({
     );
 }
 
-const List = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  justify-content: center;
-  align-items: left;
-  margin-top: 10px;
+const ListAnimation = keyframes`
+    from{
+        clip-path: circle(0% at 50% 0);
+    }
+    to{
+        clip-path: circle(150% at 50% 0);
+    }
+`
+
+
+interface IListProps {
+    $isUpdatingLevel: boolean;
+}
+
+const List = styled.div<IListProps>`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-content: baseline;
+    align-items: left;
+
+    padding: 1rem;
+
+    clip-path: circle(0% at 50% 0);
+    animation: ${ListAnimation} 2.5s ease;
+    animation-direction: ${p => p.$isUpdatingLevel ? 'reverse' : 'normal'};
+    animation-fill-mode: forwards;
+
+    pointer-events: ${p => p.$isUpdatingLevel ? 'none' : 'all'};
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    ${scrollBarX}
 
 `
 

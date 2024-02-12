@@ -1,14 +1,13 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { IArea, IChangeInfo } from '../../../models/IArea';
+import { useAppSelector } from '../../../hooks/redux';
+import { IChangeInfo } from '../../../models/IArea';
+import { getAreaBackground, getEnemyBackground, getItemBackground } from '../../../styles/backgrounds';
 import { scrollBarX } from '../../../styles/scrollbars';
-import ModalBackground from '../Other/ModalBackground';
+import Modal from '../Modal';
 import AreaModal from './InfoModalArea';
 import EnemyModal from './InfoModalEnemy';
 import ItemModal from './InfoModalItem';
-import Modal from '../Modal';
-import { useAppSelector } from '../../../hooks/redux';
-import { getAreaBackground, getEnemyBackground, getItemBackground } from '../../../styles/backgrounds';
 
 interface IInfoModal {
     $id: string;

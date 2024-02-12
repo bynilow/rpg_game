@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import Section from '../../../Section/Section';
 import MinutesRemaining from '../UpdatedMinutes/MinutesRemaining';
 import { IAreaItem, IFullItem } from '../../../../models/IAreaItem';
@@ -9,17 +9,19 @@ import { getRandomNumberForLoot } from '../../../../functions/Random';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { addMinedItem, addXP, getAvailablePaths, setInventoryFromStorage, setPlayerFromStorage, setSkillsFromStorage, updateAreaItems } from '../../../../store/reducers/ActionCreators';
 import Title from '../../../Title/Title';
+import { scrollBarX } from '../../../../styles/scrollbars';
 
 interface IAreaItemsSectionProps {
     $isBlocked: boolean;
+    $isUpdatingLevel: boolean;
     $playerStats: IStats;
     $changeActionType: Function;
     $clearActionType: Function;
-
 }
 
 function AreaItemsSection({
     $isBlocked,
+    $isUpdatingLevel,
     $playerStats,
     $changeActionType,
     $clearActionType}: IAreaItemsSectionProps) {
@@ -68,14 +70,14 @@ function AreaItemsSection({
             $isBoxShadow
             $isBackgroundTransparent={false} >
 
-            <Title $size='1.5rem'>
+            <Title $size='1.5rem' >
                 Местность: 
             </Title>
             <MinutesRemaining
                 $timeToUpdate={currentLocation.timeToRespawnAreaItems}
                 $nextUpdateDateTime={"2024-01-22T12:00:00"} />
 
-            <List>
+            <List key={$isUpdatingLevel.toString()} $isUpdatingLevel={$isUpdatingLevel}>
                 {
                     currentLocation.currentAreaItems.map((i: IFullItem, ind) =>
                         <AreaItem
@@ -102,14 +104,42 @@ function AreaItemsSection({
     );
 }
 
-const List = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5em;
-  justify-content: center;
-  align-items: left;
-  margin-top: 10px;
+const ListAnimation = keyframes`
+    from{
+        clip-path: circle(0% at 50% 0);
+    }
+    to{
+        clip-path: circle(150% at 50% 0);
+    }
+`
+
+
+interface IListProps {
+    $isUpdatingLevel: boolean;
+}
+
+const List = styled.div<IListProps>`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-content: baseline;
+    align-items: left;
+
+    padding: 1rem;
+
+    clip-path: circle(0% at 50% 0);
+    animation: ${ListAnimation} 2.5s ease;
+    animation-direction: ${p => p.$isUpdatingLevel ? 'reverse' : 'normal'};
+    animation-fill-mode: forwards;
+
+    pointer-events: ${p => p.$isUpdatingLevel ? 'none' : 'all'};
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    ${scrollBarX}
 
 `
 

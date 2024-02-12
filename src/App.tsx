@@ -109,7 +109,7 @@ const BattleBlock = styled.div<IBattleBlockProps>`
   margin: auto;
   z-index: 99999;
   width: 100vw;
-  height: 100vw;
+  max-height: 100vw;
   border-radius: 50%;
   background: black;
 
@@ -157,7 +157,7 @@ const Application = styled.div`
   height: 100vh;
   max-height: 100vh;
   
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
 
   ${

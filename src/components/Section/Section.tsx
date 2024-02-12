@@ -14,7 +14,7 @@ function Section({
     $isBlocked, 
     $isBoxShadow, 
     $isBackgroundTransparent = true,
-    $gap = '1.3em'}: ISection) {
+    $gap = '1.3rem'}: ISection) {
 
     return ( 
         <Block 
@@ -38,53 +38,31 @@ interface IBlockProps {
 }
 
 const Block = styled.div<IBlockProps>`
-    min-height: 50%;
-    height: fit-content;
-    max-height: 100%;
+    height: 100%;
     width: 100%;
     min-width: 300px;
+    
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: baseline;
     gap: ${ p => p.$gap };
     border-radius: 15px;
-    padding: 1rem;
-    overflow-y: auto;
-    overflow-x: hidden;
+    padding: 1rem;    
     position: relative;
     background-color: ${
         p => p.$isBackgroundTransparent
             ? ''
             : 'white'
     };
-    transition: max-height 3s ease-in-out;
 
     ${
         p => p.$isBoxShadow
         ? 'box-shadow: 0 0 5px black;'
         : null
     }
-  
-    /* ${p => p.$isBlocked
-        ? `&::before{
-            position: absolute;
-            z-index: 99;
-            border-radius: 5px;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            content: '';
-            width: 100%;
-            min-height: 100%;
-            background: #00000071;
-        };`
-        : null
-    } */
 
-    ${
-        scrollBarX
-    }  
+    
 `
 
 export default Section;

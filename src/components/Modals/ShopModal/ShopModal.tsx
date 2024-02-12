@@ -42,27 +42,27 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
     );
 
     const sortTraderItems = () => {
-        let filteredItems = 
-            getTrader().traderStats!.tradingItems.filter(i => 
+        let filteredItems =
+            getTrader().traderStats!.tradingItems.filter(i =>
                 i.title.toLocaleLowerCase().includes(inputText.toLocaleLowerCase()));
-        
-        setSortedTraderItems(filteredItems.sort((a,b) => a.cost - b.cost));
+
+        setSortedTraderItems(filteredItems.sort((a, b) => a.cost - b.cost));
     }
 
     const [sortedInventoryItems, setSortedInventoryItems] = useState<IFullItemWithCount[]>(
-        inventory.filter(i => !i.isEquipped).map(i => ({...i.item, count: i.count}))
+        inventory.filter(i => !i.isEquipped).map(i => ({ ...i.item, count: i.count }))
     );
 
     const sortInventoryItems = () => {
-        let filteredItems = 
+        let filteredItems =
             inventory.filter(i => !i.isEquipped)
-                .map(i => ({...i.item, count: i.count})).filter(i => 
+                .map(i => ({ ...i.item, count: i.count })).filter(i =>
                     i.title.toLocaleLowerCase().includes(inputText.toLocaleLowerCase()));
-        
-        setSortedInventoryItems(filteredItems.sort((a,b) => a.cost - b.cost));
+
+        setSortedInventoryItems(filteredItems.sort((a, b) => a.cost - b.cost));
     }
 
-    
+
 
     const [selectedId, setSelectedId] = useState('');
 
@@ -77,14 +77,14 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
         sortTraderItems();
     }
 
-    const getCountCanBuy = (cost: number) => {        
+    const getCountCanBuy = (cost: number) => {
         return Math.floor(player.coins / cost)
     }
 
     const getBuyCost = (cost: number) => {
         return (cost * traderData.traderStats!.extraPriceMultiplier)
-            - (cost * traderData.traderStats!.extraPriceMultiplier 
-            / 100 * getStats(playerSkills, player).buyPricePercent)
+            - (cost * traderData.traderStats!.extraPriceMultiplier
+                / 100 * getStats(playerSkills, player).buyPricePercent)
     }
 
     const getSellPrice = (cost: number) => {
@@ -92,7 +92,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
     }
 
     const [isBuying, setIsBuying] = useState(true);
-    
+
     const onClickSellItem = (itemBuy: IFullItemWithCount, cost: number) => {
         dispatch(sellItem({
             item: itemBuy,
@@ -107,26 +107,25 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
         setTraderData(getTrader());
         sortTraderItems();
         sortInventoryItems();
-        
+
     }, [inputText, areas, inventory])
 
 
 
     return (
-        <>  
-            <Modal
-                $flexDirection={'row'}
-                $size='large'
-                $isCloseButton
-                $closeButtonFunction={() => $closeModal()}>
-                <ModalInner>
+        <Modal
+            $flexDirection={'row'}
+            $size='large'
+            $isCloseButton
+            $closeButtonFunction={() => $closeModal()}>
+            <ModalInner>
                 <TypesPlace>
                     <TraderTypeButton
                         onClick={() => setIsBuying(true)}
                         $isBuying={isBuying}>
                         +
                     </TraderTypeButton>
-                    <TraderTypeButton 
+                    <TraderTypeButton
                         onClick={() => setIsBuying(false)}
                         $isBuying={!isBuying}>
                         -
@@ -157,7 +156,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                             </InputCoinsBlock>
                         </InfoBlock>
                     </TraderInfo>
-                    
+
                     <ItemsList>
                         {
                             isBuying
@@ -191,9 +190,8 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                         }
                     </ItemsList>
                 </TraderPlace>
-                </ModalInner>
-            </Modal>
-        </>
+            </ModalInner>
+        </Modal>
 
     );
 }
@@ -243,7 +241,7 @@ const Divider = styled.div`
     }
 `
 
-interface ITraderTypeButton{
+interface ITraderTypeButton {
     $isBuying: boolean
 }
 
@@ -261,7 +259,7 @@ const TraderTypeButton = styled.div<ITraderTypeButton>`
     user-select: none;
     cursor: pointer;
 
-    border: ${ p => p.$isBuying ? 'solid 2px black' : ''};
+    border: ${p => p.$isBuying ? 'solid 2px black' : ''};
 
     transition: 0.1s;
 

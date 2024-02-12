@@ -1,6 +1,5 @@
-import styled, { keyframes } from 'styled-components';
 import React, { useEffect, useState } from 'react';
-import ModalBackground from './Other/ModalBackground';
+import styled, { keyframes } from 'styled-components';
 import CircleButton from '../Buttons/CircleButton';
 
 interface IModal {
@@ -16,11 +15,11 @@ interface IModal {
     children?: React.ReactNode;
 }
 
-function Modal({ 
-    $backgroundColor = 'white', 
-    children, 
-    $flexDirection, 
-    $alignItems = '', 
+function Modal({
+    $backgroundColor = 'white',
+    children,
+    $flexDirection,
+    $alignItems = '',
     $isEnableAnims = true,
     $isCloseButton,
     $closeButtonFunction,
@@ -31,24 +30,23 @@ function Modal({
     const [isOpenAnim, setIsOpenAnim] = useState(true);
     const [isCloseAnim, setIsCloseAnim] = useState(false);
 
-    setTimeout(() => {
-        setIsOpenAnim(false);
-    }, 1000)
+    // setTimeout(() => {
+    //     setIsOpenAnim(false);
+    // }, 1000)
 
     const onClickCloseButton = () => {
-        setIsCloseAnim(true);
-        setTimeout(() => {
-            if(typeof $closeButtonFunction !== 'undefined') $closeButtonFunction() 
-        }, 470)
+        if(!isCloseAnim){
+            setIsCloseAnim(true);
+            setTimeout(() => {
+                if (typeof $closeButtonFunction !== 'undefined') $closeButtonFunction()
+            }, 700)
+        }
     }
 
     return (
-        <>
-            <ModalBackground
-                $isEnableAnims
-                $closeAnim={isCloseAnim} />
-            <ModalBlock
-                key={isCloseAnim ? 'close' : 'none'}
+        <ModalBlock key={isCloseAnim.toString()} $isClosing={isCloseAnim}>
+
+            <ModalInner
                 $backgroundColor={$backgroundColor}
                 $flexDirection={$flexDirection}
                 $alignItems={$alignItems}
@@ -58,22 +56,22 @@ function Modal({
                 $gap={$gap}
                 $size={$size}
                 $justifyContent={$justifyContent} >
-
                 {
                     $isCloseButton
                         ? <CircleButton symbol='✕' click={() => onClickCloseButton()} />
                         : null
                 }
-                
+
                 {
                     children
                 }
-            </ModalBlock>
-        </>
+            </ModalInner>
+        </ModalBlock>
+
     );
 }
 
-interface IModalBlockProps{
+interface IModalBlockProps {
     $backgroundColor: string;
     $flexDirection: 'row' | 'column';
     $alignItems: string;
@@ -85,44 +83,43 @@ interface IModalBlockProps{
     $justifyContent: string;
 }
 
-const ModalBlockAnim = keyframes`
-    from{
-        transform: translateY(10vh);
+const ModalAnimation = keyframes`
+    0%{
+        transform: translateY(10%);
         opacity: 0;
     }
-    to{
+    100%{
         transform: translateY(0);
         opacity: 1;
     }
 `
 
-const ModalBlock = styled.div<IModalBlockProps>`
-    z-index: 9999;
-    position: fixed;
-    width: ${ p => 
+const ModalInner = styled.div<IModalBlockProps>`
+    position: absolute;
+    width: ${p =>
         p.$size === 'small'
-        ? '40vw'
-        : p.$size === 'medium'
-        ? '70vw'
-        : p.$size === 'large'
-        ? '80vw'
-        : 'fit-content' };
-    max-height: ${ p => 
+            ? '40vw'
+            : p.$size === 'medium'
+                ? '70vw'
+                : p.$size === 'large'
+                    ? '80vw'
+                    : 'fit-content'};
+    max-height: ${p =>
         p.$size === 'small'
-        ? '60vh'
-        : p.$size === 'medium'
-        ? '80vh'
-        : p.$size === 'large'
-        ? '90vh'
-        : 'fit-content' };
-    height: ${ p => 
+            ? '60vh'
+            : p.$size === 'medium'
+                ? '80vh'
+                : p.$size === 'large'
+                    ? '90vh'
+                    : 'fit-content'};
+    height: ${p =>
         p.$size === 'small'
-        ? '60vh'
-        : p.$size === 'medium'
-        ? '80vh'
-        : p.$size === 'large'
-        ? '90vh'
-        : 'fit-content' };
+            ? '60vh'
+            : p.$size === 'medium'
+                ? '80vh'
+                : p.$size === 'large'
+                    ? '90vh'
+                    : 'fit-content'};
     top: 0;
     bottom: 0;
     left: 0;
@@ -133,24 +130,22 @@ const ModalBlock = styled.div<IModalBlockProps>`
     box-shadow: 0 0 10px #00000050;
     border-radius: 15px;
     display: flex;
-    flex-direction: ${ p => p.$flexDirection };
-    justify-content: ${ p => p.$justifyContent };
-    align-items: ${ p => p.$alignItems };
-    gap: ${ p => p.$gap };
+    flex-direction: ${p => p.$flexDirection};
+    justify-content: ${p => p.$justifyContent};
+    align-items: ${p => p.$alignItems};
+    gap: ${p => p.$gap};
     overflow: hidden;
 
-    animation: ${p => p.$isEnableAnims ? ModalBlockAnim : null} 0.5s ease;
-    animation-direction: ${ 
-            p => p.$isCloseAnim
-                ? 'reverse' 
-                : 'normal' };
-    
-
+    animation: ${ModalAnimation} 0.5s ease;
+    animation-direction: ${p => p.$isCloseAnim
+        ? 'reverse'
+        : 'normal'};
+    animation-fill-mode: forwards;
 
     background: ${p => p.$backgroundColor};
 
     @media (max-width: 768px) {
-        width: ${ p =>
+        width: ${p =>
         p.$size === 'small'
             ? '80vw'
             : p.$size === 'medium'
@@ -173,8 +168,38 @@ const ModalBlock = styled.div<IModalBlockProps>`
                 ? '90vh'
                 : p.$size === 'large'
                     ? '95vh'
-                    : 'fit-content' };
+                    : 'fit-content'};
     }
+`
+
+const BackgroundAnimation = keyframes`
+    from{
+        backdrop-filter: blur(0px);
+        background-color: rgba(0,0,0,0);
+    }
+    to{
+        backdrop-filter: blur(5px);
+        background-color: #0000006e;
+    }
+`
+
+interface IModalBackgroundProps {
+    $isClosing: boolean;
+}
+
+const ModalBlock = styled.div<IModalBackgroundProps>`
+    z-index: 10;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: #0000006e;
+    
+
+    animation: ${BackgroundAnimation} 0.5s ease;
+    animation-direction: ${p => p.$isClosing
+        ? 'reverse'
+        : 'normal'};
+    animation-fill-mode: forwards;
 `
 
 export default Modal;

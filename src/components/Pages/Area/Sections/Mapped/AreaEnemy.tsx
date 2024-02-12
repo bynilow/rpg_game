@@ -66,15 +66,6 @@ const Title = styled.p`
     transition: .2s;
 `
 
-const EnemyStartAnim = keyframes`
-    from{
-        transform: scale(0) rotate(-50deg);
-    }
-    to{
-        transform: scale(1) rotate(0deg);
-    }
-`
-
 interface IAreaItemBlockProps{
     color: string;
     $hoveredColor: string;
@@ -82,25 +73,18 @@ interface IAreaItemBlockProps{
     $isBlocked: boolean;
 }
 
-
-
 const AreaEnemyBlock = styled.div<IAreaItemBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
     padding: 1.3rem;
     border-radius: 10px;
     width: 100%;
-    height: 4rem;
+    height: 4.5rem;
     display: flex;
     gap: 1.3rem;
     align-items: center;
     position: relative;
     cursor: pointer;
     background: ${ p => p.color};
-
-    transform: scale(0) rotate(-45deg);
-    animation: ${EnemyStartAnim} .5s ease;
-    animation-delay: ${p => p.$index/3}s;
-    animation-fill-mode: forwards;
     
     transition: 0.1s;
 
@@ -109,6 +93,7 @@ const AreaEnemyBlock = styled.div<IAreaItemBlockProps>`
             ? null 
             : `background: ${p.$hoveredColor};`
         }
+        transform: scale(0.97);
     }
 
     ${
@@ -125,16 +110,6 @@ const AreaEnemyBlock = styled.div<IAreaItemBlockProps>`
                 background: #00000081;
             };`
             : null
-    }
-
-    
-
-    &:hover ${Title} {
-        ${p => p.$isBlocked 
-            ? null 
-            : `padding-left: 1rem;
-            transform: scale(1.2);`
-        }
     }
 `
 

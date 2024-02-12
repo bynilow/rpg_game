@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import Section from '../../../Section/Section';
 import { IAviablePath, IPath } from '../../../../models/IArea';
 import AreaPath from './Mapped/AreaPath';
@@ -8,19 +8,24 @@ import { useState } from 'react';
 import { goLevel } from '../../../../store/reducers/ActionCreators';
 import { getAreaFromId } from '../../../../functions/Areas';
 import Title from '../../../Title/Title';
+import { scrollBarX } from '../../../../styles/scrollbars';
 
 interface IAreaPathsSectionProps {
     $playerStats: IStats;
     $isBlocked: boolean;
+    $isUpdatingLevel: boolean;
     $changeActionType: Function;
     $clearActionType: Function;
+    $goLevel: Function;
 }
 
 function AreaPathsSection({
     $playerStats,
     $isBlocked,
+    $isUpdatingLevel,
     $changeActionType,
-    $clearActionType}: IAreaPathsSectionProps) {
+    $clearActionType,
+    $goLevel}: IAreaPathsSectionProps) {
 
     const {availablePaths, areas, inventory} = useAppSelector(state => state.userReducer);
     const dispatch = useAppDispatch();
@@ -39,10 +44,6 @@ function AreaPathsSection({
         $clearActionType();
     }
 
-    const onClickGoLevel = (selectedPath: IAviablePath) => {
-        dispatch(goLevel(selectedPath.pathId));
-    }
-
     return (
         <Section
             $isBlocked={$isBlocked}
@@ -52,7 +53,7 @@ function AreaPathsSection({
             <Title $size='1.5rem'>
                 Доступные пути:
             </Title>
-            <List>
+            <List key={$isUpdatingLevel.toString()} $isUpdatingLevel={$isUpdatingLevel} >
                 {
                     availablePaths.map((p, ind) => <AreaPath
                         key={
@@ -67,7 +68,7 @@ function AreaPathsSection({
                         $moveAreaId={moveAreaId}
                         $area={getAreaFromId(areas, p.pathId)}
                         $timeToMove={p.time}
-                        $goLevel={() => onClickGoLevel(p)}
+                        $goLevel={() => $goLevel(p)}
                         $playerInventoryWeight={inventoryWeight}
                         $playerInventoryMaxWeight={$playerStats.capacity}
                         $playerMovementSpeed={$playerStats.movementSpeed} />)
@@ -78,14 +79,41 @@ function AreaPathsSection({
 }
 
 
-const List = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5em;
-  justify-content: center;
-  align-items: left;
-  margin-top: 10px;
+const ListAnimation = keyframes`
+    from{
+        clip-path: circle(0% at 50% 0);
+    }
+    to{
+        clip-path: circle(150% at 50% 0);
+    }
+`
+
+interface IListProps { 
+    $isUpdatingLevel: boolean;
+}
+
+const List = styled.div<IListProps>`
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    justify-content: baseline;
+    align-items: left;
+
+    padding: 1rem;
+
+    clip-path: circle(0% at 50% 0);
+    animation: ${ListAnimation} 2.5s ease;
+    animation-fill-mode: forwards;
+    animation-direction: ${p => p.$isUpdatingLevel ? 'reverse' : 'normal'};
+
+    pointer-events: ${p => p.$isUpdatingLevel ? 'none' : 'all'};
+
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    ${scrollBarX}
 
 `
 

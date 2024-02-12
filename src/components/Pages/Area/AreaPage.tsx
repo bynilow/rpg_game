@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getStats } from '../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { IChangeInfo } from '../../../models/IArea';
+import { IAviablePath, IChangeInfo } from '../../../models/IArea';
 import { IAreaCurrentEnemy } from '../../../models/IEnemy';
-import { getAvailablePaths, setInventoryFromStorage, setPlayerFromStorage, setSkillsFromStorage, updateAreaEnemies, updateAreaItems } from '../../../store/reducers/ActionCreators';
+import { getAvailablePaths, goLevel, setInventoryFromStorage, setPlayerFromStorage, setSkillsFromStorage } from '../../../store/reducers/ActionCreators';
 import CircleButton from '../../Buttons/CircleButton';
 import Header from '../../Header/Header';
 import CharacterModal from '../../Modals/Character/CharacterModal';
@@ -13,11 +13,11 @@ import InfoModal from '../../Modals/InfoModal/InfoModal';
 import InventoryModal from '../../Modals/InventoryModal/InventoryModal';
 import ShopModal from '../../Modals/ShopModal/ShopModal';
 import SkillsModal from '../../Modals/SkillsModal/SkillsModal';
+import TextModal from '../../Modals/TextModal/TextModal';
 import AreaBackground from './AreaBackground';
 import AreaEnemiesSection from './Sections/AreaEnemiesSection';
 import AreaItemsSection from './Sections/AreaItemsSection';
 import AreaPathsSection from './Sections/AreaPathsSection';
-import TextModal from '../../Modals/TextModal/TextModal';
 
 
 interface IAreaPage {
@@ -79,6 +79,22 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
         
     }
 
+    const [isUpdatingLevel, setIsUpdatingLevel] = useState(false);
+
+    const goingLevel = (selectedPath: IAviablePath) => {
+        setActionType('');
+
+        setTimeout(() => {
+            setIsUpdatingLevel(true)
+            setTimeout(() => {
+                setIsUpdatingLevel(false);
+                dispatch(goLevel(selectedPath.pathId));
+            }, 2300)
+        }, 350)
+
+        
+    }
+
     useEffect(() => {
         dispatch(setInventoryFromStorage());
         dispatch(setPlayerFromStorage());
@@ -92,6 +108,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
     useEffect(() => {
         dispatch(getAvailablePaths(currentLocation.id));
         onChangeInfo({ id: currentLocation.id, whatInfo: 'area' });
+
     }, [currentLocation.id])
 
     if(!currentLocation) return <div>Loading...</div>
@@ -165,17 +182,21 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                     <AreaPathsSection
                         $playerStats={stats}
                         $isBlocked={actionType !== 'path' && !!actionType}
+                        $isUpdatingLevel={isUpdatingLevel}
                         $changeActionType={() => setActionType('path')}
-                        $clearActionType={() => setActionType('')} />
+                        $clearActionType={() => setActionType('')}
+                        $goLevel={(path: IAviablePath) => goingLevel(path)} />
 
                     <AreaItemsSection 
                         $playerStats={stats}
                         $isBlocked={actionType !== 'items' && !!actionType}
+                        $isUpdatingLevel={isUpdatingLevel}
                         $changeActionType={() => setActionType('items')}
                         $clearActionType={() => setActionType('')} />
 
                     <AreaEnemiesSection 
                         $isBlocked={!!actionType}
+                        $isUpdatingLevel={isUpdatingLevel}
                         $onClickStartBattle={(e: IAreaCurrentEnemy) => onClickStartBattle(e)}
                         $setTraderId={(id: string) => setTraderId(id)} />
 
@@ -208,7 +229,7 @@ const AreaActionMenu = styled.div`
   justify-content: space-between;
   gap: 3rem;
   width: 100%;
-  max-height: 80%;
+  max-height: 90%;
   padding-bottom: 3rem;
   transition: 1s;
 `

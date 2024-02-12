@@ -154,17 +154,7 @@ const TimerLine = styled.progress<ITimerLineProps>`
 
 const Title = styled.p`
     cursor: pointer;
-    z-index: -1;
     transition: .2s;
-`
-
-const AreaItemBlockAnim = keyframes`
-    from{
-        transform: scale(0) rotate(-50deg);
-    }
-    to{
-        transform: scale(1) rotate(0deg);
-    }
 `
 
 interface IAreaItemBlockProps{
@@ -187,37 +177,23 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
     position: relative;
     cursor: pointer;
     background: ${ p => p.color};
+    transition: 0.1s;
 
-    ${
-        p => p.$isMiningOther
-            ? ` &::after{
-                position: absolute;
-                z-$index: 99;
-                border-radius: 10px 10px 0 0;
-                top: 0;
-                left: 0;
-                content: '';
-                width: 100%;
-                height: 100%;
-                background: #00000081;
-            };`
-            : null
-    }
+    &::after{
+        position: absolute;
+        content: '';
+        z-index: 99;
+        border-radius: 10px 10px 0 0;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: ${p => p.$isMiningOther ? '#00000081' : 'rgba(0,0,0,0)'};
+        pointer-events: ${p => p.$isMiningOther ? 'all' : 'none'};
+        transition: 0.3s;
+    };
 
-    transform: scale(0) rotate(-45deg);
-    animation: ${AreaItemBlockAnim} .5s ease;
-    animation-delay: ${p => p.$index/3}s;
-    animation-fill-mode: forwards;
     
-    transition: 1s;
-
-    &:hover ${Title} {
-        ${p => p.$isMiningOther 
-            ? null 
-            : `padding-left: 1rem;
-            transform: scale(1.2);`
-        }
-    }
 
     &:hover{
         ${
@@ -225,6 +201,7 @@ const AreaItemBlock = styled.div<IAreaItemBlockProps>`
                 ? null
                 : `background: ${p.$hoveredColor};`
         }
+        transform: scale(0.97);
     }
 `
 

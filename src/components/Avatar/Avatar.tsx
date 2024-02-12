@@ -28,15 +28,15 @@ function Avatar({
     $isCircle,
     children} : IAvatar) {
 
-    const [isImageLoaded, setIsImageLoaded] = useState(false);
+    const [isImageLoaded, setIsImageLoaded] = useState(true);
 
     useEffect(() => {
-        const img = new Image();
-        img.onload = () => {
-            setIsImageLoaded(true);
-        };
-        img.src = require('../../' + $image);
-    },[$image])
+        // const img = new Image();
+        // img.onload = () => {
+        //     setIsImageLoaded(true);
+        // };
+        // img.src = require('../../' + $image);
+    },[])
 
     return ( 
         <Block 

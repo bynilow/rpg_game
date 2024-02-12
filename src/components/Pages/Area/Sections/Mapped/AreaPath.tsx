@@ -159,7 +159,6 @@ const TimerLine = styled.progress`
 
 const Name = styled.p`
     cursor: pointer;
-    z-index: -1;
     transition: .2s;
 `
 
@@ -168,15 +167,6 @@ interface IAreaBlockProps {
     $index: number;
     $isMovingOther: boolean;
 }
-
-const AreaBlockAnim = keyframes`
-    from{
-        transform: scale(0) rotate(-90deg);
-    }
-    to{
-        transform: scale(1) rotate(0deg);
-    }
-`
 
 const Area = styled.div<IAreaBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
@@ -191,10 +181,6 @@ const Area = styled.div<IAreaBlockProps>`
     position: relative;
     cursor: pointer;
 
-    transform: scale(0) rotate(-45deg);
-    animation: ${AreaBlockAnim} 1s ease;
-    animation-delay: ${p => p.$index/3}s;
-    animation-fill-mode: forwards;
     transition: 0.1s;
 
     ${
@@ -213,19 +199,12 @@ const Area = styled.div<IAreaBlockProps>`
             : null
     }
 
-    &:hover ${Name} {
-        ${p => p.$isMovingOther 
-            ? null 
-            : `padding-left: 1rem;
-            transform: scale(1.2);`
-        }
-    }
-
     &:hover{
         ${p => p.$isMovingOther 
             ? null 
-            : `background-color: #d8d8d8`
+            : `background-color: #d8d8d8;`
         }
+        transform: scale(0.97);
     }
 `
 
