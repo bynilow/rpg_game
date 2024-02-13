@@ -25,37 +25,37 @@ function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
 
     return (
         <>
-                <Section>
-                    <Avatar
-                        key='avatar'
-                        $image={thisArea.avatar}
-                        width='15rem'
-                        height='15rem'
-                        $minHeight='15rem'
-                        $minWidth='15rem' />
-                    <Title $size='2rem'>
-                        "{thisArea.title}"
-                    </Title>
-                    <ColorText color={getAreaColor(thisArea.color)}>
-                        {
-                            thisArea.color === 'green'
-                                ? 'Зеленная зона'
-                                : thisArea.color === 'yellow'
-                                    ? 'Желтая зона'
-                                    : 'Красная зона'
+            <Section $gap='1rem' $haveScroll>
+                <Avatar
+                    key='avatar'
+                    $image={thisArea.avatar}
+                    width='15rem'
+                    height='15rem'
+                    $minHeight='15rem'
+                    $minWidth='15rem' />
+                <Title $size='2rem'>
+                    "{thisArea.title}"
+                </Title>
+                <ColorText color={getAreaColor(thisArea.color)}>
+                    {
+                        thisArea.color === 'green'
+                            ? 'Зеленная зона'
+                            : thisArea.color === 'yellow'
+                                ? 'Желтая зона'
+                                : 'Красная зона'
 
-                        }
-                    </ColorText>
-                    <Description>
-                        {
-                            thisArea.description
-                        }
+                    }
+                </ColorText>
+                <Description>
+                    {
+                        thisArea.description
+                    }
 
-                    </Description>
+                </Description>
 
-                </Section>
+            </Section>
 
-            <Section>
+            <Section $haveScroll>
                 <Title $size='2rem'>
                     Местность
                 </Title>
@@ -80,7 +80,7 @@ function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
                 </List>
             </Section>
 
-            <Section>
+            <Section $haveScroll>
                 <Title $size='2rem'>
                     Враги
                 </Title>

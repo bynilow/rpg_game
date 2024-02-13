@@ -25,6 +25,18 @@ export interface IActionTexts {
     missText: string;
 }
 
+interface IEnemyStats {
+    attackSpeed: number;
+    damage: number;
+    critDamageMultiplier: number;
+    critChance: number;
+    baseHealth: number;
+    dodgeChance: number;
+    blockingChancePercent: number;
+    blockingMultiplier: number;
+    missChance: number;
+}
+
 export interface IEnemy{
     id: string;
     type: IEnemyType;
@@ -33,15 +45,7 @@ export interface IEnemy{
     description: string;
     avatar: string;
     level: number;
-    attackSpeed: number;
-    damage: number;
-    critDamageMultiplier: number;
-    critChance: number;
-    maxHealth: number;
-    dodgeChance: number;
-    blockingChance: number;
-    blockingMultiplier: number;
-    missChance: number;
+    stats: IEnemyStats;
     possibleLoot: IEnemyLoot[];
     actionText: IActionTexts;
     baseCountXP: number;

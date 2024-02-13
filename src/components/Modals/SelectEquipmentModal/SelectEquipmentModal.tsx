@@ -17,6 +17,7 @@ function SelectEquipmentModal({$closeModal, $type}: ISelectEquipmentModalProps) 
 
     return (  
         <Modal
+            $zIndex={11}
             $size='small'
             $flexDirection='column'
             $justifyContent='center'

@@ -71,14 +71,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
     }, [inventory])
 
     return (
-        <Modal
-            $flexDirection='column'
-            $isCloseButton
-            $closeButtonFunction={() => $closeModal()}
-            $gap='10px'
-            $justifyContent='baseline'
-            $size='large' >
-
+        <>
             {
                 whatEquipmentOpen
                     ? <SelectEquipmentModal
@@ -86,171 +79,180 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                         $closeModal={() => setWhatEquipmentOpen('')} />
                     : null
             }
+            <Modal
+                $flexDirection='column'
+                $isCloseButton
+                $closeButtonFunction={() => $closeModal()}
+                $gap='10px'
+                $justifyContent='baseline'
+                $size='large' >
 
-            <CharacterInfo>
-                <EquipList>
-                    <Title $size='2rem'>
-                        {player.title}
-                    </Title>
-                    <Title $size='1.5rem'>
-                        Броня:
-                    </Title>
+                <CharacterInfo>
+                    <EquipList>
+                        <Title $size='2rem'>
+                            {player.title}
+                        </Title>
+                        <Title $size='1.5rem'>
+                            Броня:
+                        </Title>
 
-                    <EquipBlock>
-                        Голова
-                        <EquipSlot
-                            onClick={() => setWhatEquipmentOpen('helmet')}
-                            $equipmentCount={equipmentCount.head}
-                            $background={equippedItems.head ? getItemBackground(equippedItems.head.item.rare) : 'white;'} >
-                            <Avatar
-                                $image={equippedItems.head?.item.avatar || ''}
-                                width='100%'
-                                height='100%' />
-                        </EquipSlot>
-                    </EquipBlock>
-                    <EquipBlock>
-                        Туловище
-                        <EquipSlot
-                            onClick={() => setWhatEquipmentOpen('chest')}
-                            $equipmentCount={equipmentCount.chest}
-                            $background={equippedItems.chest ? getItemBackground(equippedItems.chest.item.rare) : 'white;'}>
-                            <Avatar
-                                $image={equippedItems.chest?.item.avatar || ''}
-                                width='100%'
-                                height='100%' />
-                        </EquipSlot>
-                    </EquipBlock>
-                    <EquipBlock >
-                        Ноги
-                        <EquipSlot
-                            onClick={() => setWhatEquipmentOpen('foot')}
-                            $equipmentCount={equipmentCount.foot}
-                            $background={equippedItems.foot ? getItemBackground(equippedItems.foot.item.rare) : 'white;'}>
-                        <Avatar
-                                $image={equippedItems.foot?.item.avatar || ''}
+                        <EquipBlock>
+                            Голова
+                            <EquipSlot
+                                onClick={() => setWhatEquipmentOpen('helmet')}
+                                $equipmentCount={equipmentCount.head}
+                                $background={equippedItems.head ? getItemBackground(equippedItems.head.item.rare) : 'white;'} >
+                                <Avatar
+                                    $image={equippedItems.head?.item.avatar || ''}
                                     width='100%'
                                     height='100%' />
-                        </EquipSlot>
-                    </EquipBlock>
+                            </EquipSlot>
+                        </EquipBlock>
+                        <EquipBlock>
+                            Туловище
+                            <EquipSlot
+                                onClick={() => setWhatEquipmentOpen('chest')}
+                                $equipmentCount={equipmentCount.chest}
+                                $background={equippedItems.chest ? getItemBackground(equippedItems.chest.item.rare) : 'white;'}>
+                                <Avatar
+                                    $image={equippedItems.chest?.item.avatar || ''}
+                                    width='100%'
+                                    height='100%' />
+                            </EquipSlot>
+                        </EquipBlock>
+                        <EquipBlock >
+                            Ноги
+                            <EquipSlot
+                                onClick={() => setWhatEquipmentOpen('foot')}
+                                $equipmentCount={equipmentCount.foot}
+                                $background={equippedItems.foot ? getItemBackground(equippedItems.foot.item.rare) : 'white;'}>
+                                <Avatar
+                                    $image={equippedItems.foot?.item.avatar || ''}
+                                    width='100%'
+                                    height='100%' />
+                            </EquipSlot>
+                        </EquipBlock>
 
-                    <Title $size='1.5rem'>
-                        Инструменты и оружие:
-                    </Title>
+                        <Title $size='1.5rem'>
+                            Инструменты и оружие:
+                        </Title>
 
-                    <EquipBlock>
-                        Руки
-                        <EquipSlot
-                            onClick={() => setWhatEquipmentOpen('weapon')}
-                            $equipmentCount={equipmentCount.weapon}
-                            $background={equippedItems.weapon ? getItemBackground(equippedItems.weapon.item.rare) : 'white;'}>
-                            <Avatar
-                                $image={equippedItems.weapon?.item.avatar || ''}
-                                width='100%'
-                                height='100%' />
-                        </EquipSlot>
-                    </EquipBlock>
-                    <EquipBlock>
-                        Топор
-                        <EquipSlot
-                            onClick={() => setWhatEquipmentOpen('axe')}
-                            $equipmentCount={equipmentCount.axe}
-                            $background={equippedItems.axe ? getItemBackground(equippedItems.axe.item.rare) : 'white;'}>
-                            <Avatar
-                                $image={equippedItems.axe?.item.avatar || ''}
-                                width='100%'
-                                height='100%' />
-                        </EquipSlot>
-                    </EquipBlock>
-                    <EquipBlock>
-                        Кирка
-                        <EquipSlot
-                            onClick={() => setWhatEquipmentOpen('pickaxe')}
-                            $equipmentCount={equipmentCount.pickaxe}
-                            $background={equippedItems.pickaxe ? getItemBackground(equippedItems.pickaxe.item.rare) : 'white;'}>
-                            <Avatar
-                                $image={equippedItems.pickaxe?.item.avatar || ''}
-                                width='100%'
-                                height='100%' />
-                        </EquipSlot>
-                    </EquipBlock>
-                </EquipList>
-                <Characteristics>
-                    <Title $size='2rem'>
-                        Общие характеристики
-                    </Title>
-                    <CharList>
-                        <Char>
-                            Максимальное ОЗ: {stats.baseHealth}
-                        </Char>
-                        <Char>
-                            Скорость регенирации ОЗ: {stats.healthRegenerationScore}/s
-                        </Char>
-                        <Char>
-                            Общий урон: {stats.baseDamage}
-                        </Char>
-                        <Char>
-                            Множитель урона: x{stats.damageMultiplier}
-                        </Char>
-                        <Char>
-                            Множитель крит. урона: x{stats.critDamageMultiplier}
-                        </Char>
-                        <Char>
-                            Шанс крит. урона: {stats.critChance}%
-                        </Char>
-                        <Char>
-                            Скорость добычи руды: {stats.oreSpeedMining}s
-                        </Char>
-                        <Char>
-                            Шанс выпадения дополнительной руды: {stats.oreDoubleLootPercentChance}%
-                        </Char>
-                        <Char>
-                            Скорость добычи дерева: {stats.treeSpeedMining}s
-                        </Char>
-                        <Char>
-                            Шанс выпадения дополнительного дерева: {stats.treeDoubleLootPercentChance}%
-                        </Char>
-                        <Char>
-                            Грузоподъемность: {stats.capacity}kg
-                        </Char>
+                        <EquipBlock>
+                            Руки
+                            <EquipSlot
+                                onClick={() => setWhatEquipmentOpen('weapon')}
+                                $equipmentCount={equipmentCount.weapon}
+                                $background={equippedItems.weapon ? getItemBackground(equippedItems.weapon.item.rare) : 'white;'}>
+                                <Avatar
+                                    $image={equippedItems.weapon?.item.avatar || ''}
+                                    width='100%'
+                                    height='100%' />
+                            </EquipSlot>
+                        </EquipBlock>
+                        <EquipBlock>
+                            Топор
+                            <EquipSlot
+                                onClick={() => setWhatEquipmentOpen('axe')}
+                                $equipmentCount={equipmentCount.axe}
+                                $background={equippedItems.axe ? getItemBackground(equippedItems.axe.item.rare) : 'white;'}>
+                                <Avatar
+                                    $image={equippedItems.axe?.item.avatar || ''}
+                                    width='100%'
+                                    height='100%' />
+                            </EquipSlot>
+                        </EquipBlock>
+                        <EquipBlock>
+                            Кирка
+                            <EquipSlot
+                                onClick={() => setWhatEquipmentOpen('pickaxe')}
+                                $equipmentCount={equipmentCount.pickaxe}
+                                $background={equippedItems.pickaxe ? getItemBackground(equippedItems.pickaxe.item.rare) : 'white;'}>
+                                <Avatar
+                                    $image={equippedItems.pickaxe?.item.avatar || ''}
+                                    width='100%'
+                                    height='100%' />
+                            </EquipSlot>
+                        </EquipBlock>
+                    </EquipList>
+                    <Characteristics>
+                        <Title $size='2rem'>
+                            Общие характеристики
+                        </Title>
+                        <CharList>
+                            <Char>
+                                Максимальное ОЗ: {stats.baseHealth}
+                            </Char>
+                            <Char>
+                                Скорость регенирации ОЗ: {stats.healthRegenerationScore}/s
+                            </Char>
+                            <Char>
+                                Общий урон: {stats.baseDamage}
+                            </Char>
+                            <Char>
+                                Множитель урона: x{stats.damageMultiplier}
+                            </Char>
+                            <Char>
+                                Множитель крит. урона: x{stats.critDamageMultiplier}
+                            </Char>
+                            <Char>
+                                Шанс крит. урона: {stats.critChance}%
+                            </Char>
+                            <Char>
+                                Скорость добычи руды: {stats.oreSpeedMining}s
+                            </Char>
+                            <Char>
+                                Шанс выпадения дополнительной руды: {stats.oreDoubleLootPercentChance}%
+                            </Char>
+                            <Char>
+                                Скорость добычи дерева: {stats.treeSpeedMining}s
+                            </Char>
+                            <Char>
+                                Шанс выпадения дополнительного дерева: {stats.treeDoubleLootPercentChance}%
+                            </Char>
+                            <Char>
+                                Грузоподъемность: {stats.capacity}kg
+                            </Char>
 
-                        <Char>
-                            Шанс блокирования: {stats.blockingChancePercent}%
-                        </Char>
-                        <Char>
-                            Множитель блокирования: x{stats.blockingMultiplier}
-                        </Char>
-                        <Char>
-                            Шанс уклонения: {stats.dodgePercentChance}%
-                        </Char>
-                        <Char>
-                            Шанс промаха: {stats.missPercentChance}%
-                        </Char>
-                        <Char>
-                            Скорость перемещения: {stats.movementSpeed}s
-                        </Char>
-                        <Char>
-                            Скорость атаки: {stats.attackSpeed}s
-                        </Char>
+                            <Char>
+                                Шанс блокирования: {stats.blockingChancePercent}%
+                            </Char>
+                            <Char>
+                                Множитель блокирования: x{stats.blockingMultiplier}
+                            </Char>
+                            <Char>
+                                Шанс уклонения: {stats.dodgePercentChance}%
+                            </Char>
+                            <Char>
+                                Шанс промаха: {stats.missPercentChance}%
+                            </Char>
+                            <Char>
+                                Скорость перемещения: {stats.movementSpeed}s
+                            </Char>
+                            <Char>
+                                Скорость атаки: {stats.attackSpeed}s
+                            </Char>
 
-                        <Char>
-                            Множитель опыта: x{stats.experienceMultiplier}
-                        </Char>
-                        <Char>
-                            Скорость добычи создания предметов: {stats.craftSpeed}s
-                        </Char>
-                        <Char>
-                            Шанс дополнительного предмета при создании: {stats.craftDoubleLootPercentChance}%
-                        </Char>
-                        <Char>
-                            Скидка при покупке: {stats.buyPricePercent}%
-                        </Char>
-                        <Char>
-                            Наценка при продаже: {stats.sellPricePercent}%
-                        </Char>
-                    </CharList>
-                </Characteristics>
-            </CharacterInfo>
-        </Modal>
+                            <Char>
+                                Множитель опыта: x{stats.experienceMultiplier}
+                            </Char>
+                            <Char>
+                                Скорость добычи создания предметов: {stats.craftSpeed}s
+                            </Char>
+                            <Char>
+                                Шанс дополнительного предмета при создании: {stats.craftDoubleLootPercentChance}%
+                            </Char>
+                            <Char>
+                                Скидка при покупке: {stats.buyPricePercent}%
+                            </Char>
+                            <Char>
+                                Наценка при продаже: {stats.sellPricePercent}%
+                            </Char>
+                        </CharList>
+                    </Characteristics>
+                </CharacterInfo>
+            </Modal>
+        </>
+
     );
 }
 

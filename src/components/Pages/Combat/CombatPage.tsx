@@ -35,11 +35,15 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
     const [enemy, setEnemy] = useState<IEnemy>({
         ...foundedEnemy,
         baseCountXP: foundedEnemy.baseCountXP * $level,
-        damage: foundedEnemy.damage * $level / 2,
-        maxHealth: foundedEnemy.maxHealth * $level / 2
+        stats:{
+            ...foundedEnemy.stats,
+            damage: foundedEnemy.stats.damage * $level / 2,
+            baseHealth: foundedEnemy.stats.baseHealth * $level / 2
+        }
     });
 
-    const [enemyHealth, setEnemyHealth] = useState(enemy.maxHealth);
+
+    const [enemyHealth, setEnemyHealth] = useState(enemy.stats.baseHealth);
 
     const [playerStats, setPlayerStats] = useState(getStats(playerSkills, player));
 
@@ -65,12 +69,12 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
     const [isStartingAnimLost, setIsStartingAnimLost] = useState(false);
     const [combatHistory, setCombatHistory] = useState<ICombatHistory[]>([]);
 
-    const [enemyTime, setEnemyTime] = useState<number>(enemy.attackSpeed);
+    const [enemyTime, setEnemyTime] = useState<number>(enemy.stats.attackSpeed);
 
 
 
     const enemyAttack = () => {
-        setEnemyTime(enemy.attackSpeed);
+        setEnemyTime(enemy.stats.attackSpeed);
         attackSomeone(true);
     }
 
@@ -132,36 +136,36 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
 
         let isCrit = getChance(
             enemyAttack
-                ? enemy.critChance
+                ? enemy.stats.critChance
                 : playerStats.critChance);
 
         let isMissed = getChance(
             enemyAttack
-                ? enemy.missChance
+                ? enemy.stats.missChance
                 : playerStats.missPercentChance);
 
         let isOpponentDodged = getChance(
             enemyAttack
                 ? playerStats.dodgePercentChance
-                : enemy.dodgeChance);
+                : enemy.stats.dodgeChance);
 
         let isOpponentBlocked = getChance(
             enemyAttack
                 ? playerStats.blockingChancePercent
-                : enemy.blockingChance);
+                : enemy.stats.blockingChancePercent);
 
         let damage =
             enemyAttack
-                ? enemy.damage
+                ? enemy.stats.damage
                 : playerCurrentDamage
 
         let critDamage =
             enemyAttack
-                ? Number((enemy.damage * enemy.critDamageMultiplier).toFixed(1))
+                ? Number((enemy.stats.damage * enemy.stats.critDamageMultiplier).toFixed(1))
                 : Number((playerCurrentDamage * playerStats.critDamageMultiplier).toFixed(1))
 
         let blockedCritDamage = Number(
-            (damage / (enemyAttack ? playerStats.blockingMultiplier : enemy.blockingMultiplier))
+            (damage / (enemyAttack ? playerStats.blockingMultiplier : enemy.stats.blockingMultiplier))
                 .toFixed(1));
 
         if (isCrit) {
@@ -336,7 +340,7 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
             else {
                 enemyAttack();
             }
-        }, enemy.attackSpeed * 1000)
+        }, enemy.stats.attackSpeed * 1000)
 
         const enemySayInterval = setInterval(() => {
             enemySaySomething();
@@ -465,19 +469,19 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
                                 Уровень: {$level}
                             </EnemyLevel>
                             <BlockLine>
-                                <HealthLine max={enemy.maxHealth} value={enemyHealth} />
+                                <HealthLine max={enemy.stats.baseHealth} value={enemyHealth} />
                                 <BlockText>
                                     {
                                         enemyHealth.toFixed(1)
                                     }
                                     /
                                     {
-                                        enemy.maxHealth
+                                        enemy.stats.baseHealth
                                     }
                                 </BlockText>
                             </BlockLine>
                             <BlockLine>
-                                <AttackLine max={enemy.attackSpeed} value={enemyTime} />
+                                <AttackLine max={enemy.stats.attackSpeed} value={enemyTime} />
                                 <BlockText>
                                     {
                                         enemyTime.toFixed(1)

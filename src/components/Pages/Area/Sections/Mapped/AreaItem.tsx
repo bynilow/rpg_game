@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { IFullItem } from '../../../../../models/IAreaItem';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../../../styles/backgrounds';
 import Avatar from '../../../../Avatar/Avatar';
+import TimerLine from '../../../../TimerLine/TimerLine';
 
 
 interface IAreaItemProps {
@@ -85,18 +86,13 @@ function Area({
                 $isMiningOther={($miningId !== $item.idInArea && $miningId !== '') || $isBlocked} />
 
             <Title>{$item.title}</Title>
-            <Timer>
-                {
-                    isMining
-                        ? timeToMining.toFixed(1)
-                        : baseTimeToMining
-                }s
-            </Timer>
-            <TimerLine 
-                color={getRareColor($item.rare)}
+
+            <TimerLine  
+                $color={getRareColor($item.rare)}
                 $backgroundColor={getRareTimerBackgroundColor($item.rare)}
-                max={baseTimeToMining} 
-                value={isMining ? timeToMining : baseTimeToMining} />
+                $isActive={isMining}
+                $maxTime={baseTimeToMining}
+                $currentTime={timeToMining}  />
         </AreaItemBlock>
     );
 }
@@ -109,47 +105,6 @@ const AreaItemBlockClickable = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-`
-
-const Timer = styled.p`
-    position: absolute;
-    color: #8b8b8b;
-    bottom: 0;
-    right: 0;
-    margin: 10px;
-`
-
-interface ITimerLineProps{
-    color: string;
-    $backgroundColor: string;
-}
-
-const TimerLine = styled.progress<ITimerLineProps>`
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    border-radius: 5px;
-    -webkit-appearance: none;
-    appearance: none;
-
-    transition: 0.1s;
-
-    &::-webkit-progress-value {
-        background-color: ${p => p.color};
-        transition: 0.2s;
-    }
-    &::-webkit-progress-bar {
-        background-color: ${p => p.$backgroundColor};
-    }
-    &::-moz-progress-value {
-        background-color: ${p => p.color};
-        transition: 0.2s;
-    }
-    &::-moz-progress-bar {
-        background-color: ${p => p.$backgroundColor};
-    }
 `
 
 const Title = styled.p`

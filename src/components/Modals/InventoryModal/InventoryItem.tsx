@@ -33,7 +33,11 @@ function InventoryItem({item, count}:IItemInventory) {
 
     return ( 
         <Item $rare={item.rare} onMouseLeave={() => onClickCancelDelete()}>
-            <Avatar $image={item.avatar} width={'100px'} height={'100%'}  />
+            <Avatar 
+                key={""}
+                $image={item.avatar} 
+                width={'100px'} 
+                height={'100%'}  />
             <InfoButton>
                 <CircleButton symbol='?' />
             </InfoButton>

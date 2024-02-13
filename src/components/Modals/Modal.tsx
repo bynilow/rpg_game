@@ -12,6 +12,7 @@ interface IModal {
     $gap?: string;
     $size?: 'auto' | 'small' | 'medium' | 'large';
     $justifyContent?: 'space-between' | 'space-around' | 'center' | 'baseline' | 'end';
+    $zIndex?: number;
     children?: React.ReactNode;
 }
 
@@ -25,14 +26,11 @@ function Modal({
     $closeButtonFunction,
     $gap = '1.3em',
     $justifyContent = 'space-between',
-    $size = 'medium', }: IModal) {
+    $size = 'medium',
+    $zIndex=10 }: IModal) {
 
     const [isOpenAnim, setIsOpenAnim] = useState(true);
     const [isCloseAnim, setIsCloseAnim] = useState(false);
-
-    // setTimeout(() => {
-    //     setIsOpenAnim(false);
-    // }, 1000)
 
     const onClickCloseButton = () => {
         if(!isCloseAnim){
@@ -44,7 +42,10 @@ function Modal({
     }
 
     return (
-        <ModalBlock key={isCloseAnim.toString()} $isClosing={isCloseAnim}>
+        <ModalBlock 
+            key={isCloseAnim.toString()}
+            $isClosing={isCloseAnim}
+            $zIndex={$zIndex} >
 
             <ModalInner
                 $backgroundColor={$backgroundColor}
@@ -52,6 +53,7 @@ function Modal({
                 $alignItems={$alignItems}
                 $isEnableAnims={$isEnableAnims}
                 $isOpenAnim={isOpenAnim}
+                className={isCloseAnim.toString()}
                 $isCloseAnim={isCloseAnim}
                 $gap={$gap}
                 $size={$size}
@@ -95,7 +97,7 @@ const ModalAnimation = keyframes`
 `
 
 const ModalInner = styled.div<IModalBlockProps>`
-    position: absolute;
+    position: relative;
     width: ${p =>
         p.$size === 'small'
             ? '40vw'
@@ -136,7 +138,7 @@ const ModalInner = styled.div<IModalBlockProps>`
     gap: ${p => p.$gap};
     overflow: hidden;
 
-    animation: ${ModalAnimation} 0.5s ease;
+    animation: ${p => p.$isCloseAnim ? ModalAnimation : ModalAnimation} 0.5s ease;
     animation-direction: ${p => p.$isCloseAnim
         ? 'reverse'
         : 'normal'};
@@ -183,19 +185,26 @@ const BackgroundAnimation = keyframes`
     }
 `
 
+
 interface IModalBackgroundProps {
     $isClosing: boolean;
+    $zIndex: number;
 }
 
 const ModalBlock = styled.div<IModalBackgroundProps>`
-    z-index: 10;
-    position: fixed;
+    z-index: ${p => p.$zIndex};
+    position: absolute;
     width: 100vw;
     height: 100vh;
+    top: 0;
+    left: 0;
     background-color: #0000006e;
-    
+    backdrop-filter: blur(5px);
 
-    animation: ${BackgroundAnimation} 0.5s ease;
+    display: flex;
+    justify-content: center;
+
+    animation: ${p => p.$isClosing ? BackgroundAnimation : BackgroundAnimation} 0.5s ease;
     animation-direction: ${p => p.$isClosing
         ? 'reverse'
         : 'normal'};

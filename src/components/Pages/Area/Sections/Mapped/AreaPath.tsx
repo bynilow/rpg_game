@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { useAppDispatch } from '../../../../../hooks/redux';
 import Avatar from '../../../../Avatar/Avatar';
 import { IArea } from '../../../../../models/IArea';
+import TimerLine from '../../../../TimerLine/TimerLine';
 
 interface IAreaPathProps {
     $area: IArea;
@@ -97,14 +98,14 @@ function AreaPath({
                 $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '') || $isBlocked} />
                 
             <Name>{$area.title}</Name>
-            <Timer $isOverweight={overweight > 0}>
-                {
-                    isMoving
-                        ? currentTimeToMove.toFixed(1) + 's'
-                        : baseTimeToMovement.toFixed(1) + 's'
-                }
-            </Timer>
-            <TimerLine max={baseTimeToMovement} value={isMoving ? currentTimeToMove : baseTimeToMovement} />
+            
+            <TimerLine 
+                $isOverweight={overweight > 0}
+                $color='#4682B4'
+                $backgroundColor='#A9A9A9'
+                $currentTime={currentTimeToMove}
+                $maxTime={baseTimeToMovement}
+                $isActive={isMoving} />
         </Area>
     );
 }
@@ -117,45 +118,6 @@ const AreaBlockClickable = styled.div`
     left: 0;
 `
 
-interface ITimerProps{
-    $isOverweight: boolean;
-}
-
-const Timer = styled.p<ITimerProps>`
-    position: absolute;
-    color: ${p => p.$isOverweight ? '#bb3a3a' : '#A9A9A9'};
-    bottom: 0;
-    right: 0;
-    margin: 10px;
-`
-
-const TimerLine = styled.progress`
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-
-    -webkit-appearance: none;
-   appearance: none;
-
-   transition: 0.1s;
-
-   &::-webkit-progress-value {
-    background-color: #4682B4;
-    transition: 0.2s;
-   }
-   &::-webkit-progress-bar {
-    background-color: #A9A9A9;
-   }
-   &::-moz-progress-value {
-    background-color: #4682B4;
-    transition: 0.2s;
-   }
-   &::-moz-progress-bar {
-    background-color: #A9A9A9;
-   }
-`
 
 const Name = styled.p`
     cursor: pointer;

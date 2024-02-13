@@ -9,15 +9,17 @@ export const Enemies: IEnemy[] = [
         "avatar": "icons/enemies/bandit.png",
         "baseCountXP": 15,
         "level": 1,
-        "attackSpeed": 8,
-        "damage": 3,
-        "critDamageMultiplier": 1.3,
-        "critChance": 4,
-        "maxHealth": 70,
-        "dodgeChance": 4,
-        "blockingChance": 5,
-        "blockingMultiplier": 2.5,
-        "missChance": 7,
+        "stats": {
+            "attackSpeed": 8,
+            "damage": 3,
+            "critDamageMultiplier": 1.3,
+            "critChance": 4,
+            "baseHealth": 70,
+            "dodgeChance": 4,
+            "blockingChancePercent": 5,
+            "blockingMultiplier": 2.5,
+            "missChance": 7,
+        },
         "type": "enemy",
         "possibleLoot": [
             {
@@ -103,15 +105,17 @@ export const Enemies: IEnemy[] = [
         "avatar": "icons/enemies/traders/garold_trader.png",
         "baseCountXP": 0,
         "level": 1,
-        "attackSpeed": 0,
-        "damage": 0,
-        "critDamageMultiplier": 0,
-        "critChance": 0,
-        "maxHealth": 0,
-        "dodgeChance": 0,
-        "blockingChance": 0,
-        "blockingMultiplier": 0,
-        "missChance": 0,
+        "stats": {
+            "attackSpeed": 0,
+            "damage": 0,
+            "critDamageMultiplier": 0,
+            "critChance": 0,
+            "baseHealth": 0,
+            "dodgeChance": 0,
+            "blockingChancePercent": 0,
+            "blockingMultiplier": 0,
+            "missChance": 0,
+        },
         "type": "trader",
         "possibleLoot": [
             {
@@ -275,15 +279,17 @@ export const Enemies: IEnemy[] = [
                 "dropChance": 0.05
             }
         ],
-        "maxHealth": 120,
-        "damage": 5.5,
-        "attackSpeed": 14,
-        "blockingChance": 2,
-        "blockingMultiplier": 1.3,
-        "critChance": 7,
-        "critDamageMultiplier": 1.4,
-        "dodgeChance": 2,
-        "missChance": 1,
+        "stats": {
+            "baseHealth": 120,
+            "damage": 5.5,
+            "attackSpeed": 14,
+            "blockingChancePercent": 2,
+            "blockingMultiplier": 1.3,
+            "critChance": 7,
+            "critDamageMultiplier": 1.4,
+            "dodgeChance": 2,
+            "missChance": 1,
+        },
         "actionText": {
             "communicationText": ["Гррр", "Гхррррр", "Рррр"],
             "combatText": [
@@ -352,15 +358,17 @@ export const Enemies: IEnemy[] = [
                 "dropChance": 0.5
             }
         ],
-        "maxHealth": 15,
-        "damage": 0.5,
-        "attackSpeed": 3,
-        "blockingChance": 1,
-        "blockingMultiplier": 1.1,
-        "critChance": 10,
-        "critDamageMultiplier": 10,
-        "dodgeChance": 10,
-        "missChance": 7,
+        "stats": {
+            "baseHealth": 15,
+            "damage": 0.5,
+            "attackSpeed": 3,
+            "blockingChancePercent": 1,
+            "blockingMultiplier": 1.1,
+            "critChance": 10,
+            "critDamageMultiplier": 10,
+            "dodgeChance": 10,
+            "missChance": 7,
+        },
         "actionText": {
             "communicationText": ["Ко-ко-ко!", "Кудах тах-тах"],
             "combatText": [
@@ -428,15 +436,17 @@ export const Enemies: IEnemy[] = [
                 "dropChance": 0.5
             }
         ],
-        "maxHealth": 40,
-        "damage": 1.5,
-        "attackSpeed": 5.5,
-        "blockingChance": 11,
-        "blockingMultiplier": 2.2,
-        "critChance": 6,
-        "critDamageMultiplier": 1.7,
-        "dodgeChance": 2,
-        "missChance": 1,
+        "stats": {
+            "baseHealth": 40,
+            "damage": 1.5,
+            "attackSpeed": 5.5,
+            "blockingChancePercent": 11,
+            "blockingMultiplier": 2.2,
+            "critChance": 6,
+            "critDamageMultiplier": 1.7,
+            "dodgeChance": 2,
+            "missChance": 1,
+        },
         "actionText": {
             "communicationText": ["Цыц.", "Цоц."],
             "combatText": [
@@ -510,15 +520,17 @@ export const Enemies: IEnemy[] = [
                 "dropChance": 1
             }
         ],
-        "maxHealth": 55,
-        "damage": 2,
-        "attackSpeed": 4.5,
-        "blockingChance": 5,
-        "blockingMultiplier": 2.5,
-        "critChance": 4,
-        "critDamageMultiplier": 1.3,
-        "dodgeChance": 6,
-        "missChance": 8.5,
+        "stats": {
+            "baseHealth": 55,
+            "damage": 2,
+            "attackSpeed": 4.5,
+            "blockingChancePercent": 5,
+            "blockingMultiplier": 2.5,
+            "critChance": 4,
+            "critDamageMultiplier": 1.3,
+            "dodgeChance": 6,
+            "missChance": 8.5,
+        },
         "actionText": {
             "communicationText": [
                 "Огненый удар моего топора, покажет кто тут победитель!",
@@ -598,15 +610,17 @@ export const Enemies: IEnemy[] = [
                 "dropChance": 0.7
             }
         ],
-        "maxHealth": 25,
-        "damage": 1.2,
-        "attackSpeed": 6.5,
-        "blockingChance": 4,
-        "blockingMultiplier": 1.2,
-        "critChance": 11,
-        "critDamageMultiplier": 2.7,
-        "dodgeChance": 2,
-        "missChance": 3,
+        "stats": {
+            "baseHealth": 25,
+            "damage": 1.2,
+            "attackSpeed": 6.5,
+            "blockingChancePercent": 4,
+            "blockingMultiplier": 1.2,
+            "critChance": 11,
+            "critDamageMultiplier": 2.7,
+            "dodgeChance": 2,
+            "missChance": 3,
+        },
         "actionText": {
             "communicationText": [
                 "Бееее.",
@@ -685,15 +699,17 @@ export const Enemies: IEnemy[] = [
                 "dropChance": 1.5
             }
         ],
-        "maxHealth": 45,
-        "damage": 1.2,
-        "attackSpeed": 3.7,
-        "blockingChance": 3,
-        "blockingMultiplier": 1.3,
-        "critChance": 6,
-        "critDamageMultiplier": 2.7,
-        "dodgeChance": 13,
-        "missChance": 3.5,
+        "stats": {
+            "baseHealth": 45,
+            "damage": 1.2,
+            "attackSpeed": 3.7,
+            "blockingChancePercent": 3,
+            "blockingMultiplier": 1.3,
+            "critChance": 6,
+            "critDamageMultiplier": 2.7,
+            "dodgeChance": 13,
+            "missChance": 3.5,
+        },
         "actionText": {
             "communicationText": [
                 "Рррарр!", "Ррыыаарр!", "Хррр.", "Гррыааар!"

@@ -11,6 +11,7 @@ import Modal from '../Modal';
 import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
 import Title from '../../Title/Title';
+import Characteristics from './Characteristics/Characteristics';
 
 interface IEnemyModal {
     $id: string;
@@ -40,7 +41,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
     if(thisEnemy.title) return (
         <>
 
-            <Section>
+            <Section $haveScroll>
                 <Avatar
                     $image={thisEnemy.avatar}
                     width={'150px'}
@@ -65,63 +66,14 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
                 <Description>
                     {thisEnemy.description}
                 </Description>
-                {
-                    thisEnemy.type === 'enemy' || thisEnemy.type === 'boss'
-                        ? <>
-                            <Title $size='1.5rem'>
-                                Характеристики
-                            </Title>
-                            <Property>
-                                <ProperyName>
-                                    Жизни:
-                                </ProperyName> {thisEnemy.maxHealth}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Скорость атаки:
-                                </ProperyName> {thisEnemy.attackSpeed}s
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Урон:
-                                </ProperyName> {thisEnemy.damage}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Множитель крит. урона:
-                                </ProperyName> x{thisEnemy.critDamageMultiplier}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс крит. урона:
-                                </ProperyName> {thisEnemy.critChance}%
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс промаха:
-                                </ProperyName> {thisEnemy.missChance}%
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс уклонения:
-                                </ProperyName> {thisEnemy.dodgeChance}%
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс блокирования:
-                                </ProperyName> {thisEnemy.blockingChance}%
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Множитель блокирования:
-                                </ProperyName> x{thisEnemy.blockingMultiplier}
-                            </Property>
-                        </>
-                        : null
-                }
+
+                <Title $size='1.5rem'>
+                    Характеристики
+                </Title>
+                <Characteristics enemy={thisEnemy} />
             </Section>
 
-            <Section>
+            <Section $haveScroll>
                 <Title $size='2rem'>
                     {
                         thisEnemy.type === 'boss' || thisEnemy.type === 'enemy'
@@ -150,7 +102,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
                 </List>
             </Section>
 
-            <Section>
+            <Section $haveScroll>
                 <Title $size='2em'>
                     Где найти
                 </Title>

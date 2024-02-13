@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks/redux';
-import { IChangeInfo } from '../../../models/IArea';
 import { getItemBackground, getItemHoveredBackground, getRareColor } from '../../../styles/backgrounds';
-import { scrollBarX } from '../../../styles/scrollbars';
 import Avatar from '../../Avatar/Avatar';
-import CircleButton from '../../Buttons/CircleButton';
-import Modal from '../Modal';
-import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
 import Title from '../../Title/Title';
+import Characteristics from './Characteristics/Characteristics';
+import InfoElem from './InfoElem';
 
 interface IModalItem {
     $id: string;
@@ -34,7 +31,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
     return (
         <>
 
-            <Section>
+            <Section $haveScroll>
                 <Avatar
                     $image={thisItem.avatar}
                     width={'250px'}
@@ -64,195 +61,15 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                 <Description>
                     {thisItem.description}
                 </Description>
-                {
-                    thisItem.type === 'tree' || thisItem.type === 'ore'
-                        ? <>
-                            <Title>
-                                Характеристики
-                            </Title>
-                            <Property>
-                                <ProperyName>
-                                    Скорость добычи:
-                                </ProperyName> {thisItem.timeToMining}s
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Получаемый опыт:
-                                </ProperyName> {thisItem.baseCountXP}
-                            </Property>
-                        </>
-                        : null
-                }
 
-                {
-                    thisItem.type === 'armor'
-                        ? <>
-                            <Title>
-                                Характеристики
-                            </Title>
-                            <Property>
-                                <ProperyName>
-                                    Скорость создания:
-                                </ProperyName> {thisItem.timeToMining}s
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Опыт создания:
-                                </ProperyName> {thisItem.baseCountXP}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Множитель ОЗ:
-                                </ProperyName> +x{thisItem.armorStats?.healthMultiplier}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс промаха:
-                                </ProperyName> {thisItem.armorStats!.missChance > 0
-                                    ? '+' + thisItem.armorStats?.missChance
-                                    : thisItem.armorStats?.missChance}%
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс уклонения:
-                                </ProperyName> {thisItem.armorStats!.dodgeChance > 0
-                                    ? '+' + thisItem.armorStats!.dodgeChance
-                                    : thisItem.armorStats!.dodgeChance}%
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Скорость передвижения:
-                                </ProperyName> {thisItem.armorStats!.speedMovement > 0
-                                    ? '+' + thisItem.armorStats!.speedMovement
-                                    : thisItem.armorStats!.speedMovement}s
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Скорость атаки:
-                                </ProperyName> {thisItem.armorStats!.speedAttack > 0
-                                    ? '+' + thisItem.armorStats?.speedAttack
-                                    : thisItem.armorStats?.speedAttack}s
-                            </Property>
-                        </>
-                        : null
-                }
+                <Title $size='1.5rem'> 
+                    Характеристики
+                </Title>
+                <Characteristics item={thisItem} />
 
-                {
-                    thisItem.type === 'tool'
-                        ? <>
-                            <Title>
-                                Характеристики
-                            </Title>
-                            <Property>
-                                <ProperyName>
-                                    Скорость создания:
-                                </ProperyName> {thisItem.timeToMining}s
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Опыт создания:
-                                </ProperyName> {thisItem.baseCountXP}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Скорость добычи:
-                                </ProperyName> {thisItem.toolStats?.miningSpeed}s
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс дополнительного лута:
-                                </ProperyName> +{thisItem.toolStats!.doubleChancePercent}%
-                            </Property>
-                        </>
-                        : null
-                }
-
-                {
-                    thisItem.type === 'material'
-                        ? <>
-                            <Title>
-                                Характеристики
-                            </Title>
-                            <Property>
-                                <ProperyName>
-                                    Скорость создания:
-                                </ProperyName> {thisItem.timeToMining}s
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Опыт создания:
-                                </ProperyName> {thisItem.baseCountXP}
-                            </Property>
-
-                        </>
-                        : null
-                }
-
-                {
-                    thisItem.type === 'weapon'
-                        ? <>
-                            <Title $size='2rem'>
-                                Характеристики
-                            </Title>
-                            <Property>
-                                <ProperyName>
-                                    Скорость создания:
-                                </ProperyName> {thisItem.timeToMining}s
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Опыт создания:
-                                </ProperyName> {thisItem.baseCountXP}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Урон:
-                                </ProperyName> +{thisItem.weaponStats?.damage}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс промаха:
-                                </ProperyName> {thisItem.weaponStats!.missChance > 0
-                                    ? '+' + thisItem.weaponStats?.missChance
-                                    : thisItem.weaponStats?.missChance}%
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс блокирования:
-                                </ProperyName> {thisItem.weaponStats!.blockingChancePercent > 0
-                                    ? '+' + thisItem.weaponStats!.blockingChancePercent
-                                    : thisItem.weaponStats!.blockingChancePercent}%
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Множитель блокирования:
-                                </ProperyName> +x{thisItem.weaponStats?.blockingMultiplier}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Шанс крит. атаки:
-                                </ProperyName> {thisItem.weaponStats!.critChance > 0
-                                    ? '+' + thisItem.weaponStats!.critChance
-                                    : thisItem.weaponStats!.critChance}%
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Множитель крит. атаки:
-                                </ProperyName> +x{thisItem.weaponStats?.critDamageMultiplier}
-                            </Property>
-                            <Property>
-                                <ProperyName>
-                                    Скорость атаки:
-                                </ProperyName> {thisItem.weaponStats!.speedAttack > 0
-                                    ? '+' + thisItem.weaponStats?.speedAttack
-                                    : thisItem.weaponStats?.speedAttack}s
-                            </Property>
-                        </>
-                        : null
-                }
             </Section>
 
-            <Section>
+            <Section $haveScroll>
                 <Title $size='2rem'>
                     Где найти
                 </Title>
@@ -287,7 +104,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                                         id: ef.id
                                     })} />)
                     }
-                    
+
                     {
                         thisItem.itemsToCraft
                             ? <InfoElem
@@ -302,11 +119,11 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                                 })} />
                             : null
                     }
-                    
+
                 </List>
             </Section>
 
-            <Section>
+            <Section $haveScroll>
                 <Title $size='2rem'>
                     Используется
                 </Title>
@@ -329,14 +146,6 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
 
     );
 }
-
-const ProperyName = styled.span`
-    color: black;
-`
-
-const Property = styled.p`
-    font-size: 1rem;
-`
 
 const Cost = styled.p`
     color: black;

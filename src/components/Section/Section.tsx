@@ -7,6 +7,7 @@ interface ISection {
     $isBoxShadow?: boolean;
     $isBackgroundTransparent?: boolean;
     $gap?: string;
+    $haveScroll?: boolean;
 }
 
 function Section({
@@ -14,14 +15,16 @@ function Section({
     $isBlocked, 
     $isBoxShadow, 
     $isBackgroundTransparent = true,
-    $gap = '1.3rem'}: ISection) {
+    $gap = '1.3rem',
+    $haveScroll = false}: ISection) {
 
     return ( 
         <Block 
             $isBlocked={$isBlocked}
             $isBoxShadow={$isBoxShadow}
             $isBackgroundTransparent={$isBackgroundTransparent}
-            $gap={$gap}>
+            $gap={$gap}
+            $haveScroll={$haveScroll}>
             {
                 children
             }
@@ -35,6 +38,7 @@ interface IBlockProps {
     $isBoxShadow?: boolean;
     $isBackgroundTransparent?: boolean;
     $gap: string;
+    $haveScroll: boolean;
 }
 
 const Block = styled.div<IBlockProps>`
@@ -62,6 +66,14 @@ const Block = styled.div<IBlockProps>`
         : null
     }
 
+    ${
+        p => p.$haveScroll && 
+            `
+                overflow-x: hidden;
+                overflow-y: auto;
+                ${scrollBarX}
+            `
+    }
     
 `
 

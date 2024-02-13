@@ -25,9 +25,9 @@ function CreatorPageEnemy() {
     const [damage, setDamage] = useState(1);
     const [critDamageMultiplier, setCritDamageMultiplier] = useState(1);
     const [critChance, setCritChance] = useState(1);
-    const [maxHealth, setMaxHealth] = useState(100);
+    const [baseHealth, setMaxHealth] = useState(100);
     const [dodgeChance, setDodgeChance] = useState(1);
-    const [blockingChance, setBlockingChance] = useState(1);
+    const [blockingChancePercent, setBlockingChance] = useState(1);
     const [blockingMultiplier, setBlockingMultiplier] = useState(1);
     const [missChance, setMissChance] = useState(1);
 
@@ -72,15 +72,17 @@ function CreatorPageEnemy() {
                         ...possibleLoot
                     ]
                     : [...possibleLoot],
-            maxHealth,
-            damage,
-            attackSpeed,
-            blockingChance,
-            blockingMultiplier,
-            critChance,
-            critDamageMultiplier,
-            dodgeChance,
-            missChance,
+            stats: {
+                baseHealth,
+                damage,
+                attackSpeed,
+                blockingChancePercent,
+                blockingMultiplier,
+                critChance,
+                critDamageMultiplier,
+                dodgeChance,
+                missChance,
+            },
             actionText: {
                 communicationText: commTexts,
                 combatText: combTexts,
@@ -166,7 +168,7 @@ function CreatorPageEnemy() {
                             <input
                                 type='number'
                                 placeholder='time to mining'
-                                value={maxHealth}
+                                value={baseHealth}
                                 onChange={e => setMaxHealth(Number(e.currentTarget.value))} />
                             max hp
                         </div>
@@ -214,7 +216,7 @@ function CreatorPageEnemy() {
                             <input
                                 type='number'
                                 placeholder='time to mining'
-                                value={blockingChance}
+                                value={blockingChancePercent}
                                 onChange={e => setBlockingChance(Number(e.currentTarget.value))} />
                             blocking chance
                         </div>
