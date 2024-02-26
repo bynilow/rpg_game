@@ -23,8 +23,7 @@ function WinCombatItem({id, count}:IWinCombatItem) {
             $hoveredColor={getItemHoveredBackground(item.rare)}>
             <Avatar 
                 $image={item.avatar}
-                width={'100px'} 
-                height={'100px'} />
+                width={'100px'} />
             <Info>
                 <Title $size='1.5rem'>
                     {

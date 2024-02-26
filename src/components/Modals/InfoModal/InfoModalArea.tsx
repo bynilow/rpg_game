@@ -29,10 +29,7 @@ function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
                 <Avatar
                     key='avatar'
                     $image={thisArea.avatar}
-                    width='15rem'
-                    height='15rem'
-                    $minHeight='15rem'
-                    $minWidth='15rem' />
+                    width='15rem' />
                 <Title $size='2rem'>
                     "{thisArea.title}"
                 </Title>

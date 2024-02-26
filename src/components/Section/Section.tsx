@@ -57,7 +57,7 @@ const Block = styled.div<IBlockProps>`
     background-color: ${
         p => p.$isBackgroundTransparent
             ? ''
-            : 'white'
+            : '#f6f6f6'
     };
 
     ${

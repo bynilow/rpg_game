@@ -44,10 +44,7 @@ function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
             <Section $haveScroll>
                 <Avatar
                     $image={thisEnemy.avatar}
-                    width={'150px'}
-                    height={'150px'}
-                    $minWidth={'200px'}
-                    $minHeight={'200px'} />
+                    width={'150px'} />
                 <Title $size='2rem'>
                     "{thisEnemy.title}"
                 </Title>

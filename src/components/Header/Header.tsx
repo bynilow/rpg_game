@@ -83,7 +83,9 @@ function Header({ $openInventory, $openSkills, $openCraft, $openCharacter }: IHe
                     <CoinsText>
                         {player.coins}
                     </CoinsText>
-                    <Avatar $image={'icons/items/other/coin.png'} width={'35px'} height={'35px'} />
+                    <Avatar 
+                        $image={'icons/items/other/coin.png'} 
+                        width={'35px'} />
                 </Coins>
                 <Button onClick={() => $openInventory()}>
                     Инвентарь

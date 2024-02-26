@@ -4,6 +4,7 @@ import { useAppDispatch } from '../../../../../hooks/redux';
 import Avatar from '../../../../Avatar/Avatar';
 import { IArea } from '../../../../../models/IArea';
 import TimerLine from '../../../../TimerLine/TimerLine';
+import AreaMapped from './AreaMapped';
 
 interface IAreaPathProps {
     $area: IArea;
@@ -85,17 +86,16 @@ function AreaPath({
     }, [$playerInventoryWeight])
 
     return (
-        <Area
-            $index={$index} 
-            $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '') || $isBlocked}>
+        <AreaMapped
+            $isBlocked={!isMoving && $isBlocked} >
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
             <Avatar 
                 $image={$area.avatar}
-                width='6rem' 
-                height='6rem' 
+                width='100px'
+                height='150%'
                 $onClicked={() => onClickStopMove()} 
-                $isDoSomething={isMoving}
-                $isMovingOther={($moveAreaId !== $area.id && $moveAreaId !== '') || $isBlocked} />
+                $isBlocked={$isBlocked && !isMoving}
+                $isDoSomething={isMoving} />
                 
             <Name>{$area.title}</Name>
             
@@ -106,7 +106,7 @@ function AreaPath({
                 $currentTime={currentTimeToMove}
                 $maxTime={baseTimeToMovement}
                 $isActive={isMoving} />
-        </Area>
+        </AreaMapped>
     );
 }
 
@@ -118,56 +118,9 @@ const AreaBlockClickable = styled.div`
     left: 0;
 `
 
-
 const Name = styled.p`
     cursor: pointer;
     transition: .2s;
-`
-
-
-interface IAreaBlockProps {
-    $index: number;
-    $isMovingOther: boolean;
-}
-
-const Area = styled.div<IAreaBlockProps>`
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
-    background-color: white;
-    padding: 1.3em;
-    border-radius: 10px 10px 0 0;
-    width: 100%;
-    height: 4.5rem;
-    display: flex;
-    gap: 1.3em;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-
-    transition: 0.1s;
-
-    ${
-        p => p.$isMovingOther
-            ? `&::after{
-                position: absolute;
-                z-$index: 99;
-                border-radius: 10px 10px 0 0;
-                top: 0;
-                left: 0;
-                content: '';
-                width: 100%;
-                height: 100%;
-                background: #00000071;
-            };`
-            : null
-    }
-
-    &:hover{
-        ${p => p.$isMovingOther 
-            ? null 
-            : `background-color: #d8d8d8;`
-        }
-        transform: scale(0.97);
-    }
 `
 
 export default AreaPath;

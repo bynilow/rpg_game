@@ -62,7 +62,6 @@ function EquipmentItem({ $item, $isEquipped }: IEquipmentItemProps) {
             $isEquipped={$isEquipped}
             onClick={() => onClickEquip()}>
             <Avatar
-                height='150px'
                 width='150px'
                 $image={$item.avatar} />
             <Info>

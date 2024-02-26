@@ -34,10 +34,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
             <Section $haveScroll>
                 <Avatar
                     $image={thisItem.avatar}
-                    width={'250px'}
-                    height={'250px'}
-                    $minWidth={'200px'}
-                    $minHeight={'200px'} />
+                    width={'250px'} />
                 <Title $size='2rem'>
                     "{thisItem.title}"
                 </Title>

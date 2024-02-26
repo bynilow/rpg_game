@@ -58,7 +58,9 @@ const Line = styled.progress<ILineProps>`
     left: 0;
     width: 100%;
     height: 5px;
-    border-radius: 5px;
+    overflow: hidden;
+    border-radius: 0 0 10px 10px;
+    /* visibility: hidden; */
     -webkit-appearance: none;
     appearance: none;
 

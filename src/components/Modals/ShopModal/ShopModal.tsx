@@ -138,8 +138,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                     <TraderInfo>
                         <Avatar
                             $image={traderData.trader.avatar}
-                            width='8rem'
-                            height='8rem' />
+                            width='8rem' />
                         <InfoBlock>
                             <Title $size='2rem'>
                                 {traderData.trader.title} - {isBuying ? 'Покупка' : 'Продажа'}
@@ -150,8 +149,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                                     {player.coins.toFixed(1)}$
                                     <Avatar
                                         $image={areaItems.find(c => c.id === 'coin')!.avatar}
-                                        width='2rem'
-                                        height='100%' />
+                                        width='2rem' />
                                 </Coins>
                             </InputCoinsBlock>
                         </InfoBlock>

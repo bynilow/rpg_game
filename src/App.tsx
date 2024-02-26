@@ -92,7 +92,7 @@ const StartBattleAnim = keyframes`
     transform: scale(0);
   }
   100%{
-    transform: scale(1.7);
+    transform: scale(3);
   }
 `
 
@@ -108,8 +108,8 @@ const BattleBlock = styled.div<IBattleBlockProps>`
   right: 0;
   margin: auto;
   z-index: 99999;
-  width: 100vw;
-  max-height: 100vw;
+  width: 100vh;
+  aspect-ratio: 1/1;
   border-radius: 50%;
   background: black;
 
@@ -145,6 +145,8 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: 'Comfortaa';
+    font-weight: medium;
   }
 `
 
@@ -154,10 +156,10 @@ const Application = styled.div`
   flex-direction: column;
   align-items: center;
   max-width: 100vw;
-  height: 100vh;
-  max-height: 100vh;
+  min-height: 100vh;
+  padding-bottom: 10rem;
   
-  overflow-y: hidden;
+  overflow-y: auto;
   overflow-x: hidden;
 
   ${

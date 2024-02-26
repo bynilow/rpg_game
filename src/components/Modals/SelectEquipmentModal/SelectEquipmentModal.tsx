@@ -1,10 +1,8 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
+import { useAppSelector } from '../../../hooks/redux';
+import { scrollBarX } from '../../../styles/scrollbars';
 import Modal from '../Modal';
 import EquipmentItem from './EquipmentItem';
-import CircleButton from '../../Buttons/CircleButton';
-import { useAppSelector } from '../../../hooks/redux';
-import { useState } from 'react';
-import { scrollBarX } from '../../../styles/scrollbars';
 
 interface ISelectEquipmentModalProps {
     $closeModal: Function;

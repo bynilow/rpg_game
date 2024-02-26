@@ -524,6 +524,10 @@ const NextSkillLevel = styled.p`
 
 const Description = styled.p`
     font-size: 1rem;
+
+    @media (max-width: 426px) {
+        display: none;
+    }
 `
 
 const SkillsBlock = styled.div`
@@ -556,12 +560,7 @@ const SkillsList = styled.div`
     overflow-y: scroll;
     overflow-x: hidden;
 
-    ${
-        scrollBarX
-    }
-
-    
-    
+    ${scrollBarX}
 `
 
 export default SkillsModal;

@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components'
+import {LazyLoadImage} from 'react-lazy-load-image-component'
 
 interface IAvatar{
     $image: string;
     width: string;
-    height: string;
-    $minWidth?: string;
-    $minHeight?: string;
+    height?: string;
+    $isBlocked?: boolean;
     $isDoSomething?: boolean;
-    $isMovingOther?: boolean;
-    $isMiningOther?: boolean;
     $onClicked?: Function;
     $isCircle?: boolean;
     children?: React.ReactNode;
@@ -18,37 +16,34 @@ interface IAvatar{
 function Avatar({
     $image, 
     width = '90px', 
-    height = '90px',
-    $minHeight,
-    $minWidth, 
+    height,
+    $isBlocked,
     $isDoSomething,
-    $isMovingOther, 
-    $isMiningOther, 
     $onClicked = () => null,
     $isCircle,
     children} : IAvatar) {
 
-    const [isImageLoaded, setIsImageLoaded] = useState(false);
+    const [isImageLoaded, setIsImageLoaded] = useState(true);
 
     useEffect(() => {
-        const img = new Image();
-        img.onload = () => {
-            setIsImageLoaded(true);
-        };
-        img.src = require('../../' + $image);
-    },[$image])
+        // setTimeout(() => {
+        //     setIsImageLoaded(false);
+        //     const img = new Image();
+        //     img.onload = () => {
+        //         setIsImageLoaded(true);
+        //     };
+        //     img.src = require('../../' + $image);
+        // }, 300)
+    },[])
 
     return ( 
-        <Block 
+        <AvatarContainer 
             $image={$image}
             width={width}
             height={height}
-            $minWidth={$minWidth}
-            $minHeight={$minHeight}
-            $isMovingOther={$isMovingOther}
-            $isMiningOther={$isMiningOther}
-            $isCircle={$isCircle}
-            $isLoaded={isImageLoaded} >
+            $isBlocked={$isBlocked}
+            $isCircle={$isCircle}>
+            <Image src={require('../../'+$image)} alt='' />
             {children}
             {
                 $isDoSomething
@@ -57,9 +52,15 @@ function Avatar({
                     </StopAction>
                     : null
             }
-        </Block>
+        </AvatarContainer>
      );
 }
+
+const Image = styled.img`
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+`
 
 const StopAction = styled.div`
     position: absolute;
@@ -83,70 +84,25 @@ const StopAction = styled.div`
     }
 `
 
-// /${ p => `url( ${require(p.$image)} )` }
-
-const SkeletonAnim = keyframes`
-    0%{
-        background-color: #e2e2e2;
-    }
-    50%{
-        background-color: #a3a3a3;
-    }
-    100%{
-        background-color: #e2e2e2;
-    }
-`
-
-interface IBlockProps {
-    $isLoaded: boolean;
-}
-
-const Block = styled.div<IAvatar & IBlockProps>`
+const AvatarContainer = styled.div<IAvatar>`
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2;
-    width: ${p => p.width};
-    height: ${p => p.height};
 
     ${
-        p => p.$minWidth ? `min-width: ${p.$minWidth};` : null
+        p => p.height 
+            ? `height: ${p.height};` 
+            : `width: ${p.width};`   
     }
 
-    ${
-        p => p.$minHeight ? `min-height: ${p.$minHeight};` : null
-    }
-
-    /* animation: ${p => !p.$isLoaded ? SkeletonAnim : ''} 5s linear infinite; */
-
-    ${
-        p => !p.$isLoaded
-            && css`&::after{
-                content: '';
-                z-index: 9;
-                position: absolute;
-                width: ${p.width};
-                height: ${p.height};
-                top: 0;
-                left: 0;
-                background: gray;
-                border-radius: 50%;
-                transform: scale(0.9);
-                animation: ${SkeletonAnim} 5s linear infinite;
-            };`
-    }
-
-
-    background-image: ${p => p.$isLoaded && `url( ${require('../../' + p.$image)} )`};
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+    aspect-ratio: 1/1;
+    /* background-color: red; */
     border-radius: ${p => p.$isCircle ? '50%' : '0'};
 
-    ${p => p.$isMovingOther || p.$isMiningOther
-        ? `width: 50px;
-        height: 50px;`
+    ${p => p.$isBlocked
+        ? `height: 50px;`
         : null
     }
 

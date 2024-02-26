@@ -104,8 +104,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                                 $background={equippedItems.head ? getItemBackground(equippedItems.head.item.rare) : 'white;'} >
                                 <Avatar
                                     $image={equippedItems.head?.item.avatar || ''}
-                                    width='100%'
-                                    height='100%' />
+                                    width='100%' />
                             </EquipSlot>
                         </EquipBlock>
                         <EquipBlock>
@@ -116,8 +115,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                                 $background={equippedItems.chest ? getItemBackground(equippedItems.chest.item.rare) : 'white;'}>
                                 <Avatar
                                     $image={equippedItems.chest?.item.avatar || ''}
-                                    width='100%'
-                                    height='100%' />
+                                    width='100%' />
                             </EquipSlot>
                         </EquipBlock>
                         <EquipBlock >
@@ -128,8 +126,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                                 $background={equippedItems.foot ? getItemBackground(equippedItems.foot.item.rare) : 'white;'}>
                                 <Avatar
                                     $image={equippedItems.foot?.item.avatar || ''}
-                                    width='100%'
-                                    height='100%' />
+                                    width='100%' />
                             </EquipSlot>
                         </EquipBlock>
 
@@ -145,8 +142,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                                 $background={equippedItems.weapon ? getItemBackground(equippedItems.weapon.item.rare) : 'white;'}>
                                 <Avatar
                                     $image={equippedItems.weapon?.item.avatar || ''}
-                                    width='100%'
-                                    height='100%' />
+                                    width='100%' />
                             </EquipSlot>
                         </EquipBlock>
                         <EquipBlock>
@@ -157,8 +153,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                                 $background={equippedItems.axe ? getItemBackground(equippedItems.axe.item.rare) : 'white;'}>
                                 <Avatar
                                     $image={equippedItems.axe?.item.avatar || ''}
-                                    width='100%'
-                                    height='100%' />
+                                    width='100%' />
                             </EquipSlot>
                         </EquipBlock>
                         <EquipBlock>
@@ -169,8 +164,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                                 $background={equippedItems.pickaxe ? getItemBackground(equippedItems.pickaxe.item.rare) : 'white;'}>
                                 <Avatar
                                     $image={equippedItems.pickaxe?.item.avatar || ''}
-                                    width='100%'
-                                    height='100%' />
+                                    width='100%' />
                             </EquipSlot>
                         </EquipBlock>
                     </EquipList>

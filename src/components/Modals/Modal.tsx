@@ -8,7 +8,7 @@ interface IModal {
     $alignItems?: '';
     $isCloseButton?: boolean;
     $isEnableAnims?: boolean;
-    $closeButtonFunction?: Function;
+    $closeButtonFunction: Function;
     $gap?: string;
     $size?: 'auto' | 'small' | 'medium' | 'large';
     $justifyContent?: 'space-between' | 'space-around' | 'center' | 'baseline' | 'end';
@@ -33,11 +33,14 @@ function Modal({
     const [isCloseAnim, setIsCloseAnim] = useState(false);
 
     const onClickCloseButton = () => {
-        if(!isCloseAnim){
+        if(!isCloseAnim && $isEnableAnims){
             setIsCloseAnim(true);
             setTimeout(() => {
-                if (typeof $closeButtonFunction !== 'undefined') $closeButtonFunction()
+                $closeButtonFunction();
             }, 700)
+        }
+        else if(!$isEnableAnims){
+            $closeButtonFunction();
         }
     }
 

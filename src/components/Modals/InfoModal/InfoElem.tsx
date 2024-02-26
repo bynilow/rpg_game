@@ -86,10 +86,7 @@ function InfoElem({
             onClick={() => $changeWhatInfo()}>
             <Avatar
                 $image={thisObject.avatar}
-                width='5rem'
-                height='5rem'
-                $minWidth='5rem'
-                $minHeight='5rem' >
+                width='5rem' >
                 {
                     $isCrafting
                         ? <Crafting>🔨</Crafting>

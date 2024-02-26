@@ -62,10 +62,7 @@ function ShopSellItem({
             <Avatar 
                 $image={$fullItem.avatar} 
                 width={'5rem'} 
-                height={'100%'}
-                $minWidth='5rem'
-                $minHeight='5rem'
-                $isMiningOther={false} />
+                $isBlocked={false} />
 
             <InfoBlock>
                 <Title $size='1.3rem'>

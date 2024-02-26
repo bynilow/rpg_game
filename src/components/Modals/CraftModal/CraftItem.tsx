@@ -131,10 +131,9 @@ function CraftItem({
             <Avatar 
                 $image={$fullItem.avatar} 
                 width='8rem'
-                height='8rem'
+                $isBlocked={isCrafting}
                 $isDoSomething={isCrafting}
-                $onClicked={() => onClickCancelCrafting()} 
-                $isMiningOther={false} />
+                $onClicked={() => onClickCancelCrafting()} />
 
             <InfoBlock>
                 <Title $size='1.3rem'>

@@ -7,9 +7,13 @@ import { equipItem, removeItemFromInventory } from '../../../store/reducers/Acti
 import { IFullItemWithCount } from '../../../models/IAreaItem';
 import { useAppDispatch } from '../../../hooks/redux';
 import Title from '../../Title/Title';
+import SquareButton from '../../Buttons/SquareButton';
 
+interface IInvItemProps {
+    $onClickMultipleDelete: Function;
+}
 
-function InventoryItem({item, count}:IItemInventory) {
+function InventoryItem({item, count, $onClickMultipleDelete}:IItemInventory & IInvItemProps) {
 
     const dispatch = useAppDispatch();
 
@@ -23,9 +27,20 @@ function InventoryItem({item, count}:IItemInventory) {
         setRangeCount(1);
     }
 
-    const onClickDeleteItem = (item: IFullItemWithCount) => {
-        dispatch(removeItemFromInventory(item));
+    const onClickDeleteItem = () => {
+        if(isSelectToDelete){
+            dispatch(removeItemFromInventory({...item, count: 1}));
+        }
+        else{
+            if(count > 2){
+                $onClickMultipleDelete({...item, count});
+            }
+            else{
+                setIsSelectToDelete(true);
+            }            
+        }
     }
+
 
     const onClickEquip = () => {
         dispatch(equipItem(item.id));
@@ -36,8 +51,7 @@ function InventoryItem({item, count}:IItemInventory) {
             <Avatar 
                 key={""}
                 $image={item.avatar} 
-                width={'100px'} 
-                height={'100%'}  />
+                width={'100px'} />
             <InfoButton>
                 <CircleButton symbol='?' />
             </InfoButton>
@@ -48,51 +62,45 @@ function InventoryItem({item, count}:IItemInventory) {
                 <ButtonsGroup>
                     {
                         isCanUse
-                        && <Button>
+                        && <SquareButton
+                            $fontSize='1rem'
+                            $onClick={() => {}} >
                             Использовать
-                        </Button>
+                        </SquareButton>
                     }
                     {
                         isCanEquip && !isSelectToDelete
-                        ? <Button onClick={() => onClickEquip()}>
+                        ? <SquareButton 
+                            $fontSize='1rem'
+                            $onClick={() => onClickEquip()}>
                             Экипировать
-                        </Button>
+                        </SquareButton>
                         : null
                     }
                     <DeleteBlock>
-                        <Button onClick={
-                            isSelectToDelete
-                                ? () => onClickDeleteItem({...item, count: rangeCount})
-                                : () => setIsSelectToDelete(true)}>
-                            {
-                                isSelectToDelete
-                                    ? '🗸'
-                                    : 'Удалить'
-                            }
-                        </Button>
-
                         {
                             isSelectToDelete
-                                ? <Button onClick={() => onClickCancelDelete()}>
-                                    ✕
-                                </Button>
-                                : null
+                                ? <SquareButton
+                                    $fontSize='1rem' 
+                                    $onClick={onClickDeleteItem}>
+                                    🗸
+                                </SquareButton>
+                                : <SquareButton
+                                    $fontSize='1rem' 
+                                    $isSquare={false}
+                                    $onClick={onClickDeleteItem}>
+                                    Удалить
+                                </SquareButton>
                         }
-                        {
-                            isSelectToDelete && count > 1
-                                ? <RangeBlock>
-                                    <CountRangeText>
-                                        x{rangeCount}
-                                    </CountRangeText>
-                                    <CountRange
-                                        type='range'
-                                        min={1}
-                                        max={count}
-                                        value={rangeCount}
-                                        onChange={e => setRangeCount(Number(e.currentTarget.value))} />
-                                </RangeBlock>
-                                : null
 
+                        {
+                            isSelectToDelete
+                                ? <SquareButton 
+                                    $fontSize='1rem' 
+                                    $onClick={() => onClickCancelDelete()}>
+                                    ✕
+                                </SquareButton>
+                                : null
                         }
                     </DeleteBlock>
                 </ButtonsGroup>
@@ -178,37 +186,12 @@ const CountRange = styled.input`
 
 `
 
-const Button = styled.div`
-    cursor: pointer;
-    box-shadow: 0 0 5px black;
-    border-radius: 5px;
-    background-color: white;
-    padding: 10px;
-    width: fit-content;
-    font-size: 1rem;
-    min-width: 2rem;
-    min-height: 2rem;
-    line-height: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-
-    transition: .05s;
-
-    &:hover{
-        transform: scale(0.98);
-        background-color: #e4e4e4;
-    }
-    
-`
-
 const ButtonsGroup = styled.div`
     display: flex;
     gap: 10px;
     height: 100%;
     flex-direction: column;
-    width: fit-content;
+    width: 100%;
     transform: translateY(150%);
     
     transition: .3s;
@@ -263,7 +246,7 @@ const Item = styled.div<IItemProps>`
     background: white;
     border-radius: 5px;
     height: 10rem;
-    padding: 5px;
+    padding: 15px;
     overflow: hidden;
     width: 100%;
     flex: 30%;

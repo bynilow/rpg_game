@@ -12,6 +12,10 @@ import { IPlayer } from '../../../models/IPlayer';
 import Section from '../../Section/Section';
 import { getChance, getRandomNumber } from '../../../functions/Random';
 import { getStats } from '../../../functions/Stats';
+import CharacterSection from './Sections/CharacterSection';
+import EnemySection from './Sections/EnemySection';
+import { ICombatHistory } from '../../../models/ICombat';
+import HistorySection from './Sections/HistorySection';
 
 interface ICombatPage {
     $enemyId: string;
@@ -49,22 +53,6 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
 
     const [playerHealth, setPlayerHealth] = useState(player.health);
     const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerStats.attackSpeed < 0 ? 0.1 : playerStats.attackSpeed);
-
-
-    interface ICombatHistory {
-        isEnemyAttack: boolean;
-        isMissed: boolean;
-        isCrit: boolean;
-        isSay: boolean;
-        isDodged: boolean;
-        isBlocked: boolean;
-        avatar: string;
-        text: string;
-        damage: number;
-        characterName: string;
-        hurtName: string;
-        date: string;
-    }
 
     const [isStartingAnimLost, setIsStartingAnimLost] = useState(false);
     const [combatHistory, setCombatHistory] = useState<ICombatHistory[]>([]);
@@ -392,105 +380,26 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
                             : null
                     }
 
-                    <CharacterBlock>
-                        <Section
-                            $isBoxShadow
-                            $isBackgroundTransparent={false}>
-                            <Title>
-                                {
-                                    player.title
-                                }
-                            </Title>
-                            <BlockLine>
-                                <HealthLine max={playerCurrentMaxHealth} value={playerHealth} />
-                                <BlockText>
-                                    {playerHealth.toFixed(1)}/{playerCurrentMaxHealth}
-                                </BlockText>
-                            </BlockLine>
-                            <BlockLine>
-                                <AttackLine max={playerStats.attackSpeed} value={playerCurrentTimeAttack} />
-                                <BlockText>
-                                    {
-                                        playerCurrentTimeAttack.toFixed(1)
-                                    }s
-                                </BlockText>
-                            </BlockLine>
-                            <ButtonAttack onClick={() => onClickAttack()}>
-                                    Удар
-                                </ButtonAttack>
-                        </Section>
-                    </CharacterBlock>
+                    <CharacterSection 
+                        $health={playerHealth}
+                        $maxHealth={playerCurrentMaxHealth}
+                        $title={player.title}
+                        $attackSpeed={playerStats.attackSpeed}
+                        $currentTimeAttack={playerCurrentTimeAttack}
+                        $onClickAttack={() => onClickAttack()} />
 
-                    <HistoryBattle>
-                        <Section
-                            $isBoxShadow
-                            $isBackgroundTransparent={false}>
-                            <Title>
-                                Ход сражения
-                            </Title>
-                            <List>
+                    <HistorySection 
+                        $combatHistory={combatHistory} />
 
-                                {
-                                    combatHistory.map((c, ind) => <CombatText
-                                        key={ind}
-                                        isEnemyAttack={c.isEnemyAttack}
-                                        isMissed={c.isMissed}
-                                        isSay={c.isSay}
-                                        isCrit={c.isCrit}
-                                        isDodged={c.isDodged}
-                                        isBlocked={c.isBlocked}
-                                        avatar={c.avatar}
-                                        text={c.text}
-                                        damage={c.damage}
-                                        hurtName={c.hurtName}
-                                        date={c.date}
-                                        characterName={c.characterName} />)
-                                }
-                            </List>
-                        </Section>
-                    </HistoryBattle>
-                    <CharacterBlock>
-                        <Section
-                            $isBoxShadow
-                            $isBackgroundTransparent={false}>
-
-                            <Avatar
-                                $image={enemy.avatar}
-                                $minWidth='100px'
-                                $minHeight='100px'
-                                width={'200px'}
-                                height={'200px'} />
-                            <Title>
-                                {
-                                    enemy.title
-                                }
-                            </Title>
-                            <EnemyLevel>
-                                Уровень: {$level}
-                            </EnemyLevel>
-                            <BlockLine>
-                                <HealthLine max={enemy.stats.baseHealth} value={enemyHealth} />
-                                <BlockText>
-                                    {
-                                        enemyHealth.toFixed(1)
-                                    }
-                                    /
-                                    {
-                                        enemy.stats.baseHealth
-                                    }
-                                </BlockText>
-                            </BlockLine>
-                            <BlockLine>
-                                <AttackLine max={enemy.stats.attackSpeed} value={enemyTime} />
-                                <BlockText>
-                                    {
-                                        enemyTime.toFixed(1)
-                                    }s
-                                </BlockText>
-                            </BlockLine>
-                        </Section>
-                        
-                    </CharacterBlock>
+                    <EnemySection 
+                        $avatar={enemy.avatar}
+                        $title={enemy.title}
+                        $level={$level}
+                        $health={enemyHealth}
+                        $maxHealth={enemy.stats.baseHealth}
+                        $attackSpeed={enemy.stats.attackSpeed}
+                        $currentTimeAttack={enemyTime} />
+                    
                     <Empty />          
                 </Container>
             </Page>
@@ -509,7 +418,7 @@ const EndBattleAnim = keyframes`
     transform: scale(0);
   }
   100%{
-    transform: scale(1.7);
+    transform: scale(3);
   }
 `
 
@@ -521,8 +430,8 @@ const EndBattleBlock = styled.div`
   right: 0;
   margin: auto;
   z-index: 99999;
-  width: 100vw;
-  height: 100vw;
+  width: 100vh;
+  aspect-ratio: 1/1;
   border-radius: 50%;
   background: black;
 
@@ -643,132 +552,11 @@ const Background = styled.div`
     }
 `
 
-const EnemyLevel = styled.p`
-    margin: 0;
-    font-size: 16px;
-    color: #9b9b9b;
-`
 
-const Button = styled.div`
-    flex: 1;
-    background: gray;
-    max-height: 45px;
-    text-align: center;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    user-select: none;
-    transition: .1s;
-
-    &:hover{
-        transform: scale(0.95);
-    }
-`
-
-const ButtonAttack = styled(Button)`
-    background: #54ad54;
-`
-
-const ButtonsBlock = styled.div`
-    display: flex;
-    gap: 10px;
-    justify-content: space-between;
-`
-
-const BlockText = styled.p`
-    margin: 0;
-    margin-right: 10px;
-    text-align: right;
-    width: 30%;
-`
-
-const BlockLine = styled.div`
-    box-shadow: 0 0 5px black;
-    min-height: 1.3em;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-`
-
-const List = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1.5em;
-`
-
-const AttackLine = styled.progress`
-    width: 100%;
-    height: 25px;
-    border-radius: 5px;
-    -webkit-appearance: none;
-   appearance: none;
-
-   transition: 0.1s;
-
-   &::-webkit-progress-value {
-    background-color: #aaaaaa;
-
-    border-radius: 5px;
-    transition: 0.2s;
-   }
-   &::-webkit-progress-bar {
-    background-color: #757575;
-    border-radius: 5px;
-   }
-`
-
-const HealthLine = styled.progress`
-    width: 100%;
-    height: 35px;
-    border-radius: 5px;
-    -webkit-appearance: none;
-   appearance: none;
-
-   transition: 0.1s;
-
-   &::-webkit-progress-value {
-    background-color: #ce4646;
-
-    border-radius: 5px;
-    transition: 0.2s;
-   }
-   &::-webkit-progress-bar {
-    background-color: #8a3939;
-
-    border-radius: 5px;
-   }
-`
-
-const Title = styled.p`
-    font-size: 1.3em;
-    margin: 0;
-    transition: .1s;
-`
-
-const CharacterBlock = styled.div`
-    flex: 1;
-    max-height: 50%;
-`
-
-const HistoryBattle = styled.div`
-    flex: 1;
-    max-height: 100%;
-
-    @media (max-width: 1025px) {
-        order: 3;
-        max-height: 40%;
-    }
-
-    @media (max-width: 426px) {
-        min-height: 50%;
-    }
-`
 
 const Container = styled.div`
     width: 90%;
-    max-height: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -783,9 +571,8 @@ const Page = styled.div`
     height: 100vh;
     display: flex;
     justify-content: center;
-    overflow-y: auto;
 
-    ${scrollBarX}
+    overflow-y: auto;
 `
 
 export default CombatPage;

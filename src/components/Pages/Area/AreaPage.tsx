@@ -18,6 +18,7 @@ import AreaBackground from './AreaBackground';
 import AreaEnemiesSection from './Sections/AreaEnemiesSection';
 import AreaItemsSection from './Sections/AreaItemsSection';
 import AreaPathsSection from './Sections/AreaPathsSection';
+import { scrollBarX } from '../../../styles/scrollbars';
 
 
 interface IAreaPage {
@@ -170,8 +171,8 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                 $openSkills={() => setIsSkillsOpen(true)}
                 $openCraft={() => setIsCraftOpen(true)}
                 $openCharacter={() => setIsCharacterOpen(true)} />
+
             <Area>
-            
                 <LevelName color={currentLocation.color}>
                     {currentLocation.title}
                     <CircleButton symbol='?' click={() => onClickOpenInfoModal()} />
@@ -181,7 +182,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                 <AreaActionMenu>
                     <AreaPathsSection
                         $playerStats={stats}
-                        $isBlocked={actionType !== 'path' && !!actionType}
+                        $isBlocked={!!actionType}
                         $isUpdatingLevel={isUpdatingLevel}
                         $changeActionType={() => setActionType('path')}
                         $clearActionType={() => setActionType('')}
@@ -189,7 +190,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
                     <AreaItemsSection 
                         $playerStats={stats}
-                        $isBlocked={actionType !== 'items' && !!actionType}
+                        $isBlocked={!!actionType}
                         $isUpdatingLevel={isUpdatingLevel}
                         $changeActionType={() => setActionType('items')}
                         $clearActionType={() => setActionType('')} />
@@ -199,10 +200,9 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                         $isUpdatingLevel={isUpdatingLevel}
                         $onClickStartBattle={(e: IAreaCurrentEnemy) => onClickStartBattle(e)}
                         $setTraderId={(id: string) => setTraderId(id)} />
-
-                    <Empty />
-
+                <Empty />
                 </AreaActionMenu>
+
                 
             </Area>
         </>
@@ -210,7 +210,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 }
 
 const Empty = styled.div`
-    height: 1rem;
+    height: 3rem;
     width: 100%;
 `
 
@@ -219,19 +219,27 @@ const Area = styled.div`
     flex-direction: column;
     gap: 1.5rem;
     width: 90%;
-    height: 80%;    
+    height: 90vh; 
+    padding-bottom: 5rem;
 `
 
 const AreaActionMenu = styled.div`
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 3rem;
-  width: 100%;
-  max-height: 90%;
-  padding-bottom: 3rem;
-  transition: 1s;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 3rem;
+    width: 100%;
+    height: 100%;
+    padding: 0.3rem;
+    transition: 1s;
+
+    overflow-y: hidden;
+    ${scrollBarX}
+
+    @media (max-width: 1200px) {
+        overflow-y: auto;
+    }
 `
 
 interface LevelNameProps {

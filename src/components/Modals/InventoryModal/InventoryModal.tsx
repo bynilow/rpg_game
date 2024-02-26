@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks/redux';
-import { rareList } from '../../../models/IAreaItem';
+import { IFullItemWithCount, rareList } from '../../../models/IAreaItem';
 import { scrollBarX } from '../../../styles/scrollbars';
 import Dropdown from '../../SearchBar/Dropdown';
 import Input from '../../SearchBar/Input';
@@ -11,6 +11,7 @@ import Modal from '../Modal';
 import InventoryEmptyItem from './InventoryEmptyItem';
 import InventoryItem from './InventoryItem';
 import { sortFilterInventory } from '../../../functions/Sorting';
+import DeleteItemsModal from '../DeleteItemsModal/DeleteItemsModal';
 
 interface IInventoryModal {
     closeModal: Function;
@@ -39,80 +40,103 @@ function InventoryModal({ closeModal }: IInventoryModal) {
         ));
     }
 
+    const [isDeleteModalOpened, setIsDeleteModalOpened] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<IFullItemWithCount>();
+
+    const onClickMultipleDelete = (item: IFullItemWithCount) => {
+        setItemToDelete(item);
+        setIsDeleteModalOpened(true);
+    };
+
     useEffect(() => {
         changeSortFilterInventory();
     }, [selectedMaterial, selectedRare, selectedSort, isReversed, inputText, inventory])
+
     return (
-        <Modal
-            $flexDirection={'column'}
-            $justifyContent='baseline'
-            $size='large'
-            $isCloseButton
-            $closeButtonFunction={() => closeModal()}>
-            <InfoBlock>
-                <Title
-                    $size='1.3em'>
-                    Инвентарь
-                </Title>
-                <CapacityText>
-                    {
-                        `${inventory.reduce((a, v) => a + v.item.weight * v.count, 0).toFixed(1)} / ${playerSkills['capacity']['currentScores']}kg`
-                    }
-                </CapacityText>
-            </InfoBlock>
-            <Bar>
-                <Input $onChange={(e: string) => setInputText(e)} />
-
-                <Dropdown
-                    $selectedTypes={[
-                        { id: 'all', title: 'Все' },
-                        { id: 'tree', title: 'Деревья' },
-                        { id: 'ore', title: 'Руды' },
-                        { id: 'materials', title: 'Материалы' },
-                        { id: 'equipment', title: 'Снаряжение' }]}
-                    $setSelected={(id: string) => setSelectedMaterial(id)} />
-
-                <Dropdown
-                    $isRare
-                    $selectedTypes={[
-                        { id: 'all', title: 'Все' },
-                        { id: 'common', title: 'Обычное' },
-                        { id: 'uncommon', title: 'Необычное' },
-                        { id: 'rare', title: 'Редкое' },
-                        { id: 'mythical', title: 'Мифическое' },
-                        { id: 'legendary', title: 'Легендарное' }]}
-                    $setSelected={(id: string) => setSelectedRare(id)} />
-
-                <Dropdown
-                    $selectedTypes={[
-                        { id: 'title', title: 'По названию' },
-                        { id: 'date', title: 'По дате' },
-                        { id: 'rare', title: 'По редкости' },
-                        { id: 'cost', title: 'По цене' },
-                        { id: 'count', title: 'По количеству' }]}
-                    $setSelected={(id: string) => setSelectedSort(id)} />
-
-                <ReverseButton
-                    $setReversed={() => setIsReversed(!isReversed)} />
-            </Bar>
+        <>
             {
-                inventory.length
-                    ? <ItemsList>
-
-                        {
-                            sortedInventory.map(i =>
-                                <InventoryItem
-                                    key={i.item.id}
-                                    item={i.item}
-                                    count={i.count} />)
-                        }
-                        <InventoryEmptyItem />
-                        <InventoryEmptyItem />
-
-                    </ItemsList>
-                    : <Title $size='1.5em'>Инвентарь пуст...</Title>
+                isDeleteModalOpened
+                    ? <DeleteItemsModal
+                        $min={1}
+                        $max={itemToDelete?.count!}
+                        $itemTitle='Береза'
+                        $item={itemToDelete!}
+                        $closeModal={() => setIsDeleteModalOpened(false)} />
+                    : null
             }
-        </Modal>
+            <Modal
+                $flexDirection={'column'}
+                $justifyContent='baseline'
+                $size='large'
+                $isCloseButton
+                $closeButtonFunction={() => closeModal()}>
+
+                <InfoBlock>
+                    <Title
+                        $size='1.3em'>
+                        Инвентарь
+                    </Title>
+                    <CapacityText>
+                        {
+                            `${inventory.reduce((a, v) => a + v.item.weight * v.count, 0).toFixed(1)} / ${playerSkills['capacity']['currentScores']}kg`
+                        }
+                    </CapacityText>
+                </InfoBlock>
+                <Bar>
+                    <Input $onChange={(e: string) => setInputText(e)} />
+
+                    <Dropdown
+                        $selectedTypes={[
+                            { id: 'all', title: 'Все' },
+                            { id: 'tree', title: 'Деревья' },
+                            { id: 'ore', title: 'Руды' },
+                            { id: 'materials', title: 'Материалы' },
+                            { id: 'equipment', title: 'Снаряжение' }]}
+                        $setSelected={(id: string) => setSelectedMaterial(id)} />
+
+                    <Dropdown
+                        $isRare
+                        $selectedTypes={[
+                            { id: 'all', title: 'Все' },
+                            { id: 'common', title: 'Обычное' },
+                            { id: 'uncommon', title: 'Необычное' },
+                            { id: 'rare', title: 'Редкое' },
+                            { id: 'mythical', title: 'Мифическое' },
+                            { id: 'legendary', title: 'Легендарное' }]}
+                        $setSelected={(id: string) => setSelectedRare(id)} />
+
+                    <Dropdown
+                        $selectedTypes={[
+                            { id: 'title', title: 'По названию' },
+                            { id: 'date', title: 'По дате' },
+                            { id: 'rare', title: 'По редкости' },
+                            { id: 'cost', title: 'По цене' },
+                            { id: 'count', title: 'По количеству' }]}
+                        $setSelected={(id: string) => setSelectedSort(id)} />
+
+                    <ReverseButton
+                        $setReversed={() => setIsReversed(!isReversed)} />
+                </Bar>
+                {
+                    inventory.length
+                        ? <ItemsList>
+
+                            {
+                                sortedInventory.map(i =>
+                                    <InventoryItem
+                                        key={i.item.id}
+                                        $onClickMultipleDelete={(item: IFullItemWithCount) => onClickMultipleDelete(item)}
+                                        item={i.item}
+                                        count={i.count} />)
+                            }
+                            <InventoryEmptyItem />
+                            <InventoryEmptyItem />
+
+                        </ItemsList>
+                        : <Title $size='1.5em'>Инвентарь пуст...</Title>
+                }
+            </Modal>
+        </>
 
     );
 }
