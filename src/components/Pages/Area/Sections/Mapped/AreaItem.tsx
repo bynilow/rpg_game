@@ -4,7 +4,7 @@ import { IFullItem } from '../../../../../models/IAreaItem';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../../../styles/backgrounds';
 import Avatar from '../../../../Avatar/Avatar';
 import TimerLine from '../../../../TimerLine/TimerLine';
-import AreaMapped from './AreaMapped';
+import { AreaThing } from './AreaMapped';
 
 
 interface IAreaItemProps {
@@ -118,7 +118,7 @@ interface IAreaItemBlockProps{
     $isBlocked: boolean;
 }
 
-const AreaItemBlock = styled(AreaMapped)<IAreaItemBlockProps>`
+const AreaItemBlock = styled(AreaThing)<IAreaItemBlockProps>`
     background: ${p => p.color};
 
     &:hover{

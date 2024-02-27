@@ -1,0 +1,37 @@
+Date : 2024-02-27 04:47:02
+Directory : c:\Users\nilow\Desktop\react-project\app
+Total : 5 files,  41 codes, 0 comments, 9 blanks, all 50 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| TypeScript     |          4 |         94 |          0 |         17 |        111 |
+| TypeScript JSX |          1 |        -53 |          0 |         -8 |        -61 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                     | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                        |          5 |         41 |          0 |          9 |         50 |
+| src                                                                                      |          5 |         41 |          0 |          9 |         50 |
+| src\components                                                                           |          1 |        -53 |          0 |         -8 |        -61 |
+| src\components\Modals                                                                    |          1 |        -53 |          0 |         -8 |        -61 |
+| src\components\Modals\CraftModal                                                         |          1 |        -53 |          0 |         -8 |        -61 |
+| src\functions                                                                            |          4 |         94 |          0 |         17 |        111 |
+| src\functions (Files)                                                                    |          2 |        -43 |          0 |         -4 |        -47 |
+| src\functions\Sorting                                                                    |          2 |        137 |          0 |         21 |        158 |
++------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                                 | language       | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| c:\Users\nilow\Desktop\react-project\app\src\components\Modals\CraftModal\CraftModal.tsx | TypeScript JSX |        -53 |          0 |         -8 |        -61 |
+| c:\Users\nilow\Desktop\react-project\app\src\functions\GetCountCanCraft.ts               | TypeScript     |         11 |          0 |          4 |         15 |
+| c:\Users\nilow\Desktop\react-project\app\src\functions\Sorting.ts                        | TypeScript     |        -54 |          0 |         -8 |        -62 |
+| c:\Users\nilow\Desktop\react-project\app\src\functions\Sorting\SortingCraft.ts           | TypeScript     |         83 |          0 |         13 |         96 |
+| c:\Users\nilow\Desktop\react-project\app\src\functions\Sorting\SortingInventory.ts       | TypeScript     |         54 |          0 |          8 |         62 |
+| Total                                                                                    |                |         41 |          0 |          9 |         50 |
++------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

@@ -1,5 +1,5 @@
-import { rareList } from "../models/IAreaItem";
-import { IItemInventory } from "../models/IInventory";
+import { rareList } from "../../models/IAreaItem";
+import { IItemInventory } from "../../models/IInventory";
 
 type ISortFilterInventory = (
     inventory: IItemInventory[], 

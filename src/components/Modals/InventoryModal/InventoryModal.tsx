@@ -10,7 +10,7 @@ import Title from '../../Title/Title';
 import Modal from '../Modal';
 import InventoryEmptyItem from './InventoryEmptyItem';
 import InventoryItem from './InventoryItem';
-import { sortFilterInventory } from '../../../functions/Sorting';
+import { sortFilterInventory } from '../../../functions/Sorting/SortingInventory';
 import DeleteItemsModal from '../DeleteItemsModal/DeleteItemsModal';
 
 interface IInventoryModal {

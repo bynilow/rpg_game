@@ -2,16 +2,16 @@ import { FC } from 'react';
 import styled from 'styled-components'
 
 interface IAreaMappedProps {
-    children: React.ReactNode;
+    children: React.ReactNode | React.ReactNode[];
     $isBlocked: boolean;
 }
 
 const AreaMapped: FC<IAreaMappedProps> = ({children, $isBlocked}) => {
 
     return (  
-        <Area $isBlocked={$isBlocked}>
+        <AreaThing $isBlocked={$isBlocked}>
             {children}
-        </Area>
+        </AreaThing>
     );
 }
 
@@ -19,13 +19,14 @@ interface IAreaBlockProps {
     $isBlocked: boolean;
 }
 
-const Area = styled.div<IAreaBlockProps>`
+export const AreaThing = styled.div<IAreaBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
     background: white;
     padding: 5px;
     border-radius: 10px 10px 5px 5px;
     width: 100%;
     height: 4.5rem;
+    min-height: 4.5rem;
     display: flex;
     gap: 1.3rem;
     align-items: center;

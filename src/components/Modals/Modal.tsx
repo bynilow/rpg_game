@@ -141,7 +141,7 @@ const ModalInner = styled.div<IModalBlockProps>`
     gap: ${p => p.$gap};
     overflow: hidden;
 
-    animation: ${p => p.$isCloseAnim ? ModalAnimation : ModalAnimation} 0.5s ease;
+    animation: ${p => p.$isCloseAnim && p.$isEnableAnims ? ModalAnimation : ''} 0.5s ease;
     animation-direction: ${p => p.$isCloseAnim
         ? 'reverse'
         : 'normal'};

@@ -90,6 +90,11 @@ export const Locations: IArea[] = [
         "countMin": 0,
         "countMax": 2
       },
+      {
+        "id": "carrot",
+        "countMin": 0,
+        "countMax": 1
+      },
     ],
     "currentAreaItems": [
 
@@ -159,7 +164,12 @@ export const Locations: IArea[] = [
         "id": "adamantite_ore",
         "countMin": 1,
         "countMax": 2
-      }
+      },
+      {
+        "id": "titanium_ore",
+        "countMin": 1,
+        "countMax": 2
+      },
 
     ],
     "currentAreaItems": [
@@ -225,7 +235,12 @@ export const Locations: IArea[] = [
         "id": "iron_ore",
         "countMin": 0,
         "countMax": 1
-      }
+      },
+      {
+        "id": "potato",
+        "countMin": 1,
+        "countMax": 3
+      },
     ],
     "currentAreaItems": [],
     "enemies": [
@@ -261,7 +276,17 @@ export const Locations: IArea[] = [
         "id": "willow_tree",
         "countMin": 0,
         "countMax": 1
-      }
+      },
+      {
+        "id": "potato",
+        "countMin": 0,
+        "countMax": 1
+      },
+      {
+        "id": "carrot",
+        "countMin": 0,
+        "countMax": 1
+      },
     ],
     "currentAreaItems": [
 
@@ -378,6 +403,11 @@ export const Locations: IArea[] = [
         "countMin": 0,
         "countMax": 2
       },
+      {
+        "id": "mushroom",
+        "countMin": 2,
+        "countMax": 4
+      },
     ],
     "currentAreaItems": [],
     "enemies": [
@@ -432,7 +462,17 @@ export const Locations: IArea[] = [
         "id": "oak_tree",
         "countMin": 1,
         "countMax": 3
-      }
+      },
+      {
+        "id": "mushroom",
+        "countMin": 0,
+        "countMax": 3
+      },
+      {
+        "id": "potato",
+        "countMin": 0,
+        "countMax": 1
+      },
     ],
     "stateId": "",
     "enemies": [
@@ -473,7 +513,17 @@ export const Locations: IArea[] = [
         "id": "birch_tree",
         "countMin": 0,
         "countMax": 2
-      }
+      },
+      {
+        "id": "potato",
+        "countMin": 1,
+        "countMax": 3
+      },
+      {
+        "id": "carrot",
+        "countMin": 0,
+        "countMax": 2
+      },
     ],
     "stateId": "",
     "enemies": [
@@ -532,7 +582,12 @@ export const Locations: IArea[] = [
         "id": "tungsten_ore",
         "countMin": 1,
         "countMax": 4
-      }
+      },
+      {
+        "id": "carrot",
+        "countMin": 1,
+        "countMax": 3
+      },
     ],
     "stateId": "",
     "enemies": [
@@ -591,7 +646,12 @@ export const Locations: IArea[] = [
         "id": "platinum_ore",
         "countMin": 2,
         "countMax": 3
-      }
+      },
+      {
+        "id": "carrot",
+        "countMin": 1,
+        "countMax": 3
+      },
     ],
     "stateId": "",
     "enemies": [
@@ -637,7 +697,12 @@ export const Locations: IArea[] = [
         "id": "oak_tree",
         "countMin": 0,
         "countMax": 3
-      }
+      },
+      {
+        "id": "mushroom",
+        "countMin": 1,
+        "countMax": 3
+      },
     ],
     "stateId": "",
     "enemies": [
@@ -688,7 +753,12 @@ export const Locations: IArea[] = [
         "id": "willow_tree",
         "countMin": 1,
         "countMax": 3
-      }
+      },
+      {
+        "id": "mushroom",
+        "countMin": 1,
+        "countMax": 3
+      },
     ],
     "stateId": "",
     "enemies": [
@@ -744,7 +814,12 @@ export const Locations: IArea[] = [
         "id": "cedar_tree",
         "countMin": 1,
         "countMax": 3
-      }
+      },
+      {
+        "id": "mushroom",
+        "countMin": 1,
+        "countMax": 3
+      },
     ],
     "stateId": "",
     "enemies": [
@@ -803,7 +878,12 @@ export const Locations: IArea[] = [
         "id": "willow_tree",
         "countMin": 0,
         "countMax": 1
-      }
+      },
+      {
+        "id": "potato",
+        "countMin": 0,
+        "countMax": 3
+      },
     ],
     "stateId": "",
     "enemies": [
@@ -875,7 +955,12 @@ export const Locations: IArea[] = [
         "id": "platinum_ore",
         "countMin": 1,
         "countMax": 3
-      }
+      },
+      {
+        "id": "carrot",
+        "countMin": 0,
+        "countMax": 2
+      },
     ],
     "stateId": "",
     "enemies": [

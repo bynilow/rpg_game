@@ -75,7 +75,14 @@ export const Enemies: IEnemy[] = [
                 "countMin": 1,
                 "countMax": 1,
                 "dropChance": 0.01
-            }
+            },
+            {
+                "id": "mushroom",
+                "countMin": 1,
+                "countMax": 2,
+                "dropChance": 15
+            },
+
         ],
         "actionText": {
             "communicationText": [
@@ -202,6 +209,36 @@ export const Enemies: IEnemy[] = [
                 "countMax": 5,
                 "dropChance": 15
             },
+            {
+                "id": "carrot",
+                "countMin": 5,
+                "countMax": 35,
+                "dropChance": 60
+            },
+            {
+                "id": "potato",
+                "countMin": 5,
+                "countMax": 35,
+                "dropChance": 60
+            },
+            {
+                "id": "mushroom",
+                "countMin": 5,
+                "countMax": 35,
+                "dropChance": 60
+            },
+            {
+                "id": "raw_meat",
+                "countMin": 3,
+                "countMax": 30,
+                "dropChance": 45
+            },
+            {
+                "id": "egg",
+                "countMin": 10,
+                "countMax": 40,
+                "dropChance": 70
+            },
             
         ],
         "traderStats": {
@@ -235,6 +272,12 @@ export const Enemies: IEnemy[] = [
                 "countMin": 4,
                 "countMax": 14,
                 "dropChance": 100
+            },
+            {
+                "id": "raw_meat",
+                "countMin": 1,
+                "countMax": 3,
+                "dropChance": 70
             },
             {
                 "id": "leather",
@@ -277,7 +320,13 @@ export const Enemies: IEnemy[] = [
                 "countMin": 1,
                 "countMax": 1,
                 "dropChance": 0.05
-            }
+            },
+            {
+                "id": "mushroom",
+                "countMin": 1,
+                "countMax": 1,
+                "dropChance": 35
+            },
         ],
         "stats": {
             "baseHealth": 120,
@@ -322,6 +371,18 @@ export const Enemies: IEnemy[] = [
                 "dropChance": 100
             },
             {
+                "id": "raw_meat",
+                "countMin": 1,
+                "countMax": 1,
+                "dropChance": 100
+            },
+            {
+                "id": "egg",
+                "countMin": 1,
+                "countMax": 3,
+                "dropChance": 65
+            },
+            {
                 "id": "bone",
                 "countMin": 1,
                 "countMax": 2,
@@ -331,25 +392,25 @@ export const Enemies: IEnemy[] = [
                 "id": "medium_helmet_common",
                 "countMin": 1,
                 "countMax": 1,
-                "dropChance": 10
+                "dropChance": 5
             },
             {
                 "id": "medium_helmet_uncommon",
                 "countMin": 1,
                 "countMax": 1,
-                "dropChance": 8
+                "dropChance": 3
             },
             {
                 "id": "medium_helmet_rare",
                 "countMin": 1,
                 "countMax": 1,
-                "dropChance": 5
+                "dropChance": 2
             },
             {
                 "id": "medium_helmet_mythical",
                 "countMin": 1,
                 "countMax": 1,
-                "dropChance": 2.5
+                "dropChance": 1
             },
             {
                 "id": "medium_helmet_legendary",
@@ -398,6 +459,12 @@ export const Enemies: IEnemy[] = [
                 "countMin": 3,
                 "countMax": 8,
                 "dropChance": 100
+            },
+            {
+                "id": "raw_meat",
+                "countMin": 1,
+                "countMax": 1,
+                "dropChance": 60
             },
             {
                 "id": "crab_claw",
@@ -518,7 +585,13 @@ export const Enemies: IEnemy[] = [
                 "countMin": 1,
                 "countMax": 1,
                 "dropChance": 1
-            }
+            },
+            {
+                "id": "carrot",
+                "countMin": 1,
+                "countMax": 2,
+                "dropChance": 45
+            },
         ],
         "stats": {
             "baseHealth": 55,
@@ -568,6 +641,12 @@ export const Enemies: IEnemy[] = [
                 "dropChance": 100
             },
             {
+                "id": "raw_meat",
+                "countMin": 1,
+                "countMax": 2,
+                "dropChance": 100
+            },
+            {
                 "id": "wool",
                 "countMin": 1,
                 "countMax": 5,
@@ -608,7 +687,13 @@ export const Enemies: IEnemy[] = [
                 "countMin": 1,
                 "countMax": 1,
                 "dropChance": 0.7
-            }
+            },
+            {
+                "id": "carrot",
+                "countMin": 1,
+                "countMax": 1,
+                "dropChance": 10
+            },
         ],
         "stats": {
             "baseHealth": 25,
@@ -697,7 +782,13 @@ export const Enemies: IEnemy[] = [
                 "countMin": 1,
                 "countMax": 1,
                 "dropChance": 1.5
-            }
+            },
+            {
+                "id": "potato",
+                "countMin": 1,
+                "countMax": 1,
+                "dropChance": 10
+            },
         ],
         "stats": {
             "baseHealth": 45,

@@ -64,6 +64,7 @@ function InventoryItem({item, count, $onClickMultipleDelete}:IItemInventory & II
                         isCanUse
                         && <SquareButton
                             $fontSize='1rem'
+                            $isSquare={false}
                             $onClick={() => {}} >
                             Использовать
                         </SquareButton>
@@ -72,6 +73,7 @@ function InventoryItem({item, count, $onClickMultipleDelete}:IItemInventory & II
                         isCanEquip && !isSelectToDelete
                         ? <SquareButton 
                             $fontSize='1rem'
+                            $isSquare={false}
                             $onClick={() => onClickEquip()}>
                             Экипировать
                         </SquareButton>
@@ -139,59 +141,11 @@ const DeleteBlock = styled.div`
     width: 100%;
 `
 
-
-const CountRangeText = styled.p`
-    font-size: 1rem;
-`
-
-const RangeBlock = styled.div`
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 5px;
-    box-shadow: 0 0 5px black;
-    background-color: white;
-    border-radius: 5px;
-    width: 50%;
-
-    @media (max-width: 1025px) {
-        min-width: 100%;
-    }
-    @media (max-width: 376px) {
-        min-width: 100%;
-    }
-`
-
-const CountRange = styled.input`
-    transition: 0.1s;
-    accent-color: #4494df;
-    align-items: center;
-    z-index: 9;
-    width: 100%;
-
-    &::-webkit-slider-thumb{
-        transform: translateY(-30%) scale(1.2);
-        transition: 0.1s;
-    }
-
-    &::-webkit-slider-thumb:hover {
-        transform: scale(1.5) translateY(-25%);
-    }
-
-    &::-webkit-slider-runnable-track{
-        border-radius: 5px;
-        background: gray;
-        height: 5px;
-    }
-
-`
-
 const ButtonsGroup = styled.div`
     display: flex;
-    gap: 10px;
+    gap: 5px;
     height: 100%;
     flex-direction: column;
-    width: 100%;
     transform: translateY(150%);
     
     transition: .3s;

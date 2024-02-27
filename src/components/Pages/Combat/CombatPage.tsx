@@ -16,6 +16,8 @@ import CharacterSection from './Sections/CharacterSection';
 import EnemySection from './Sections/EnemySection';
 import { ICombatHistory } from '../../../models/ICombat';
 import HistorySection from './Sections/HistorySection';
+import { getWinLoot } from '../../../functions/Combat/GetWinLoot';
+import { getAttackData } from '../../../functions/Combat/GetAttackData';
 
 interface ICombatPage {
     $enemyId: string;
@@ -103,142 +105,47 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
         }
     }
 
-    const attackSomeone = (enemyAttack: boolean) => {
-
-        const playerCurrentDamage = playerStats.baseDamage;
-
-        const avatar =
-            enemyAttack
-                ? enemy.avatar
-                : player.avatar
-
-        const title =
-            enemyAttack
-                ? enemy.title
-                : player.title
-
-        let textDamage =
-            enemyAttack
-                ? enemy.actionText.combatText[getRandomNumber(0, enemy.actionText.combatText.length - 1)]
-                : player.actionText.combatText[getRandomNumber(0, player.actionText.combatText.length - 1)]
-
-        let isCrit = getChance(
-            enemyAttack
-                ? enemy.stats.critChance
-                : playerStats.critChance);
-
-        let isMissed = getChance(
-            enemyAttack
-                ? enemy.stats.missChance
-                : playerStats.missPercentChance);
-
-        let isOpponentDodged = getChance(
-            enemyAttack
-                ? playerStats.dodgePercentChance
-                : enemy.stats.dodgeChance);
-
-        let isOpponentBlocked = getChance(
-            enemyAttack
-                ? playerStats.blockingChancePercent
-                : enemy.stats.blockingChancePercent);
-
-        let damage =
-            enemyAttack
-                ? enemy.stats.damage
-                : playerCurrentDamage
-
-        let critDamage =
-            enemyAttack
-                ? Number((enemy.stats.damage * enemy.stats.critDamageMultiplier).toFixed(1))
-                : Number((playerCurrentDamage * playerStats.critDamageMultiplier).toFixed(1))
-
-        let blockedCritDamage = Number(
-            (damage / (enemyAttack ? playerStats.blockingMultiplier : enemy.stats.blockingMultiplier))
-                .toFixed(1));
-
-        if (isCrit) {
-            isMissed = false;
-            isOpponentDodged = false;
-
-            textDamage =
-                enemyAttack
-                    ? enemy.actionText.critDamageText
-                    : player.actionText.critDamageText
-
-            damage = critDamage;
-
-            if (isOpponentBlocked) {
-                textDamage =
-                    enemyAttack
-                        ? enemy.actionText.successBlockingCritText
-                        : player.actionText.successBlockingCritText
-
-                damage = blockedCritDamage;
-            }
-        }
-        if (isMissed) {
-            isOpponentDodged = false;
-            isOpponentBlocked = false;
-
-            textDamage =
-                enemyAttack
-                    ? enemy.actionText.missText
-                    : player.actionText.missText
-
-            damage = 0
-        }
-        if (isOpponentDodged) {
-            isOpponentBlocked = false;
-
-            textDamage =
-                enemyAttack
-                    ? player.actionText.dodgeText
-                    : enemy.actionText.dodgeText;
-            damage = 0;
-        }
-        if (isOpponentBlocked) {
-            textDamage =
-                enemyAttack
-                    ? enemy.actionText.successBlockingText
-                    : player.actionText.successBlockingText
-            damage = blockedCritDamage;
-        }
+    const attackSomeone = (isEnemyAttack: boolean) => {
+        const attackData = getAttackData({
+            isEnemyAttack,
+            enemy,
+            player,
+            playerStats
+        });
 
         const history: ICombatHistory = {
-            isEnemyAttack: enemyAttack,
+            isEnemyAttack: isEnemyAttack,
             isSay: false,
-            isMissed,
-            isCrit,
-            isBlocked: isOpponentBlocked,
-            isDodged: isOpponentDodged,
-            avatar: avatar,
-            characterName: title,
-            damage,
-            hurtName: enemyAttack ? player.title : enemy.title,
-            text: textDamage,
-            date: new Date().toLocaleTimeString()
+            isMissed: attackData.isMissed,
+            isCrit: attackData.isCrit,
+            isBlocked: attackData.isOpponentBlocked,
+            isDodged: attackData.isOpponentDodged,
+            avatar: attackData.avatar,
+            characterName: attackData.title,
+            damage: attackData.damage,
+            hurtName: attackData.hurtCharacter,
+            text: attackData.textDamage,
+            date: attackData.date
         };
 
-        setCombatHistory(h => [...h, history].sort((a, b) => a.date > b.date ? -1 : 1));
+        setCombatHistory(h => [...h, history].sort((a, b) => a.date > b.date ? -1 : 1).splice(0,29));
 
-        if (enemyAttack) {
-            setPlayerHealth(p => p - damage);
+        if (isEnemyAttack) {
+            setPlayerHealth(p => p - attackData.damage);
         }
         else {
-            setEnemyHealth(h => h - damage);
+            setEnemyHealth(h => h - attackData.damage);
         }
 
-        if (!enemyAttack && enemyHealth - damage < 0) {
+        if (!isEnemyAttack && enemyHealth - attackData.damage < 0) {
             winCombat();
         }
     }
-
+    
     interface IItems {
         id: string;
         count: number;
     }
-
-
 
     const [receivedItems, setReceivedItems] = useState<IItems[]>([]);
     const [isBattleEnded, setIsBattleEnded] = useState(false);
@@ -246,32 +153,16 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
     const [isWin, setIsWin] = useState(false);
 
     const winCombat = () => {
-        const possibleItems = enemy.possibleLoot;
-        const experienceCount = Number((
-            enemy.baseCountXP
-            * playerStats.experienceMultiplier
-            + (enemy.level / 2)).toFixed(0));
-        const experienceItem: IFullItemWithCount = {
-            ...areaItems.find(i => i.id === 'experience')!,
-            count: experienceCount
-        }
-        const items: IFullItemWithCount[] = [];
-        items.push(experienceItem);
-        possibleItems.forEach(i => {
-            if (getChance(i.dropChance)) {
-                const foundedItem = areaItems.find(ai => ai.id === i.id)!;
-                let count = 0;
-                if (i.id === 'coin') {
-                    count = getRandomNumber(i.countMin + $level, i.countMax + $level * 1.5);
-                }
-                else {
-                    count = getRandomNumber(i.countMin, i.countMax);
-                }
-                items.push({ ...foundedItem, count })
-            }
-        })
+        const items = getWinLoot({
+            areaItems,
+            baseEnemyCountXP: enemy.baseCountXP,
+            enemyLevel: $level,
+            playerExpMultiplier: playerStats.experienceMultiplier,
+            possibleLoot: enemy.possibleLoot
+        });
+
         dispatch(addItemsToInventory(items));
-        dispatch(addXP(experienceCount));
+        dispatch(addXP(items[0].count)); /// first item - is received experience
         dispatch(setHealthPoints(playerHealth));
         dispatch(setDeadEnemy({ levelId: currentLocation.id, enemyIdInArea: $enemyIdInArea }));
 
@@ -293,7 +184,6 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
         }
         setIsWin(false);
         dispatch(setHealthPoints(0));
-
     }
 
     const onClickedFinishBattle = () => {

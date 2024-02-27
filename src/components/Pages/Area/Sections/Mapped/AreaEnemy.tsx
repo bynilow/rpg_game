@@ -2,7 +2,7 @@ import styled, { keyframes } from 'styled-components';
 import { useAppSelector } from '../../../../../hooks/redux';
 import { getEnemyBackground, getHoveredEnemyBackground } from '../../../../../styles/backgrounds';
 import Avatar from '../../../../Avatar/Avatar';
-import AreaMapped from './AreaMapped';
+import { AreaThing } from './AreaMapped';
 
 
 interface IAreaEnemyProps {
@@ -74,7 +74,7 @@ interface IAreaItemBlockProps{
     $isBlocked: boolean;
 }
 
-const AreaEnemyBlock = styled(AreaMapped)<IAreaItemBlockProps>`
+const AreaEnemyBlock = styled(AreaThing)<IAreaItemBlockProps>`
     background: ${ p => p.color};
     
     &:hover{

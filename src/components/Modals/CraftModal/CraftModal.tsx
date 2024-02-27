@@ -14,6 +14,8 @@ import Input from '../../SearchBar/Input';
 import Dropdown from '../../SearchBar/Dropdown';
 import CheckboxSearch from '../../SearchBar/CheckboxSearch';
 import ReverseButton from '../../SearchBar/ReverseButton';
+import { sortFilterCraftItems } from '../../../functions/Sorting/SortingCraft';
+import { getCountCanCraft } from '../../../functions/GetCountCanCraft';
 
 interface ICraftModal {
     $closeModal: Function;
@@ -34,72 +36,20 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
 
     const [sortedItems, setSortedItems] = useState<IFullItem[]>(areaItems.filter(i => i.itemsToCraft).map(i => ({...i, localId: new Date().toISOString()})));
 
-    const sortFilterInventory = () => {
-        let itemsFilterMaterial = areaItems.filter(i => i.itemsToCraft?.length);
-        let itemsFilterRare = areaItems.filter(i => i.itemsToCraft?.length);
-        let itemsSorted = areaItems.filter(i => i.itemsToCraft?.length);
-
-        if (selectedMaterial !== 'all') {
-            itemsFilterMaterial = areaItems.filter(i => i.type === selectedMaterial);
-        }
-        if (selectedRare !== 'all') {
-            itemsFilterRare = areaItems.filter(i => i.rare === selectedRare);
-        }
-
-        switch (selectedMaterial){
-            case 'all':
-                itemsFilterMaterial = areaItems.filter(i => i.itemsToCraft?.length);
-                break;
-            case 'helmet':
-                itemsFilterMaterial = areaItems.filter(i => i.subType === 'helmet');
-                break;
-            case 'chest':
-                itemsFilterMaterial = areaItems.filter(i => i.subType === 'chest');
-                break;
-            case 'foot':
-                itemsFilterMaterial = areaItems.filter(i => i.subType === 'foot');
-                break;
-            case 'weapon':
-                itemsFilterMaterial = areaItems.filter(i => i.type === 'weapon');
-                break;
-            case 'axe':
-                itemsFilterMaterial = areaItems.filter(i => i.subType === 'axe');
-                break;
-            case 'pickaxe':
-                itemsFilterMaterial = areaItems.filter(i => i.subType === 'pickaxe');
-                break;
-        }
-
-        let filteredItems = itemsFilterMaterial.filter(i => itemsFilterRare.includes(i));
-
-        switch (selectedSort) {
-            case 'title':
-                itemsSorted = filteredItems.sort((a, b) =>
-                    a.title.localeCompare(b.title));
-                break;
-            case 'rare':
-                itemsSorted = filteredItems.sort((a, b) =>
-                    rareList.indexOf(a.rare) - rareList.indexOf(b.rare));
-                break;
-            case 'cost':
-                itemsSorted = filteredItems.sort((a, b) =>
-                    a.cost - b.cost).reverse();
-                break;
-            case 'time':
-                itemsSorted = filteredItems.sort((a, b) =>
-                    a.timeToMining - b.timeToMining).reverse();
-                break;
-            default:
-                break;
-        }
-
-        const checkedCraftItem = isReadyToCraft ? itemsSorted.filter(i => getCountCanCraft(i)) : itemsSorted;
-
-        let inventoryTexted = checkedCraftItem.filter(i =>
-            i.title.toLocaleLowerCase().includes(inputText.toLowerCase()));
-
-        setSortedItems(isReversed ? inventoryTexted.reverse() : inventoryTexted);
+    const sortFilterInventory = async () => {
+        setSortedItems(await sortFilterCraftItems({
+            inputText,
+            inventory,
+            isReversed,
+            items: areaItems,
+            onlyReadyToCraft: isReadyToCraft,
+            selectedMaterial,
+            selectedRare,
+            selectedSort
+        }));
     }
+
+    console.log(sortFilterCraftItems)
 
     const [craftingId, setCraftingId] = useState('');
     const [selectedId, setSelectedId] = useState('');
@@ -118,17 +68,6 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
         const experience = itemCraft.baseCountXP * sumCount * playerSkills.experienceMultiplier.currentScores;
         dispatch(addXP(experience));
         sortFilterInventory();
-    }
-
-    const getCountCanCraft = (i: IFullItem ) => {
-        if(i.itemsToCraft){
-            return Math.min(...( i.itemsToCraft!.map(i => 
-                ( Math.floor((inventory.find(pi => pi.item.id === i.id)?.count || 0 ) / i.count)) ) ))
-        }
-        else{
-            return 0
-        }
-        
     }
 
     const onClickCancelCrafting = (id: string) => {
@@ -196,27 +135,27 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
                     </Bar>
                     <ItemsList key={sortedItems.length}>
                         {
-                            sortedItems.map((i, ind) => 
+                            sortedItems.map((item, ind) => 
                                 <CraftItem 
-                                    key={i.id 
+                                    key={item.id 
                                         + playerSkills.craftSpeed.currentScores 
                                         + playerSkills.craftDoubleLootPercentChance.currentScores
-                                        + getCountCanCraft(i)}
+                                        + getCountCanCraft({item, inventory})}
                                     $index={ind}
                                     $openInfoModal={(info: IChangeInfo) => $openInfoModal(info)}
-                                    $fullItem={areaItems.find(ai => ai.id === i.id) || areaItems[0]}
+                                    $fullItem={areaItems.find(ai => ai.id === item.id) || areaItems[0]}
                                     $playerCraftingSpeed={playerSkills.craftSpeed.currentScores}
                                     $craftItem={(count: number, itemsToRemove: IFullItemWithCount[]) => createItem({
-                                        ...areaItems.find(ai => ai.id === i.id)!,
+                                        ...areaItems.find(ai => ai.id === item.id)!,
                                         count 
                                     }, itemsToRemove)}
                                     $craftingId={craftingId}
-                                    $setCraftingId={() => setCraftingId(i.id)}
-                                    $clearCraftingId={() => onClickCancelCrafting(i.id)}
-                                    $isSelected={selectedId === i.id}
-                                    $setSelectedId={() => setSelectedId(i.id)}
+                                    $setCraftingId={() => setCraftingId(item.id)}
+                                    $clearCraftingId={() => onClickCancelCrafting(item.id)}
+                                    $isSelected={selectedId === item.id}
+                                    $setSelectedId={() => setSelectedId(item.id)}
                                     $clearSelectedId={() => setSelectedId('')}
-                                    $countCanCraft={getCountCanCraft(i)} />)
+                                    $countCanCraft={getCountCanCraft({item, inventory})} />)
                         }
 
                         <EmptyItem />
