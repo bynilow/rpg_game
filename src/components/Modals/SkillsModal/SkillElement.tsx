@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components'
 import Title from '../../Title/Title';
+import SquareButton from '../../Buttons/SquareButton';
 
 interface ISkillElementProps {
     id: string;
@@ -36,7 +37,7 @@ function SkillElement({
                         $level
                     }
                 </Level>
-                <Title $size='1.5rem'>
+                <Title $size='1rem'>
                     {
                         $title
                     }
@@ -45,16 +46,20 @@ function SkillElement({
             <ButtonsBlock>
                 {
                     $points
-                    ? <Button onClick={() => $onChangePoints(-1)}>
+                    ? <SquareButton 
+                        $width='4rem'
+                        $onClick={() => $onChangePoints(-1)}>
                         ❮
-                    </Button>
+                    </SquareButton>
                     : null
                 }
                 {
                     $availablePoint
-                    ? <Button onClick={() => $onChangePoints(+1)}>
+                    ? <SquareButton 
+                        $width='4rem'
+                        $onClick={() => $onChangePoints(+1)}>
                         ❯
-                    </Button>
+                    </SquareButton>
                     : null
                 }
             </ButtonsBlock>
@@ -66,30 +71,11 @@ const ButtonsBlock = styled.div`
     position: absolute;
     top: 0;
     right: 0;
-    margin: 5px;
-    display: flex;
-    gap: 10px;
-    height: 100%;
-`
-
-const Button = styled.div`
-    height: 2.5rem;
-    width: 2.5rem;
-    color: white;
-    background-color: #578a5b;
-    border-radius: 5px;
+    margin-right: 5px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    user-select: none;
-    cursor: pointer;
-    
-    transition: 0.1s;
-
-    &:hover{
-        transform: scale(0.9);
-    }
+    gap: 10px;
+    height: 100%;
 `
 
 const SkillInfoBlock = styled.div`
@@ -107,7 +93,7 @@ interface ILevelProps{
 const Level = styled.div<ILevelProps>`
     position: relative;
     height: 100%;
-    min-width: 3rem;
+    aspect-ratio: 1/1;
     object-fit: contain;
     color: #000000;
     border-right: 2px solid black;
@@ -145,15 +131,18 @@ const Skill = styled.div`
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    min-height: 5rem;
     padding: 5px;
     border-radius: 5px;
     box-shadow: 0 0 5px black;
+    background-color: white;
     cursor: pointer;
     transition: 0.1s;
 
     &:hover{
         transform: scale(1.01);
     }
+
 `
 
 export default SkillElement;

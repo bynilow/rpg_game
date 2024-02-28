@@ -8,6 +8,7 @@ import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
 import NeedItem from './NeedItem';
 import Title from '../../Title/Title';
+import SquareButton from '../../Buttons/SquareButton';
 
 
 interface ICraftItemProps {
@@ -153,24 +154,27 @@ function CraftItem({
                 <CraftBlock>
                     {
                         $countCanCraft && $craftingId === ''
-                            ? <Button onClick={
-                                $isSelected
-                                ? () => onClickStartMining()
-                                : () => $setSelectedId() }>
-                                {
-                                    $isSelected
-                                        ? '🗸'
-                                        : '+'
-                                }
-                            </Button>
+                            ? $isSelected
+                                ? <SquareButton
+                                    $width='3rem' 
+                                    $onClick={() => onClickStartMining()}>
+                                    🗸
+                                </SquareButton>
+                                : <SquareButton 
+                                    $width='3rem'
+                                    $onClick={() => $setSelectedId()}>
+                                    +
+                                </SquareButton>
                             : null
                     }
                     {
                         $isSelected && $craftingId === '' && $countCanCraft
-                        ? <Button onClick={() => $clearSelectedId()}>
-                            ✖
-                        </Button>
-                        : null
+                            ? <SquareButton 
+                                $width='3rem'
+                                $onClick={() => $clearSelectedId()}>
+                                ✖
+                            </SquareButton>
+                            : null
                     }
                     {
                         $isSelected && $craftingId === '' && $countCanCraft > 1
@@ -285,24 +289,24 @@ const CountRange = styled.input`
 
 `
 
-const Button = styled.div`
-    font-size: 1.5em;
-    line-height: 0;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 5px black;
-    border-radius: 5px;
+// const SquareButton = styled.div`
+//     font-size: 1.5em;
+//     line-height: 0;
+//     width: 2.5rem;
+//     height: 2.5rem;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     box-shadow: 0 0 5px black;
+//     border-radius: 5px;
 
-    cursor: pointer;
-    transition: 0.1s;
+//     cursor: pointer;
+//     transition: 0.1s;
 
-    &:hover{
-        transform: scale(0.95);
-    }
-`
+//     &:hover{
+//         transform: scale(0.95);
+//     }
+// `
 
 const CraftBlock = styled.div`
     margin-top: auto;

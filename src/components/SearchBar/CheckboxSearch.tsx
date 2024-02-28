@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components'
+import Wrapper from '../Wrapper/Wrapper';
 
 interface ICheckboxProps {
     $setChecked: Function;
@@ -51,12 +52,11 @@ const Checkbox = styled.div<ICheckbox>`
 `
 
 const CheckBoxBlock = styled.div`
+    ${Wrapper}
+
     font-size: 16px;
     height: 2.5em;
     min-width: 13em;
-    border-radius: 5px;
-    border: 1px solid black;
-    box-shadow: 0 0 5px #0000005a;
     display: flex;
     align-items: center;
     gap: 1em;

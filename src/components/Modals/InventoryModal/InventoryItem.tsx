@@ -8,6 +8,7 @@ import { IFullItemWithCount } from '../../../models/IAreaItem';
 import { useAppDispatch } from '../../../hooks/redux';
 import Title from '../../Title/Title';
 import SquareButton from '../../Buttons/SquareButton';
+import { palette } from '../../../styles/palette';
 
 interface IInvItemProps {
     $onClickMultipleDelete: Function;
@@ -85,7 +86,7 @@ function InventoryItem({item, count, $onClickMultipleDelete}:IItemInventory & II
                                 ? <SquareButton
                                     $fontSize='1rem' 
                                     $onClick={onClickDeleteItem}>
-                                    🗸
+                                    {palette.checkMark}
                                 </SquareButton>
                                 : <SquareButton
                                     $fontSize='1rem' 
@@ -100,7 +101,7 @@ function InventoryItem({item, count, $onClickMultipleDelete}:IItemInventory & II
                                 ? <SquareButton 
                                     $fontSize='1rem' 
                                     $onClick={() => onClickCancelDelete()}>
-                                    ✕
+                                    {palette.cancelMark}
                                 </SquareButton>
                                 : null
                         }

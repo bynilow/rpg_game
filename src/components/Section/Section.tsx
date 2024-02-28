@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { scrollBarX } from '../../styles/scrollbars';
+import { palette } from '../../styles/palette';
 
 interface ISection {
     children: React.ReactNode;
@@ -57,7 +58,7 @@ const Block = styled.div<IBlockProps>`
     background-color: ${
         p => p.$isBackgroundTransparent
             ? ''
-            : '#f6f6f6'
+            : palette.backgroundColor
     };
 
     ${

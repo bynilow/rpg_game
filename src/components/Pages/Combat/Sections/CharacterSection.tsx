@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import Section from '../../../Section/Section';
 import Title from '../../../Title/Title';
+import SquareButton from '../../../Buttons/SquareButton';
 
 interface ICharacterSectionProps {
     $title: string;
@@ -43,22 +44,15 @@ function CharacterSection({
                         }s
                     </BlockText>
                 </BlockLine>
-                <ButtonAttack onClick={() => $onClickAttack()}>
+                <SquareButton 
+                    $isSquare={false}
+                    $onClick={() => $onClickAttack()}>
                     Удар
-                </ButtonAttack>
+                </SquareButton>
             </Section>
         </CharacterBlock>
     );
 }
-
-const ButtonAttack = styled.button`
-    background: #54ad54;
-    color: white;
-    border: none;
-    font-size: 1.5rem;
-    padding: 1rem;
-    border-radius: 15px;
-`
 
 const AttackLine = styled.progress`
     width: 100%;

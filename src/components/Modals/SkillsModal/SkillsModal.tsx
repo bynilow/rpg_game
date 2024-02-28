@@ -8,6 +8,8 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { useEffect, useState } from 'react';
 import { addSkills, decrementSkillPoints } from '../../../store/reducers/ActionCreators';
 import Title from '../../Title/Title';
+import SquareButton from '../../Buttons/SquareButton';
+import { palette } from '../../../styles/palette';
 
 interface ISkillsModalProps {
     $closeModal: Function;
@@ -394,7 +396,6 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
 
                 </SkillsList>
                 <Section 
-                    $isBoxShadow 
                     $gap='15px'>
                     <Title $size='1.3rem'>
                         Описание
@@ -437,12 +438,18 @@ function SkillsModal({$closeModal}: ISkillsModalProps) {
             {
                 skills.findIndex(s => s.selectedLevel) !== -1
                     ? <ButtonsBlock>
-                    <ButtonConfirm onClick={() => onClickConfirmSkillsUp()}>
-                        ✔
-                    </ButtonConfirm>
-                    <ButtonCancel onClick={() => onClickCancelSkillsUp()}>
-                        ✕
-                    </ButtonCancel>
+                    <SquareButton 
+                        $fontSize='3rem'
+                        $color={palette.greenColor}
+                        $onClick={() => onClickConfirmSkillsUp()}>
+                        {palette.checkMark}
+                    </SquareButton>
+                    <SquareButton 
+                        $fontSize='3rem'
+                        $color={palette.redColor}
+                        $onClick={() => onClickCancelSkillsUp()}>
+                        {palette.cancelMark}
+                    </SquareButton>
                 </ButtonsBlock>
                     : null
             }
@@ -461,48 +468,6 @@ const PointsCount = styled.p`
 const ButtonsBlock = styled.div`
     display: flex;
     gap: 10px;
-`
-
-const ButtonCancel = styled.div`
-    height: 3rem;
-    width: 3rem;
-    color: white;
-    background-color: #9b4545;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    line-height: 0;
-    user-select: none;
-    cursor: pointer;
-    
-    transition: 0.1s;
-
-    &:hover{
-        transform: scale(0.9);
-    }
-`
-
-const ButtonConfirm = styled.div`
-    height: 3rem;
-    width: 3rem;
-    color: white;
-    background-color: #578a5b;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    line-height: 0;
-    user-select: none;
-    cursor: pointer;
-    
-    transition: 0.1s;
-
-    &:hover{
-        transform: scale(0.9);
-    }
 `
 
 const NextSkillLevelSpan = styled.span`

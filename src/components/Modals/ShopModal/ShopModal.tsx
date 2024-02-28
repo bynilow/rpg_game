@@ -141,7 +141,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                             width='8rem' />
                         <InfoBlock>
                             <Title $size='2rem'>
-                                {traderData.trader.title} - {isBuying ? 'Покупка' : 'Продажа'}
+                                {traderData.trader.title} - <b>{isBuying ? 'Покупка' : 'Продажа'}</b>
                             </Title>
                             <InputCoinsBlock>
                                 <Input $onChange={(e: string) => setInputText(e)} />

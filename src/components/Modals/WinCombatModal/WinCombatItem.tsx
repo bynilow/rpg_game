@@ -74,10 +74,6 @@ const Item = styled.div<IItemProps>`
 
     background: ${p => p.color};
 
-    &:hover ${Info} {
-        padding: 0 10px;
-    }
-
     &:hover{
         background: ${p => p.$hoveredColor};
     }

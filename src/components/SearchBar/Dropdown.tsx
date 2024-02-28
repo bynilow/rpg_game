@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components'
 import { getRareColor } from '../../styles/backgrounds';
 import { IRare, rareList } from '../../models/IAreaItem';
+import Wrapper from '../Wrapper/Wrapper';
 
 interface IDropdownType {
     id: string | IRare;
@@ -122,6 +123,8 @@ const SelectDropdown = styled.div`
     }
 `
 const DropdownButton = styled.button`
+    ${Wrapper}
+    
     position: relative;
     min-width: 100%;
     height: 40px;
@@ -131,9 +134,6 @@ const DropdownButton = styled.button`
     gap: 10px;
     font-size: 16px;
     padding: 10px;
-    border-radius: 5px;
-    border: 1px solid black;
-    box-shadow: 0 0 5px #0000005a;
     background-color: white;
     transition: 0.3s;
 

@@ -3172,7 +3172,7 @@ export const Items: IFullItem[] = [
         "description": "Оранжевый, сочный и хрустящий корень, который обладает сладковатым вкусом.",
         "dateReceiving": "",
         "baseCountXP": 3,
-        "cost": 10,
+        "cost": 3,
         "timeToMining": 5,
         "type": "food",
         "weight": 0.2,
@@ -3186,7 +3186,7 @@ export const Items: IFullItem[] = [
         "description": "Белый клубень, обладает нежной текстурой и нейтральным вкусом. ",
         "dateReceiving": "",
         "baseCountXP": 3,
-        "cost": 10,
+        "cost": 3,
         "timeToMining": 5,
         "type": "food",
         "weight": 0.2,
@@ -3200,7 +3200,7 @@ export const Items: IFullItem[] = [
         "description": "Съедобные грибы, богаты витаминами и питательными веществами.",
         "dateReceiving": "",
         "baseCountXP": 3,
-        "cost": 10,
+        "cost": 3,
         "timeToMining": 5,
         "type": "food",
         "weight": 0.2,
@@ -3233,8 +3233,183 @@ export const Items: IFullItem[] = [
         "type": "food",
         "weight": 0.5,
     },
+    
+    {
+        "id": "pickled_carrots",
+        "idInArea": "",
+        "title": "Квашеная морковь",
+        "rare": "uncommon",
+        "avatar": "icons/items/food/pickled_carrots.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 7,
+        "cost": 12,
+        "timeToMining": 4,
+        "type": "food",
+        "weight": 0.7,
+        "itemsToCraft": [
+            {
+                "id": "carrot",
+                "count": 3
+            },
+        ]
+    },
+    {
+        "id": "fried_mushrooms",
+        "idInArea": "",
+        "title": "Жаренные грибы",
+        "rare": "uncommon",
+        "avatar": "icons/items/food/fried_mushrooms.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 7,
+        "cost": 12,
+        "timeToMining": 4,
+        "type": "food",
+        "weight": 0.7,
+        "itemsToCraft": [
+            {
+                "id": "mushroom",
+                "count": 3
+            },
+        ]
+    },
+    {
+        "id": "fried_potato",
+        "idInArea": "",
+        "title": "Жареная картошка",
+        "rare": "uncommon",
+        "avatar": "icons/items/food/fried_potato.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 7,
+        "cost": 12,
+        "timeToMining": 4,
+        "type": "food",
+        "weight": 0.7,
+        "itemsToCraft": [
+            {
+                "id": "potato",
+                "count": 3
+            },
+        ]
+    },
+    {
+        "id": "fried_meat",
+        "idInArea": "",
+        "title": "Жареное мясо",
+        "rare": "uncommon",
+        "avatar": "icons/items/food/fried_meat.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 18,
+        "cost": 20,
+        "timeToMining": 6.5,
+        "type": "food",
+        "weight": 1,
+        "itemsToCraft": [
+            {
+                "id": "raw_meat",
+                "count": 1
+            },
+        ]
+    },
+    {
+        "id": "fried_egg",
+        "idInArea": "",
+        "title": "Яичница",
+        "rare": "uncommon",
+        "avatar": "icons/items/food/fried_egg.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 12,
+        "cost": 11,
+        "timeToMining": 5,
+        "type": "food",
+        "weight": 0.3,
+        "itemsToCraft": [
+            {
+                "id": "egg",
+                "count": 1
+            },
+        ]
+    },
 
-
-
+    {
+        "id": "vegetable_salad",
+        "idInArea": "",
+        "title": "Овощной салат с грибами",
+        "rare": "uncommon",
+        "avatar": "icons/items/food/vegetable_salad.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 12,
+        "cost": 22,
+        "timeToMining": 8.5,
+        "type": "food",
+        "weight": 1,
+        "itemsToCraft": [
+            {
+                "id": "carrot",
+                "count": 1
+            },
+            {
+                "id": "potato",
+                "count": 1
+            },
+            {
+                "id": "mushroom",
+                "count": 1
+            },
+        ]
+    },
+    {
+        "id": "fried_egg_salad",
+        "idInArea": "",
+        "title": "Яичница с овощами",
+        "rare": "rare",
+        "avatar": "icons/items/food/fried_egg_salad.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 21,
+        "cost": 32.5,
+        "timeToMining": 10,
+        "type": "food",
+        "weight": 1,
+        "itemsToCraft": [
+            {
+                "id": "vegetable_salad",
+                "count": 1
+            },
+            {
+                "id": "egg",
+                "count": 1
+            },
+        ]
+    },
+    {
+        "id": "steak_garnish",
+        "idInArea": "",
+        "title": "Стейк с гарниром",
+        "rare": "rare",
+        "avatar": "icons/items/food/steak_garnish.png",
+        "description": "",
+        "dateReceiving": "",
+        "baseCountXP": 33,
+        "cost": 50,
+        "timeToMining": 13,
+        "type": "food",
+        "weight": 2,
+        "itemsToCraft": [
+            {
+                "id": "vegetable_salad",
+                "count": 1
+            },
+            {
+                "id": "raw_meat",
+                "count": 1
+            },
+        ]
+    },
 
 ]

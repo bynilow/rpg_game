@@ -7,6 +7,7 @@ import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimer
 import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
 import Title from '../../Title/Title';
+import SquareButton from '../../Buttons/SquareButton';
 
 interface IShopSellItemProps {
     $fullItem: IFullItem;
@@ -69,23 +70,27 @@ function ShopSellItem({
                     {$fullItem.title} ({$count})
                 </Title>
                 <CraftBlock>
-                    <Button onClick={
+                    {
                         $isSelected
-                            ? () => $onClickSellItem(rangeCount)
-                            : () => $setSelectedId()}>
-                        {
-                            $isSelected
-                                ? '🗸'
-                                : '+'
-                        }
-                    </Button>
-
-
+                            ? <SquareButton 
+                                $width='3rem' 
+                                $onClick={() => $onClickSellItem(rangeCount)} >
+                                🗸
+                            </SquareButton>
+                            : <SquareButton
+                                $width='3rem' 
+                                $onClick={() => $setSelectedId()} >
+                                +
+                            </SquareButton>
+                    }
+                    
                     {
                         $isSelected 
-                        ? <Button onClick={() => onClickCancelSelect()}>
+                        ? <SquareButton 
+                            $width='3rem'     
+                            $onClick={() => onClickCancelSelect()}>
                             ✖
-                        </Button>
+                        </SquareButton>
                         : null
                     }
                     {
@@ -180,26 +185,6 @@ const CountRange = styled.input`
         height: 5px;
     }
 
-`
-
-const Button = styled.div`
-    font-size: 1.5em;
-    line-height: 0;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 5px black;
-    border-radius: 5px;
-    user-select: none;
-
-    cursor: pointer;
-    transition: 0.1s;
-
-    &:hover{
-        transform: scale(0.95);
-    }
 `
 
 const CraftBlock = styled.div`

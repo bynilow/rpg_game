@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components'
+import Wrapper from '../Wrapper/Wrapper';
 
 interface IReverseButtonProps {
     $setReversed: Function;
@@ -26,13 +27,13 @@ function ReverseButton({$setReversed}: IReverseButtonProps) {
 }
 
 const Button = styled.div`
+    ${Wrapper}
+    
     font-size: 16px;
     line-height: 0;
     height: 2.5em;
     width: 2.5em;
-    border-radius: 5px;
-    border: 1px solid black;
-    box-shadow: 0 0 5px #0000005a;
+    background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;

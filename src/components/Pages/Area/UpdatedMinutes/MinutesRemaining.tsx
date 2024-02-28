@@ -42,9 +42,6 @@ function MinutesRemaining({
     return (
         <Minutes>
             ⟳ {$timeToUpdate}m
-            {/* <button onClick={() => setSecondsToUpdate(Math.round((new Date($nextUpdateDateTime).getTime() - new Date().getTime()) / 1000))}>
-                upd
-            </button> */}
         </Minutes>
     );
 }

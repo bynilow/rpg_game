@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components'
+import Wrapper from '../Wrapper/Wrapper';
 
 interface IInputProps {
     $onChange: Function;
@@ -25,13 +26,12 @@ function Input({$onChange}: IInputProps) {
 }
 
 const Inp = styled.input`
+    ${Wrapper}
+    
     max-width: 13rem;
     font-size: 1em;
     height: 2.5em;
     padding: 10px;
-    border-radius: 5px;
-    border: 1px solid black;
-    box-shadow: 0 0 5px #0000005a;
 
     @media (max-width: 426px) {
         max-width: 10rem;

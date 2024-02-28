@@ -6,6 +6,7 @@ import { IFullItem, IFullItemWithCount } from '../../../models/IAreaItem';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
+import SquareButton from '../../Buttons/SquareButton';
 
 interface IShopBuyItemProp {
     $fullItem: IFullItem;
@@ -70,24 +71,21 @@ function ShopBuyItem({
                 <CraftBlock>
                     {
                         $countCanBuy
-                            ? <Button onClick={
-                                $isSelected
-                                    ? () => $onClickBuyItem(rangeCount)
-                                    : () => $setSelectedId()}>
-                                {
-                                    $isSelected
-                                        ? '🗸'
-                                        : '+'
-                                }
-                            </Button>
+                            ? $isSelected
+                                ? <SquareButton $onClick={() => $onClickBuyItem(rangeCount)} >
+                                    🗸
+                                </SquareButton>
+                                : <SquareButton $onClick={() => $setSelectedId()} >
+                                    +
+                                </SquareButton>
                             : null
                     }
                     {
                         $isSelected && $countCanBuy
-                        ? <Button onClick={() => onClickCancelSelect()}>
-                            ✖
-                        </Button>
-                        : null
+                            ? <SquareButton $onClick={() => onClickCancelSelect()}>
+                                ✖
+                            </SquareButton>
+                            : null
                     }
                     {
                         $isSelected && $countCanBuy > 1 && $count > 1
@@ -187,26 +185,6 @@ const CountRange = styled.input`
         height: 5px;
     }
 
-`
-
-const Button = styled.div`
-    font-size: 1.5rem;
-    line-height: 0;
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 5px black;
-    border-radius: 5px;
-    user-select: none;
-
-    cursor: pointer;
-    transition: 0.1s;
-
-    &:hover{
-        transform: scale(0.95);
-    }
 `
 
 const CraftBlock = styled.div`

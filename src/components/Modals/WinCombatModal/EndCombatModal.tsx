@@ -3,6 +3,7 @@ import { scrollBarX } from '../../../styles/scrollbars';
 import WinCombatItem from './WinCombatItem';
 import Modal from '../Modal';
 import Title from '../../Title/Title';
+import SquareButton from '../../Buttons/SquareButton';
 
 interface IEndCombatModal {
     $items: {
@@ -19,6 +20,7 @@ function EndCombatModal({ $items, $finishBattle, $isWin }: IEndCombatModal) {
         <Modal 
             $closeButtonFunction={() => {}}
             $flexDirection='column' 
+            $alignItems='center'
             $size={$isWin ? 'medium' : 'small'}>
             <TextBlock>
                 <Title $size='2rem'>
@@ -47,41 +49,17 @@ function EndCombatModal({ $items, $finishBattle, $isWin }: IEndCombatModal) {
                 }
                 
             </List>
-            <Button onClick={() => $finishBattle($isWin)}>
+            <SquareButton 
+                $fontSize='3rem'
+                $onClick={() => $finishBattle($isWin)}>
                 ✔
-            </Button>
+            </SquareButton>
         </Modal>
     );
 }
 
 const TextBlock = styled.div`
     text-align: center;
-`
-
-const Button = styled.div`
-    font-size: 1.5em;
-    color: white;
-    border-radius: 50%;
-    height: 1.5em;
-    width: 1.5em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1.3em;
-    background: #308d30;
-    transition: .1s;
-    user-select: none;
-    position: absolute;
-    margin: 1.3em auto;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    cursor: pointer;
-    z-index: 9;
-
-    &:hover{
-        transform: scale(0.9);
-    }
 `
 
 const List = styled.div`

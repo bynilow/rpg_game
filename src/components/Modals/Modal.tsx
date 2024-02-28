@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import CircleButton from '../Buttons/CircleButton';
+import { palette } from '../../styles/palette';
 
 interface IModal {
     $backgroundColor?: string;
     $flexDirection: 'row' | 'column';
-    $alignItems?: '';
+    $alignItems?: string;
     $isCloseButton?: boolean;
     $isEnableAnims?: boolean;
     $closeButtonFunction: Function;
@@ -17,7 +18,7 @@ interface IModal {
 }
 
 function Modal({
-    $backgroundColor = 'white',
+    $backgroundColor = palette.backgroundColor,
     children,
     $flexDirection,
     $alignItems = '',
@@ -63,7 +64,7 @@ function Modal({
                 $justifyContent={$justifyContent} >
                 {
                     $isCloseButton
-                        ? <CircleButton symbol='✕' click={() => onClickCloseButton()} />
+                        ? <CircleButton symbol={palette.cancelMark} click={() => onClickCloseButton()} />
                         : null
                 }
 
@@ -131,7 +132,6 @@ const ModalInner = styled.div<IModalBlockProps>`
     right: 0;
     margin: auto;
     padding: 1.3rem;
-    background-color: white;
     box-shadow: 0 0 10px #00000050;
     border-radius: 15px;
     display: flex;

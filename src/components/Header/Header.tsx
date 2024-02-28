@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import Container from '../Container/Container';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import Avatar from '../Avatar/Avatar';
@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { getRandomNumber } from '../../functions/Random';
 import { getStats } from '../../functions/Stats';
 import { setHealthPoints } from '../../store/reducers/ActionCreators';
+import SquareButton from '../Buttons/SquareButton';
+import Wrapper from '../Wrapper/Wrapper';
 
 interface IHeader {
     $openInventory: Function;
@@ -87,20 +89,49 @@ function Header({ $openInventory, $openSkills, $openCraft, $openCharacter }: IHe
                         $image={'icons/items/other/coin.png'} 
                         width={'35px'} />
                 </Coins>
-                <Button onClick={() => $openInventory()}>
+
+                <SquareButton 
+                    $isSquare={false}
+                    $fontSize='1rem'
+                    $onClick={() => $openInventory()}>
                     Инвентарь
-                </Button>
-                <Button onClick={() => $openCraft()}>
+                </SquareButton>
+
+                <SquareButton 
+                    $isSquare={false}
+                    $fontSize='1rem'
+                    $onClick={() => $openCraft()}>
                     Крафт
-                </Button>
-                <Button onClick={() => $openCharacter()}>
+                </SquareButton>
+
+                <SquareButton 
+                    $isSquare={false}
+                    $fontSize='1rem'
+                    $onClick={() => $openCharacter()}>
                     Персонаж
-                </Button>
+                </SquareButton>
             </ButtonsBlock>
         </Block>
     );
 }
 
+const PointsTextAnim = keyframes`
+    0%{
+        transform: rotate(0deg) scale(1);
+    }
+    8%{
+        transform: rotate(20deg) scale(1.1);
+    }
+    30%{
+        transform: rotate(-380deg) scale(1);
+    }
+    40%{
+        transform: rotate(-360deg);
+    }
+    100%{
+        transform: rotate(-360deg);
+    }
+`
 
 const PointsText = styled.p`
     position: absolute;
@@ -112,6 +143,7 @@ const PointsText = styled.p`
     background-color: white;
     box-shadow: 0 0 5px black;
 
+    animation: ${PointsTextAnim} 7s ease infinite;
 `
 
 const LevelLine = styled.progress`
@@ -147,14 +179,13 @@ const LevelLine = styled.progress`
 
 
 const LineBlock = styled.div`
+    ${Wrapper}
+    
     position: relative;
     max-width: 100%;
     height: 2.5rem;
     padding: 0 10px;
     transition: .1s;
-    background-color: #ffffff;
-    box-shadow: 0 0 5px black;
-    border-radius: 10px;
     display: flex;
     gap: 10px;
     justify-content: right;
@@ -207,35 +238,17 @@ const CoinsText = styled.p`
 `
 
 const Coins = styled.div`
+    ${Wrapper}
+
     max-width: 7rem;
     height: 2.5rem;
     padding: 0 10px;
     transition: .1s;
     background-color: #ffffff;
-    box-shadow: 0 0 5px black;
-    border-radius: 10px;
     display: flex;
     gap: 10px;
     justify-content: right;
     align-items: center;
-`
-
-const Button = styled.div`
-    user-select: none;
-    cursor: pointer;
-    height: 2.5rem;
-    padding: 0 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: .1s;
-    background-color: #ffffff;
-    box-shadow: 0 0 5px black;
-    border-radius: 10px;
-    &:hover{
-        transform: scale(0.95);
-        background-color: #cecece;
-    }
 `
 
 const ButtonsBlock = styled.div`
