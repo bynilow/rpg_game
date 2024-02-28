@@ -146,6 +146,64 @@ const baseStats: IPlayerBaseStats = {
     }
 }
 
+const emptyPlayer: IPlayer = {
+    title: 'character player',
+    avatar: '',
+    health: 100,
+    actionText: {
+        communicationText: [],
+        combatText: ['ударил'],
+        critDamageText: 'ударил сильно',
+        successBlockingText: 'заблокировал удар',
+        successBlockingCritText: 'заблокировал крит',
+        failedBlockingText: '',
+        dodgeText: 'увернулся',
+        missText: 'промахнулся'
+    },
+    level: 1,
+    currentXP: 0,
+    skillPoints: 10,
+    coins: 0,
+    headStats: {
+        healthMultiplier: 0,
+        missChance: 0,
+        dodgeChance: 0,
+        speedMovement: 0,
+        speedAttack: 0
+    },
+    chestStats: {
+        healthMultiplier: 0,
+        missChance: 0,
+        dodgeChance: 0,
+        speedMovement: 0,
+        speedAttack: 0
+    },
+    footStats: {
+        healthMultiplier: 0,
+        missChance: 0,
+        dodgeChance: 0,
+        speedMovement: 0,
+        speedAttack: 0
+    },
+    weaponStats: {
+        damage: 0,
+        missChance: 0,
+        blockingChancePercent: 0,
+        blockingMultiplier: 0,
+        critDamageMultiplier: 0,
+        critChance: 0,
+        speedAttack: 0
+    },
+    axeStats: {
+        miningSpeed: 0,
+        doubleChancePercent: 0
+    },
+    pickaxeStats: {
+        miningSpeed: 0,
+        doubleChancePercent: 0
+    }
+}
+
 interface IUserSlice {
     inventory: IItemInventory[];
     player: IPlayer;
@@ -153,9 +211,9 @@ interface IUserSlice {
 }
 
 const initialState: IUserSlice = {
-    inventory: [],
-    player: JSON.parse(localStorage.player),
-    playerSkills: JSON.parse(localStorage.skills),
+    inventory: localStorage.inventory ? JSON.parse(localStorage.inventory) : [],
+    player: localStorage.player ? JSON.parse(localStorage.player) : emptyPlayer,
+    playerSkills: localStorage.skills ? JSON.parse(localStorage.skills) : baseStats,
 }
 
 export const userSlice = createSlice({
