@@ -1,15 +1,14 @@
-import styled from 'styled-components'
-import Modal from '../Modal';
-import CircleButton from '../../Buttons/CircleButton';
-import Section from '../../Section/Section';
-import SkillElement from './SkillElement';
-import { scrollBarX } from '../../../styles/scrollbars';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { addSkills, decrementSkillPoints } from '../../../store/reducers/ActionCreators';
-import Title from '../../Title/Title';
-import SquareButton from '../../Buttons/SquareButton';
 import { palette } from '../../../styles/palette';
+import { scrollBarX } from '../../../styles/scrollbars';
+import SquareButton from '../../Buttons/SquareButton';
+import Section from '../../Section/Section';
+import Title from '../../Title/Title';
+import Modal from '../Modal';
+import SkillElement from './SkillElement';
 
 interface ISkillsModalProps {
     $closeModal: Function;

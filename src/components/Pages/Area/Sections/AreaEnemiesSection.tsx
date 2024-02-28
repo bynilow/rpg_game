@@ -1,15 +1,14 @@
-import styled, { keyframes } from 'styled-components'
+import { useEffect } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { Enemies } from '../../../../data/Enemies';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { IAreaCurrentEnemy } from '../../../../models/IEnemy';
+import { updateAreaEnemies } from '../../../../store/reducers/ActionCreators';
+import { scrollBarX } from '../../../../styles/scrollbars';
 import Section from '../../../Section/Section';
+import Title from '../../../Title/Title';
 import MinutesRemaining from '../UpdatedMinutes/MinutesRemaining';
 import AreaEnemy from './Mapped/AreaEnemy';
-import { Enemies } from '../../../../data/Enemies';
-import { IStats } from '../../../../functions/Stats';
-import { IAreaCurrentEnemy } from '../../../../models/IEnemy';
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { updateAreaEnemies } from '../../../../store/reducers/ActionCreators';
-import Title from '../../../Title/Title';
-import { scrollBarX } from '../../../../styles/scrollbars';
 
 interface IAreaEnemiesSectionProps {
     $isBlocked: boolean;
@@ -24,7 +23,7 @@ function AreaEnemiesSection({
     $onClickStartBattle,
     $setTraderId}: IAreaEnemiesSectionProps) {
 
-    const {currentLocation} = useAppSelector(state => state.userReducer);
+    const {currentLocation} = useAppSelector(state => state.areaReducer);
 
     const dispatch = useAppDispatch();
 

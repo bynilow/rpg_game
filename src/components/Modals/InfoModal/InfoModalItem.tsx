@@ -7,6 +7,8 @@ import Section from '../../Section/Section';
 import Title from '../../Title/Title';
 import Characteristics from './Characteristics/Characteristics';
 import InfoElem from './InfoElem';
+import { Items } from '../../../data/ItemsData';
+import { Enemies } from '../../../data/Enemies';
 
 interface IModalItem {
     $id: string;
@@ -17,9 +19,9 @@ interface IModalItem {
 
 function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
 
-    const { areaItems, areas, enemies } = useAppSelector(state => state.userReducer);
+    const { areas } = useAppSelector(state => state.areaReducer);
 
-    const [thisItem, setThisItem] = useState(areaItems.find(i => i.id === $id)!);
+    const [thisItem, setThisItem] = useState(Items.find(i => i.id === $id)!);
 
     const backgroundColor = getItemBackground(thisItem.rare);
     const backgroundHoveredColor = getItemHoveredBackground(thisItem.rare);
@@ -86,7 +88,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                                     })} />)
                     }
                     {
-                        enemies.filter(e => e.possibleLoot.findIndex(i => i.id === $id) !== -1)
+                        Enemies.filter(e => e.possibleLoot.findIndex(i => i.id === $id) !== -1)
                             .map(ef =>
                                 <InfoElem
                                     key={ef.id}
@@ -126,7 +128,7 @@ function ItemModal({ $closeModal, $changeWhatInfo, $id }: IModalItem) {
                 </Title>
                 <List>
                     {
-                        areaItems.filter(i => i.itemsToCraft).filter(i => i.itemsToCraft!.find(fi => fi.id === $id))
+                        Items.filter(i => i.itemsToCraft).filter(i => i.itemsToCraft!.find(fi => fi.id === $id))
                             .map(i => <InfoElem
                                 key={i.id}
                                 id={i.id}

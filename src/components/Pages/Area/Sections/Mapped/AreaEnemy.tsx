@@ -3,6 +3,7 @@ import { useAppSelector } from '../../../../../hooks/redux';
 import { getEnemyBackground, getHoveredEnemyBackground } from '../../../../../styles/backgrounds';
 import Avatar from '../../../../Avatar/Avatar';
 import { AreaThing } from './AreaMapped';
+import { Enemies } from '../../../../../data/Enemies';
 
 
 interface IAreaEnemyProps {
@@ -16,9 +17,7 @@ interface IAreaEnemyProps {
 
 function AreaEnemy({ id, $idInArea, $level, $index, $onClick, $isBlocked }: IAreaEnemyProps) {
 
-    const {enemies} = useAppSelector(state => state.userReducer);
-
-    const enemy = enemies.find(e => e.id === id)!;
+    const enemy = Enemies.find(e => e.id === id)!;
 
     return (
         <AreaEnemyBlock 

@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { getCountCanCraft } from '../../../functions/GetCountCanCraft';
+import { getRandomNumberForLoot } from '../../../functions/Random';
+import { sortFilterCraftItems } from '../../../functions/Sorting/SortingCraft';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { IFullItem, IFullItemWithCount, rareList } from '../../../models/IAreaItem';
-import { addItemToInventory, addItemsToInventory, addXP, removeItemsFromInventory } from '../../../store/reducers/ActionCreators';
+import { IChangeInfo } from '../../../models/IArea';
+import { IFullItem, IFullItemWithCount } from '../../../models/IAreaItem';
+import { addItemsToInventory, addXP, removeItemsFromInventory } from '../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../styles/scrollbars';
+import CheckboxSearch from '../../SearchBar/CheckboxSearch';
+import Dropdown from '../../SearchBar/Dropdown';
+import Input from '../../SearchBar/Input';
+import ReverseButton from '../../SearchBar/ReverseButton';
+import Title from '../../Title/Title';
 import Modal from '../Modal';
 import CraftItem from './CraftItem';
-import { getRandomNumberForLoot } from '../../../functions/Random';
-import InfoModal from '../InfoModal/InfoModal';
-import { IChangeInfo } from '../../../models/IArea';
-import Title from '../../Title/Title';
-import Input from '../../SearchBar/Input';
-import Dropdown from '../../SearchBar/Dropdown';
-import CheckboxSearch from '../../SearchBar/CheckboxSearch';
-import ReverseButton from '../../SearchBar/ReverseButton';
-import { sortFilterCraftItems } from '../../../functions/Sorting/SortingCraft';
-import { getCountCanCraft } from '../../../functions/GetCountCanCraft';
+import { Items } from '../../../data/ItemsData';
 
 interface ICraftModal {
     $closeModal: Function;
@@ -24,7 +24,7 @@ interface ICraftModal {
 
 function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
 
-    const { areaItems, playerSkills, inventory } = useAppSelector(state => state.userReducer);
+    const { playerSkills, inventory } = useAppSelector(state => state.userReducer);
     const dispatch = useAppDispatch();
 
     const [inputText, setInputText] = useState('');
@@ -34,14 +34,14 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
     const [isReadyToCraft, setIsReadyCraft] = useState(false);
     const [isReversed, setIsReversed] = useState(false);
 
-    const [sortedItems, setSortedItems] = useState<IFullItem[]>(areaItems.filter(i => i.itemsToCraft).map(i => ({...i, localId: new Date().toISOString()})));
+    const [sortedItems, setSortedItems] = useState<IFullItem[]>(Items.filter(i => i.itemsToCraft).map(i => ({...i, localId: new Date().toISOString()})));
 
     const sortFilterInventory = async () => {
         setSortedItems(await sortFilterCraftItems({
             inputText,
             inventory,
             isReversed,
-            items: areaItems,
+            items: Items,
             onlyReadyToCraft: isReadyToCraft,
             selectedMaterial,
             selectedRare,
@@ -60,10 +60,10 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
             count.push(getRandomNumberForLoot(playerSkills.craftDoubleLootPercentChance.currentScores));
         }
         const sumCount = count.reduce((a,cv) => a + cv, 0);
-        dispatch(addItemToInventory({
+        dispatch(addItemsToInventory([{
             ...itemCraft,
             dateReceiving: new Date().toISOString(),
-            count: sumCount}));
+            count: sumCount}]));
         dispatch(removeItemsFromInventory(itemsRemove));
         const experience = itemCraft.baseCountXP * sumCount * playerSkills.experienceMultiplier.currentScores;
         dispatch(addXP(experience));
@@ -143,10 +143,10 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
                                         + getCountCanCraft({item, inventory})}
                                     $index={ind}
                                     $openInfoModal={(info: IChangeInfo) => $openInfoModal(info)}
-                                    $fullItem={areaItems.find(ai => ai.id === item.id) || areaItems[0]}
+                                    $fullItem={Items.find(ai => ai.id === item.id) || Items[0]}
                                     $playerCraftingSpeed={playerSkills.craftSpeed.currentScores}
                                     $craftItem={(count: number, itemsToRemove: IFullItemWithCount[]) => createItem({
-                                        ...areaItems.find(ai => ai.id === item.id)!,
+                                        ...Items.find(ai => ai.id === item.id)!,
                                         count 
                                     }, itemsToRemove)}
                                     $craftingId={craftingId}

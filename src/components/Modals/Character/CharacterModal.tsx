@@ -1,16 +1,15 @@
-import styled from 'styled-components'
-import Modal from '../Modal';
-import CircleButton from '../../Buttons/CircleButton';
-import Section from '../../Section/Section';
-import { scrollBarX } from '../../../styles/scrollbars';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { useEffect, useState } from 'react';
-import { addItemToInventory, addSkills, decrementSkillPoints } from '../../../store/reducers/ActionCreators';
-import SelectEquipmentModal from '../SelectEquipmentModal/SelectEquipmentModal';
-import Avatar from '../../Avatar/Avatar';
-import { getItemBackground } from '../../../styles/backgrounds';
+import styled from 'styled-components';
 import { getStats } from '../../../functions/Stats';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { addItemsToInventory } from '../../../store/reducers/ActionCreators';
+import { getItemBackground } from '../../../styles/backgrounds';
+import { scrollBarX } from '../../../styles/scrollbars';
+import Avatar from '../../Avatar/Avatar';
 import Title from '../../Title/Title';
+import Modal from '../Modal';
+import SelectEquipmentModal from '../SelectEquipmentModal/SelectEquipmentModal';
+import { Items } from '../../../data/ItemsData';
 
 interface ICharacterModal {
     $closeModal: Function;
@@ -18,7 +17,7 @@ interface ICharacterModal {
 
 function CharacterModal({ $closeModal }: ICharacterModal) {
 
-    const { playerSkills, player, inventory, areaItems } = useAppSelector(state => state.userReducer);
+    const { playerSkills, player, inventory } = useAppSelector(state => state.userReducer);
 
     const dispatch = useAppDispatch();
 
@@ -33,10 +32,10 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
     });
 
     const onClickAddItems = () => {
-        dispatch(addItemToInventory({
-            ...areaItems.find(i => i.id === 'pickaxe_legendary')!,
+        dispatch(addItemsToInventory([{
+            ...Items.find(i => i.id === 'pickaxe_legendary')!,
             count: 1
-        }))
+        }]))
     }
 
     const [equippedItems, setEquippedItems] = useState({

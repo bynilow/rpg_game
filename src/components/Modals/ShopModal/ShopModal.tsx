@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Enemies } from '../../../data/Enemies';
+import { Items } from '../../../data/ItemsData';
 import { getStats } from '../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IChangeInfo } from '../../../models/IArea';
@@ -7,11 +9,11 @@ import { IFullItemWithCount } from '../../../models/IAreaItem';
 import { buyItem, sellItem } from '../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../styles/scrollbars';
 import Avatar from '../../Avatar/Avatar';
+import Input from '../../SearchBar/Input';
+import Title from '../../Title/Title';
 import Modal from '../Modal';
 import ShopBuyItem from './ShopBuyItem';
 import ShopSellItem from './ShopSellItem';
-import Input from '../../SearchBar/Input';
-import Title from '../../Title/Title';
 
 interface IShopModal {
     $closeModal: Function;
@@ -22,14 +24,16 @@ interface IShopModal {
 
 function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: IShopModal) {
 
-    const { areas, areaItems, playerSkills, inventory, enemies, player } = useAppSelector(state => state.userReducer);
+    const { areas } = useAppSelector(state => state.areaReducer);
+    const { playerSkills, inventory, player } = useAppSelector(state => state.userReducer);
+    
     const dispatch = useAppDispatch();
 
     const getTrader = () => {
         return {
             ...areas.find(a => a.id === $locationId)!
                 .currentEnemies.find(t => t.id === $traderId)!,
-            trader: enemies.find(t => t.id === $traderId)!
+            trader: Enemies.find(t => t.id === $traderId)!
         }
     }
 
@@ -148,7 +152,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                                 <Coins>
                                     {player.coins.toFixed(1)}$
                                     <Avatar
-                                        $image={areaItems.find(c => c.id === 'coin')!.avatar}
+                                        $image={Items.find(c => c.id === 'coin')!.avatar}
                                         width='2rem' />
                                 </Coins>
                             </InputCoinsBlock>
@@ -163,7 +167,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                                         key={i.id + getCountCanBuy(getBuyCost(i.cost))}
                                         $index={ind}
                                         $openInfoModal={(info: IChangeInfo) => $openInfoModal(info)}
-                                        $fullItem={areaItems.find(ai => ai.id === i.id) || areaItems[0]}
+                                        $fullItem={Items.find(ai => ai.id === i.id) || Items[0]}
                                         $onClickBuyItem={(count: number) => onClickBuyItem({ ...i, count }, getBuyCost(i.cost))}
                                         $isSelected={selectedId === i.id}
                                         $setSelectedId={() => setSelectedId(i.id)}
@@ -178,7 +182,7 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
                                         key={i.id + getCountCanBuy(getBuyCost(i.cost))}
                                         $index={ind}
                                         $openInfoModal={(info: IChangeInfo) => $openInfoModal(info)}
-                                        $fullItem={areaItems.find(ai => ai.id === i.id) || areaItems[0]}
+                                        $fullItem={Items.find(ai => ai.id === i.id) || Items[0]}
                                         $onClickSellItem={(count: number) => onClickSellItem({ ...i, count }, getSellPrice(i.cost))}
                                         $isSelected={selectedId === i.id}
                                         $setSelectedId={() => setSelectedId(i.id)}

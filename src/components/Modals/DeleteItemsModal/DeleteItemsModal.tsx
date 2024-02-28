@@ -1,13 +1,13 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { scrollBarX } from '../../../styles/scrollbars';
-import Modal from '../Modal';
-import Title from '../../Title/Title';
-import Range from '../../Range/Range';
-import { useState } from 'react';
-import SquareButton from '../../Buttons/SquareButton';
 import { IFullItemWithCount } from '../../../models/IAreaItem';
-import { removeItemFromInventory } from '../../../store/reducers/ActionCreators';
+import { removeItemsFromInventory } from '../../../store/reducers/ActionCreators';
+import { scrollBarX } from '../../../styles/scrollbars';
+import SquareButton from '../../Buttons/SquareButton';
+import Range from '../../Range/Range';
+import Title from '../../Title/Title';
+import Modal from '../Modal';
 
 interface IDeleteItemsModal {
     $item: IFullItemWithCount
@@ -25,7 +25,7 @@ function DeleteItemsModal({$closeModal, $itemTitle, $min, $max, $item}: IDeleteI
     const [count, setCount] = useState($min);
 
     const onClickDeleteItem = () => {
-        dispatch(removeItemFromInventory({...$item, count}));
+        dispatch(removeItemsFromInventory([{...$item, count}]));
         $closeModal();
     }
 

@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import styled from 'styled-components'
-import { useAppSelector } from '../../../hooks/redux';
-import { IChangeInfo } from '../../../models/IArea';
+import styled from 'styled-components';
+import { Items } from '../../../data/ItemsData';
 import { getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 import Title from '../../Title/Title';
@@ -13,9 +11,7 @@ interface IWinCombatItem {
 
 function WinCombatItem({id, count}:IWinCombatItem) {
 
-    const {areaItems} = useAppSelector(state => state.userReducer);
-
-    const item = areaItems.find(i => i.id === id)!;
+    const item = Items.find(i => i.id === id)!;
 
     return ( 
         <Item 

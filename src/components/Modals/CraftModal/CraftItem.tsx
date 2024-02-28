@@ -9,6 +9,7 @@ import CircleButton from '../../Buttons/CircleButton';
 import NeedItem from './NeedItem';
 import Title from '../../Title/Title';
 import SquareButton from '../../Buttons/SquareButton';
+import { Items } from '../../../data/ItemsData';
 
 
 interface ICraftItemProps {
@@ -40,7 +41,7 @@ function CraftItem({
     $clearSelectedId,
     $openInfoModal}: ICraftItemProps) {
 
-    const {areaItems, inventory} = useAppSelector(state => state.userReducer)
+    const {inventory} = useAppSelector(state => state.userReducer)
     const dispatch = useAppDispatch();
 
     const [isCrafting, setIsCrafting] = useState(false);
@@ -83,7 +84,7 @@ function CraftItem({
             const itemsToRemove: IFullItemWithCount[] = 
                 $fullItem.itemsToCraft!.map(i => {
                     return { 
-                        ...areaItems.find(fi => fi.id === i.id)!, 
+                        ...Items.find(fi => fi.id === i.id)!, 
                         count: i.count*rangeCount }
                         });
 
@@ -146,7 +147,7 @@ function CraftItem({
                             <NeedItem 
                                 key={i.id}
                                 $id={i.id}
-                                $title={areaItems.find(ai => ai.id === i.id)?.title || ''}
+                                $title={Items.find(ai => ai.id === i.id)?.title || ''}
                                 $countNeed={i.count*rangeCount}
                                 $countHave={inventory.find(pi => pi.item.id === i.id)?.count || 0} />)
                     }

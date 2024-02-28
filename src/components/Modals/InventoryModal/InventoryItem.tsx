@@ -1,14 +1,13 @@
-import styled from 'styled-components'
+import { useState } from 'react';
+import styled from 'styled-components';
+import { useAppDispatch } from '../../../hooks/redux';
 import { IItemInventory } from '../../../models/IInventory';
+import { equipItem, removeItemsFromInventory } from '../../../store/reducers/ActionCreators';
+import { palette } from '../../../styles/palette';
 import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
-import { useState } from 'react';
-import { equipItem, removeItemFromInventory } from '../../../store/reducers/ActionCreators';
-import { IFullItemWithCount } from '../../../models/IAreaItem';
-import { useAppDispatch } from '../../../hooks/redux';
-import Title from '../../Title/Title';
 import SquareButton from '../../Buttons/SquareButton';
-import { palette } from '../../../styles/palette';
+import Title from '../../Title/Title';
 
 interface IInvItemProps {
     $onClickMultipleDelete: Function;
@@ -30,7 +29,7 @@ function InventoryItem({item, count, $onClickMultipleDelete}:IItemInventory & II
 
     const onClickDeleteItem = () => {
         if(isSelectToDelete){
-            dispatch(removeItemFromInventory({...item, count: 1}));
+            dispatch(removeItemsFromInventory([{...item, count: 1}]));
         }
         else{
             if(count > 2){

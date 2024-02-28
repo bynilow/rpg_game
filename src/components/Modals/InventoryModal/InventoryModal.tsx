@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { sortFilterInventory } from '../../../functions/Sorting/SortingInventory';
 import { useAppSelector } from '../../../hooks/redux';
-import { IFullItemWithCount, rareList } from '../../../models/IAreaItem';
+import { IFullItemWithCount } from '../../../models/IAreaItem';
 import { scrollBarX } from '../../../styles/scrollbars';
 import Dropdown from '../../SearchBar/Dropdown';
 import Input from '../../SearchBar/Input';
 import ReverseButton from '../../SearchBar/ReverseButton';
 import Title from '../../Title/Title';
+import DeleteItemsModal from '../DeleteItemsModal/DeleteItemsModal';
 import Modal from '../Modal';
 import InventoryEmptyItem from './InventoryEmptyItem';
 import InventoryItem from './InventoryItem';
-import { sortFilterInventory } from '../../../functions/Sorting/SortingInventory';
-import DeleteItemsModal from '../DeleteItemsModal/DeleteItemsModal';
 
 interface IInventoryModal {
     closeModal: Function;

@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import styled from 'styled-components'
-import Title from '../../Title/Title';
+import styled from 'styled-components';
 import SquareButton from '../../Buttons/SquareButton';
+import Title from '../../Title/Title';
 
 interface ISkillElementProps {
     id: string;

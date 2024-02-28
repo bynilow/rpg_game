@@ -1,4 +1,4 @@
-import { IFullItem } from './../models/IAreaItem';
+import { IFullItem } from '../models/IAreaItem';
 
 export const Items: IFullItem[] = [
     {

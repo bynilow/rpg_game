@@ -1,3 +1,4 @@
+import { Items } from "../../data/ItemsData";
 import { IFullItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { IEnemyLoot } from "../../models/IEnemy";
 import { getChance, getRandomNumber } from "../Random";
@@ -7,11 +8,10 @@ interface IGetWinLoot {
     baseEnemyCountXP: number;
     playerExpMultiplier: number;
     enemyLevel: number;
-    areaItems: IFullItem[];
 }
 
 export const getWinLoot = ({
-    possibleLoot, baseEnemyCountXP, playerExpMultiplier, enemyLevel, areaItems }: IGetWinLoot) => {
+    possibleLoot, baseEnemyCountXP, playerExpMultiplier, enemyLevel }: IGetWinLoot) => {
 
     const experienceCount = Number((
         baseEnemyCountXP
@@ -20,7 +20,7 @@ export const getWinLoot = ({
     );
 
     const experienceItem: IFullItemWithCount = {
-        ...areaItems.find(i => i.id === 'experience')!,
+        ...Items.find(i => i.id === 'experience')!,
         count: experienceCount
     };
 
@@ -29,7 +29,7 @@ export const getWinLoot = ({
 
     possibleLoot.forEach(loot => {
         if (getChance(loot.dropChance)) {
-            const foundedItem = areaItems.find(item => item.id === loot.id)!;
+            const foundedItem = Items.find(item => item.id === loot.id)!;
             let count = 0;
             if (loot.id === 'coin') {
                 count = getRandomNumber(loot.countMin + enemyLevel, loot.countMax + enemyLevel * 1.5);

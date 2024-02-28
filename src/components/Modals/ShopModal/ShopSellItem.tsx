@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useAppDispatch } from '../../../hooks/redux';
 import { IChangeInfo } from '../../../models/IArea';
-import { IFullItem, IFullItemWithCount } from '../../../models/IAreaItem';
-import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
+import { IFullItem } from '../../../models/IAreaItem';
+import { getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
-import Title from '../../Title/Title';
 import SquareButton from '../../Buttons/SquareButton';
+import Title from '../../Title/Title';
 
 interface IShopSellItemProps {
     $fullItem: IFullItem;
@@ -31,8 +31,6 @@ function ShopSellItem({
     $onClickSellItem,
     $cost,
     $count}: IShopSellItemProps) {
-
-    const {areaItems, inventory} = useAppSelector(state => state.userReducer);
 
     const dispatch = useAppDispatch();
 

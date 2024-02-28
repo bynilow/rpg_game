@@ -23,7 +23,7 @@ function TimerLine({
                 {
                     $isActive
                         ? $currentTime.toFixed(1)
-                        : $maxTime
+                        : $maxTime.toFixed(1)
                 }s
             </Text>
             <Line

@@ -1,14 +1,12 @@
-import styled, { keyframes } from 'styled-components'
-import Section from '../../../Section/Section';
-import { IAviablePath, IPath } from '../../../../models/IArea';
-import AreaPath from './Mapped/AreaPath';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { IStats } from '../../../../functions/Stats';
 import { useState } from 'react';
-import { goLevel } from '../../../../store/reducers/ActionCreators';
+import styled, { keyframes } from 'styled-components';
 import { getAreaFromId } from '../../../../functions/Areas';
-import Title from '../../../Title/Title';
+import { IStats } from '../../../../functions/Stats';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { scrollBarX } from '../../../../styles/scrollbars';
+import Section from '../../../Section/Section';
+import Title from '../../../Title/Title';
+import AreaPath from './Mapped/AreaPath';
 
 interface IAreaPathsSectionProps {
     $playerStats: IStats;
@@ -27,7 +25,8 @@ function AreaPathsSection({
     $clearActionType,
     $goLevel}: IAreaPathsSectionProps) {
 
-    const {availablePaths, areas, inventory} = useAppSelector(state => state.userReducer);
+    const {availablePaths, areas} = useAppSelector(state => state.areaReducer);
+    const {inventory} = useAppSelector(state => state.userReducer);
     const dispatch = useAppDispatch();
 
     const [inventoryWeight, setInventoryWeight] = useState(inventory.reduce((a,v) => a + v.item.weight * v.count ,0));

@@ -1,23 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { IActionTexts, IEnemy } from '../../../models/IEnemy';
-import { scrollBarX } from '../../../styles/scrollbars';
-import Avatar from '../../Avatar/Avatar';
-import EndCombatModal from '../../Modals/WinCombatModal/EndCombatModal';
-import CombatText from './CombatText';
-import { addItemsToInventory, addXP, setDeadEnemy, setHealthPoints, setPlayer } from '../../../store/reducers/ActionCreators';
-import { IFullItemWithCount } from '../../../models/IAreaItem';
-import { IPlayer } from '../../../models/IPlayer';
-import Section from '../../Section/Section';
-import { getChance, getRandomNumber } from '../../../functions/Random';
+import { Enemies } from '../../../data/Enemies';
+import { getAttackData } from '../../../functions/Combat/GetAttackData';
+import { getWinLoot } from '../../../functions/Combat/GetWinLoot';
+import { getRandomNumber } from '../../../functions/Random';
 import { getStats } from '../../../functions/Stats';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { ICombatHistory } from '../../../models/ICombat';
+import { IEnemy } from '../../../models/IEnemy';
+import { addItemsToInventory, addXP, setDeadEnemy, setHealthPoints } from '../../../store/reducers/ActionCreators';
+import EndCombatModal from '../../Modals/WinCombatModal/EndCombatModal';
 import CharacterSection from './Sections/CharacterSection';
 import EnemySection from './Sections/EnemySection';
-import { ICombatHistory } from '../../../models/ICombat';
 import HistorySection from './Sections/HistorySection';
-import { getWinLoot } from '../../../functions/Combat/GetWinLoot';
-import { getAttackData } from '../../../functions/Combat/GetAttackData';
 
 interface ICombatPage {
     $enemyId: string;
@@ -27,16 +22,13 @@ interface ICombatPage {
 }
 
 function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombatPage) {
-    const {
-        enemies,
-        areaItems,
-        player,
-        playerSkills,
-        currentLocation } = useAppSelector(state => state.userReducer);
+
+    const { currentLocation } = useAppSelector(state => state.areaReducer);
+    const { player,playerSkills } = useAppSelector(state => state.userReducer);
 
     const dispatch = useAppDispatch();
 
-    const foundedEnemy = enemies.find(e => e.id === $enemyId)!;
+    const foundedEnemy = Enemies.find(e => e.id === $enemyId)!;
 
     const [enemy, setEnemy] = useState<IEnemy>({
         ...foundedEnemy,
@@ -154,7 +146,6 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
 
     const winCombat = () => {
         const items = getWinLoot({
-            areaItems,
             baseEnemyCountXP: enemy.baseCountXP,
             enemyLevel: $level,
             playerExpMultiplier: playerStats.experienceMultiplier,

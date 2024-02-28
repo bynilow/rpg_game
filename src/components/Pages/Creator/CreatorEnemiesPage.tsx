@@ -4,7 +4,7 @@ import { IAreaItem, ICraftItem, IFullItem, IFullItemWithCount, IRare } from '../
 import { IArmor, ITool, IWeapon } from '../../../models/IEquipment';
 import { IAreaEnemy, IEnemy, IEnemyLoot, IEnemyType } from '../../../models/IEnemy';
 import { IArea } from '../../../models/IArea';
-import { Items } from '../../../data/AreaItems';
+import { Items } from '../../../data/ItemsData';
 import { Enemies } from '../../../data/Enemies';
 
 interface ICreatorPageItemProps {

@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { Enemies } from '../../../data/Enemies';
+import { Items } from '../../../data/ItemsData';
 import { useAppSelector } from '../../../hooks/redux';
-import { IChangeInfo } from '../../../models/IArea';
 import { IFullItem } from '../../../models/IAreaItem';
 import { getEnemyBackground, getEnemyColor, getHoveredEnemyBackground } from '../../../styles/backgrounds';
-import { scrollBarX } from '../../../styles/scrollbars';
 import Avatar from '../../Avatar/Avatar';
-import CircleButton from '../../Buttons/CircleButton';
-import Modal from '../Modal';
-import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
 import Title from '../../Title/Title';
 import Characteristics from './Characteristics/Characteristics';
+import InfoElem from './InfoElem';
 
 interface IEnemyModal {
     $id: string;
@@ -22,14 +20,14 @@ interface IEnemyModal {
 
 function EnemyModal({ $closeModal, $changeWhatInfo, $id }: IEnemyModal) {
 
-    const { areaItems, areas, enemies } = useAppSelector(state => state.userReducer);
+    const { areas } = useAppSelector(state => state.areaReducer);
 
 
-    const [thisEnemy, setThisEnemy] = useState(enemies.find(e => e.id === $id)!)
+    const [thisEnemy, setThisEnemy] = useState(Enemies.find(e => e.id === $id)!)
     let enemyItems: IFullItem[] = [];
 
     if (thisEnemy.possibleLoot.length) {
-        enemyItems = thisEnemy.possibleLoot.map(i => areaItems.find(ai => ai.id === i.id)!)!;
+        enemyItems = thisEnemy.possibleLoot.map(i => Items.find(ai => ai.id === i.id)!)!;
     }
     const backgroundColor = getEnemyBackground(thisEnemy.type);
     const backgroundHoveredColor = getHoveredEnemyBackground(thisEnemy.type);

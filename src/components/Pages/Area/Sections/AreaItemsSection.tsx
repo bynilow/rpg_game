@@ -1,15 +1,15 @@
-import styled, { keyframes } from 'styled-components'
-import Section from '../../../Section/Section';
-import MinutesRemaining from '../UpdatedMinutes/MinutesRemaining';
-import { IAreaItem, IFullItem } from '../../../../models/IAreaItem';
-import AreaItem from './Mapped/AreaItem';
 import { useEffect, useState } from 'react';
-import { IStats } from '../../../../functions/Stats';
+import styled, { keyframes } from 'styled-components';
 import { getRandomNumberForLoot } from '../../../../functions/Random';
+import { IStats } from '../../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { addMinedItem, addXP, getAvailablePaths, setInventoryFromStorage, setPlayerFromStorage, setSkillsFromStorage, updateAreaItems } from '../../../../store/reducers/ActionCreators';
-import Title from '../../../Title/Title';
+import { IFullItem } from '../../../../models/IAreaItem';
+import { addXP, mineItemAC, updateAreaItems } from '../../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../../styles/scrollbars';
+import Section from '../../../Section/Section';
+import Title from '../../../Title/Title';
+import MinutesRemaining from '../UpdatedMinutes/MinutesRemaining';
+import AreaItem from './Mapped/AreaItem';
 
 interface IAreaItemsSectionProps {
     $isBlocked: boolean;
@@ -26,7 +26,7 @@ function AreaItemsSection({
     $changeActionType,
     $clearActionType}: IAreaItemsSectionProps) {
 
-    const {availablePaths, currentLocation } = useAppSelector(state => state.userReducer)
+    const { currentLocation } = useAppSelector(state => state.areaReducer)
 
     const dispatch = useAppDispatch();
 
@@ -37,7 +37,7 @@ function AreaItemsSection({
         const chanceExtraLootOre = $playerStats.oreDoubleLootPercentChance;
         const countLoot = getRandomNumberForLoot(miningItem.type === 'ore' ? chanceExtraLootOre : chanceExtraLootTree);
 
-        dispatch(addMinedItem({
+        dispatch(mineItemAC({
             ...miningItem,
             count: countLoot
         }));

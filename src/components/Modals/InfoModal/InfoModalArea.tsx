@@ -1,15 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../../../hooks/redux';
-import { IArea, IChangeInfo } from '../../../models/IArea';
-import { getAreaBackground, getAreaColor, getHoveredAreaBackground } from '../../../styles/backgrounds';
-import { scrollBarX } from '../../../styles/scrollbars';
+import { IChangeInfo } from '../../../models/IArea';
+import { getAreaColor } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
-import CircleButton from '../../Buttons/CircleButton';
-import Modal from '../Modal';
-import InfoElem from './InfoElem';
 import Section from '../../Section/Section';
 import Title from '../../Title/Title';
+import InfoElem from './InfoElem';
 
 interface IModalArea {
     $id: string;
@@ -19,7 +16,7 @@ interface IModalArea {
 
 function AreaModal({ $id, $changeWhatInfo, $closeModal }: IModalArea) {
 
-    const { areas } = useAppSelector(state => state.userReducer);
+    const { areas } = useAppSelector(state => state.areaReducer);
 
     const [thisArea, setThisArea] = useState(areas.find(a => a.id === $id)!);
 

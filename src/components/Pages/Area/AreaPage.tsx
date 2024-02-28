@@ -4,7 +4,8 @@ import { getStats } from '../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IAviablePath, IChangeInfo } from '../../../models/IArea';
 import { IAreaCurrentEnemy } from '../../../models/IEnemy';
-import { getAvailablePaths, goLevel, setInventoryFromStorage, setPlayerFromStorage, setSkillsFromStorage } from '../../../store/reducers/ActionCreators';
+import { getAvailablePaths, goLevel, setInventoryFromStorage } from '../../../store/reducers/ActionCreators';
+import { scrollBarX } from '../../../styles/scrollbars';
 import CircleButton from '../../Buttons/CircleButton';
 import Header from '../../Header/Header';
 import CharacterModal from '../../Modals/Character/CharacterModal';
@@ -18,7 +19,6 @@ import AreaBackground from './AreaBackground';
 import AreaEnemiesSection from './Sections/AreaEnemiesSection';
 import AreaItemsSection from './Sections/AreaItemsSection';
 import AreaPathsSection from './Sections/AreaPathsSection';
-import { scrollBarX } from '../../../styles/scrollbars';
 
 
 interface IAreaPage {
@@ -28,7 +28,8 @@ interface IAreaPage {
 function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const dispatch = useAppDispatch();
-    const { areas, availablePaths, currentLocation, playerSkills, inventory, player } = useAppSelector(state => state.userReducer);
+    const { playerSkills, inventory, player } = useAppSelector(state => state.userReducer);
+    const { areas, availablePaths, currentLocation } = useAppSelector(state => state.areaReducer);
 
     const [isInventoryOpen, setIsInventoryOpen] = useState(false);
 
@@ -98,8 +99,6 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     useEffect(() => {
         dispatch(setInventoryFromStorage());
-        dispatch(setPlayerFromStorage());
-        dispatch(setSkillsFromStorage());
     }, [])
 
     useEffect(() => {

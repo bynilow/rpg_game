@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useAppSelector } from '../../../hooks/redux';
 import { IChangeInfo } from '../../../models/IArea';
-import { IFullItem, IFullItemWithCount } from '../../../models/IAreaItem';
-import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../styles/backgrounds';
+import { IFullItem } from '../../../models/IAreaItem';
+import { getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
 import SquareButton from '../../Buttons/SquareButton';

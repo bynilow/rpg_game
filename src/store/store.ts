@@ -1,8 +1,9 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import userReducer from './reducers/GameSlice'
-
+import areaReducer from './reducers/AreaSlice'
+import userReducer from './reducers/UserSlice'
 
 const rootReducer = combineReducers({
+    areaReducer,
     userReducer
 })
 

@@ -7,6 +7,8 @@ import { getAreaBackground, getEnemyBackground, getHoveredAreaBackground, getHov
 import Avatar from '../../Avatar/Avatar';
 import { useEffect, useState } from 'react';
 import Title from '../../Title/Title';
+import { Items } from '../../../data/ItemsData';
+import { Enemies } from '../../../data/Enemies';
 
 interface IInfoElem {
     id: string
@@ -39,7 +41,7 @@ function InfoElem({
     $isCrafting = false,
     $isTraderItem = false}:IInfoElem) {
 
-    const {areas, areaItems, enemies} = useAppSelector(state => state.userReducer);
+    const {areas} = useAppSelector(state => state.areaReducer);
 
     let thisObject: IArea | IFullItem | IEnemy | null = null;
     let color = '';
@@ -47,12 +49,12 @@ function InfoElem({
 
     switch ($type){
         case 'item':
-            thisObject = areaItems.find(i => i.id === id)!;
+            thisObject = Items.find(i => i.id === id)!;
             color = getItemBackground(thisObject.rare);
             hoveredColor = getItemHoveredBackground(thisObject.rare);
             break;
         case 'enemy':
-            thisObject = enemies.find(e => e.id === id)!;
+            thisObject = Enemies.find(e => e.id === id)!;
             color = getEnemyBackground(thisObject.type);
             hoveredColor = getHoveredEnemyBackground(thisObject.type);
             break;
@@ -131,7 +133,7 @@ function InfoElem({
                             $itemsToCraft
                                 ? $itemsToCraft.map(i => 
                                     <p>
-                                        x{i.count} {areaItems.find(fi => fi.id === i.id)?.title}
+                                        x{i.count} {Items.find(fi => fi.id === i.id)?.title}
                                     </p>)
                                 : null
                         }

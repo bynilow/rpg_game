@@ -8,6 +8,8 @@ import Modal from '../Modal';
 import AreaModal from './InfoModalArea';
 import EnemyModal from './InfoModalEnemy';
 import ItemModal from './InfoModalItem';
+import { Items } from '../../../data/ItemsData';
+import { Enemies } from '../../../data/Enemies';
 
 interface IInfoModal {
     $id: string;
@@ -19,7 +21,7 @@ interface IInfoModal {
 
 function InfoModal({ $id, $closeModal, $whatInfo, $changeInfo }: IInfoModal) {
 
-    const {areaItems, areas, enemies} = useAppSelector(state => state.userReducer);
+    const { areas } = useAppSelector(state => state.areaReducer);
 
     useEffect(() => {
 
@@ -28,11 +30,11 @@ function InfoModal({ $id, $closeModal, $whatInfo, $changeInfo }: IInfoModal) {
     const getBackgroundColor = () => {
         switch($whatInfo){
             case 'item':
-                return getItemBackground(areaItems.find(i => i.id === $id)!.rare);
+                return getItemBackground(Items.find(i => i.id === $id)!.rare);
             case 'area':
                 return getAreaBackground(areas.find(a => a.id === $id)!.color);
             case 'enemy':
-                return getEnemyBackground(enemies.find(e => e.id === $id)!.type);
+                return getEnemyBackground(Enemies.find(e => e.id === $id)!.type);
         }
     }
 

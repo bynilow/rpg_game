@@ -1,15 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Items } from "../../data/AreaItems";
-import { Enemies } from "../../data/Enemies";
-import { Locations } from "../../data/Locations";
-import { IArea, IAviablePath, IPath } from "../../models/IArea";
-import { IBuyItem, IFullItem, IFullItemWithCount } from "../../models/IAreaItem";
-import { IAreaCurrentEnemy, IEnemy, IEnemyDead } from "../../models/IEnemy";
 import { IItemInventory } from "../../models/IInventory";
 import { IPlayer, IPlayerBaseStats, ISkillUp } from "../../models/IPlayer";
-import { Paths } from "../../data/Paths";
-
-
+import { IBuyItem, IFullItemWithCount } from "../../models/IAreaItem";
 
 const baseStats: IPlayerBaseStats = {
     baseDamage: {
@@ -154,206 +146,22 @@ const baseStats: IPlayerBaseStats = {
     }
 }
 
-interface GameSlice {
-    currentLocation: IArea;
-    availablePaths: IAviablePath[];
-    paths: IPath[];
-    areas: IArea[];
-    enemies: IEnemy[];
-    areaItems: IFullItem[];
+interface IUserSlice {
     inventory: IItemInventory[];
     player: IPlayer;
     playerSkills: IPlayerBaseStats;
 }
 
-interface IUpdateAreaItems {
-    levelId: string;
-    date: string;
-    items: {
-        id: string;
-        count: number
-    }[];
-}
-
-interface IUpdateAreaEnemies {
-    enemies: IAreaCurrentEnemy[];
-    levelId: string;
-    date: string;
-}
-
-const initialState: GameSlice = {
-    currentLocation: localStorage.currentLocation ? JSON.parse(localStorage.currentLocation) : Locations[0],
-    availablePaths: [],
-    paths: Paths,
-    areas: localStorage.areas ? JSON.parse(localStorage.areas) : Locations,
-    enemies: Enemies,
-    areaItems: Items,
+const initialState: IUserSlice = {
     inventory: [],
-    player: {
-        title: 'player',
-        health: 100,
-        avatar: '',
-        coins: 0,
-        level: 1,
-        currentXP: 0,
-        skillPoints: 5,
-        actionText: {
-            combatText: [
-                "Сжимает свой кулак и бьет #name прямо по лицу нанеся #damage урона."
-            ],
-            communicationText: [""],
-            critDamageText: "Глубоко вдохнув и ударив кулаком по #name попал в глаз нанеся критические #damage урона!",
-            missText: "Рассек воздух своим кулаком, не нанеся никакого урона.",
-            dodgeText: "#name Применяет уловку и уклоняется от удара.",
-            failedBlockingText: "Блок не удался, и удар #name наносит #damage! Это было больно...",
-            successBlockingCritText: "Совершенное владение щитом оказывает эффект! #name блокирует критический урон и получает всего #damage урона!",
-            successBlockingText: "Совершенное владение щитом оказывает эффект! #name получает всего #damage урона!"
-        },
-        headStats: {
-            speedMovement: 0,
-            dodgeChance: 0,
-            healthMultiplier: 0,
-            missChance: 0,
-            speedAttack: 0
-        },
-        chestStats: {
-            speedMovement: 0,
-            dodgeChance: 0,
-            healthMultiplier: 0,
-            missChance: 0,
-            speedAttack: 0
-        },
-        footStats: {
-            speedMovement: 0,
-            dodgeChance: 0,
-            healthMultiplier: 0,
-            missChance: 0,
-            speedAttack: 0
-        },
-        weaponStats: {
-            damage: 0,
-            critChance: 0,
-            critDamageMultiplier: 0,
-            blockingChancePercent: 0,
-            blockingMultiplier: 0,
-            missChance: 0,
-            speedAttack: 0
-        },
-        axeStats: {
-            doubleChancePercent: 0,
-            miningSpeed: 0
-        },
-        pickaxeStats: {
-            doubleChancePercent: 0,
-            miningSpeed: 0
-        }
-    },
-    playerSkills: baseStats,
-
+    player: JSON.parse(localStorage.player),
+    playerSkills: JSON.parse(localStorage.skills),
 }
 
-export const gameSlice = createSlice({
-    name: 'game',
+export const userSlice = createSlice({
+    name: 'user',
     initialState,
-    reducers: {
-        goLevel(state, action: PayloadAction<string>) {
-            state.currentLocation = state.areas.find(p => p.id === action.payload)!;
-
-            localStorage.currentLocation = JSON.stringify(state.currentLocation);
-        },
-        getAvailablePaths(state, action: PayloadAction<string>) {
-            const levelId = action.payload;
-
-            const paths: IAviablePath[] = state.paths.filter(p => (p.pathA + ' ' + p.pathB).includes(levelId))
-                .map(i => ({
-                    pathId: i.pathA !== levelId ? i.pathA : i.pathB,
-                    time: i.time
-                }))
-            state.availablePaths = paths;
-        },
-        updateAreaItems(state, action: PayloadAction<IUpdateAreaItems>) {
-            const payloadLevelId = action.payload.levelId;
-            const foundedIndex = state.areas.findIndex(e => e.id === payloadLevelId);
-            const payloadItems = action.payload.items;
-
-            const payloadDate = action.payload.date;
-            const nextRespawn = new Date(new Date(payloadDate).setMinutes(
-                new Date(payloadDate).getMinutes() + state.areas[foundedIndex].timeToRespawnAreaItems)).toISOString();
-
-            state.areas[foundedIndex].lastRespawnAreaItems = payloadDate;
-            state.areas[foundedIndex].nextRespawnAreaItems = nextRespawn;
-
-            let items: IFullItem[] = [];
-            payloadItems.forEach(i => {
-                for (let j = 0; j < i.count; j++) {
-                    const foundedItem = state.areaItems.find(si => si.id === i.id)!;
-                    items.push({ ...foundedItem, idInArea: i.id + j });
-                }
-            });
-            
-            state.areas[foundedIndex].currentAreaItems = items!;
-            state.currentLocation = state.areas[foundedIndex];
-
-            localStorage.currentLocation = JSON.stringify(state.currentLocation);
-            localStorage.areas = JSON.stringify(state.areas);
-        },
-        updateAreaEnemies(state, action: PayloadAction<IUpdateAreaEnemies>) {
-            const payloadEnemies = action.payload.enemies;
-            const payloadDate = action.payload.date;
-            const payloadLevelId = payloadEnemies[0].levelId;
-            const foundedIndex = state.areas.findIndex(e => e.id === payloadLevelId);
-
-            const nextRespawn = new Date(new Date(payloadDate).setMinutes(
-                new Date(payloadDate).getMinutes() + state.areas[foundedIndex].timeToRespawnAreaEnemies)).toISOString();
-
-            state.areas[foundedIndex].lastRespawnAreaEnemies = payloadDate;
-            state.areas[foundedIndex].nextRespawnAreaEnemies = nextRespawn;
-
-            let enemies: IAreaCurrentEnemy[] = [];
-            payloadEnemies.forEach((e) => {
-                enemies.push(e);
-            });
-
-            state.areas[foundedIndex].currentEnemies = enemies!;
-            state.currentLocation = state.areas[foundedIndex];
-
-            localStorage.currentLocation = JSON.stringify(state.currentLocation);
-            localStorage.areas = JSON.stringify(state.areas);
-        },
-        mineItem(state, action: PayloadAction<IFullItem>) {
-            const indexLevel = state.areas.findIndex(i => i.id === state.currentLocation?.id);
-            const currentAreaItems = state.areas[indexLevel].currentAreaItems;
-            const idInArea = action.payload.idInArea;
-
-            state.areas[indexLevel].currentAreaItems = state.areas[indexLevel].currentAreaItems.
-                filter(i => i.idInArea !== idInArea);
-
-            state.currentLocation = state.areas[indexLevel];
-
-            localStorage.currentLocation = JSON.stringify(state.currentLocation);
-            localStorage.areas = JSON.stringify(state.areas);
-
-        },
-        setAreasFromStorage(state) {
-            state.areas = JSON.parse(localStorage.areas);
-        },
-        addItemToInventory(state, action: PayloadAction<IFullItemWithCount>) {
-            const foundedItemIndex = state.inventory.findIndex(i => i.item.id === action.payload.id);
-            const date = new Date().toISOString();
-            const count = action.payload.count;
-
-            if (foundedItemIndex !== -1) {
-                state.inventory[foundedItemIndex].count += count;
-                state.inventory[foundedItemIndex].item.dateReceiving = date;
-            }
-            else {
-                state.inventory.push({
-                    item: { ...action.payload, dateReceiving: date },
-                    count
-                })
-            }
-            localStorage.inventory = JSON.stringify(state.inventory);
-        },
+    reducers: { 
         addItemsToInventory(state, action: PayloadAction<IFullItemWithCount[]>) {
             const date = new Date().toISOString();
             const items = action.payload;
@@ -399,26 +207,6 @@ export const gameSlice = createSlice({
         setInventory(state, action: PayloadAction<IItemInventory[]>) {
             state.inventory = action.payload;
         },
-        setEnemyDead(state, action: PayloadAction<IEnemyDead>) {
-            const enemyIdInArea = action.payload.enemyIdInArea;
-            const foundIndexArea = state.areas.findIndex(a => a.id === action.payload.levelId);
-            const foundAreaEnemies = state.areas[foundIndexArea].currentEnemies;
-            state.areas[foundIndexArea].currentEnemies =
-                foundAreaEnemies.filter(e => e.idInArea !== enemyIdInArea);
-
-            state.currentLocation = state.areas[foundIndexArea];
-
-            localStorage.currentLocation = JSON.stringify(state.currentLocation);
-            localStorage.areas = JSON.stringify(state.areas);
-        },
-        setPlayerFromStorage(state, action: PayloadAction<IPlayer>) {
-            state.player = action.payload;
-        },
-        setPlayer(state, action: PayloadAction<IPlayer>) {
-            state.player = action.payload;
-
-            localStorage.player = JSON.stringify(state.player);
-        },
         addXP(state, action: PayloadAction<number>) {
             let gainedXP = action.payload;
             let currentXP = state.player.currentXP;
@@ -454,9 +242,6 @@ export const gameSlice = createSlice({
 
             localStorage.skills = JSON.stringify(state.playerSkills);
         },
-        setSkills(state) {
-            state.playerSkills = JSON.parse(localStorage.skills);
-        },
         decrementSkillPoints(state, action: PayloadAction<number>) {
             state.player.skillPoints -= action.payload;
             localStorage.player = JSON.stringify(state.player);
@@ -491,7 +276,6 @@ export const gameSlice = createSlice({
             const armorStats = foundedItem?.item.armorStats;
             const weaponStats = foundedItem?.item.weaponStats;
             const toolStats = foundedItem?.item.toolStats;
-
 
             switch(foundedType){
                 case 'helmet':
@@ -579,48 +363,9 @@ export const gameSlice = createSlice({
             localStorage.inventory = JSON.stringify(state.inventory);
             localStorage.player = JSON.stringify(state.player);
         },
-        buyItem(state, action: PayloadAction<IBuyItem>) {
-            const itemId = action.payload.item.id;
-            const foundedItemIndex = state.inventory.findIndex(i => i.item.id === itemId);
-            const date = new Date().toISOString();
-            const count = action.payload.item.count;
-            const costPerUnit = action.payload.buyingCostPerUnit;
-            const traderId = action.payload.traderId;
-            const locationId = action.payload.levelId;
-
-            if (foundedItemIndex !== -1) {
-                state.inventory[foundedItemIndex].count += count;
-                state.inventory[foundedItemIndex].item.dateReceiving = date;
-            }
-            else {
-                state.inventory.push({
-                    item: { ...action.payload.item, dateReceiving: date },
-                    count
-                })
-            }
-            state.player.coins -= count * costPerUnit;
-            state.player.coins = Number(state.player.coins.toFixed(1));
+        removeCoins(state, action: PayloadAction<number>) {
+            state.player.coins -= action.payload;
             
-            const foundedLocationIndex = state.areas.findIndex(a => a.id === locationId)!;
-            const foundedTraderInLocationIndex = state.areas[foundedLocationIndex].currentEnemies.findIndex(e => e.id === traderId)!;
-            const foundedTrader = state.areas[foundedLocationIndex].currentEnemies[foundedTraderInLocationIndex];
-            let foundedItemIndexInTrader = foundedTrader.traderStats!.tradingItems.findIndex(i => i.id === itemId)!;
-            let foundedItemInTrader = foundedTrader.traderStats!.tradingItems.find(i => i.id === itemId)!;
-
-            if(foundedItemInTrader.count - count > 0){
-                foundedItemInTrader.count -= count;
-                state.areas[foundedLocationIndex]
-                    .currentEnemies[foundedTraderInLocationIndex]
-                        .traderStats!.tradingItems[foundedItemIndexInTrader] = foundedItemInTrader;
-            }
-            else{
-                state.areas[foundedLocationIndex]
-                    .currentEnemies[foundedTraderInLocationIndex]
-                        .traderStats!.tradingItems.splice(foundedItemIndexInTrader, 1);
-            }
-
-            
-            localStorage.areas = JSON.stringify(state.areas);
             localStorage.player = JSON.stringify(state.player);
             localStorage.inventory = JSON.stringify(state.inventory);
         },
@@ -647,23 +392,8 @@ export const gameSlice = createSlice({
             state.player.health = payloadHealth;
 
             localStorage.player = JSON.stringify(state.player);
-        },
-        removeItemFromInventory(state, action: PayloadAction<IFullItemWithCount>) {
-            const itemId = action.payload.id;
-            const itemIndex = state.inventory.findIndex(i => i.item.id === itemId);
-            const count = action.payload.count;
-
-            if(state.inventory[itemIndex].count - count > 0){
-                state.inventory[itemIndex].count -= count;
-            }
-            else{
-                state.inventory.splice(itemIndex, 1)
-            }
-
-            localStorage.inventory = JSON.stringify(state.inventory);
         }
-
     }
 })
 
-export default gameSlice.reducer;
+export default userSlice.reducer;
