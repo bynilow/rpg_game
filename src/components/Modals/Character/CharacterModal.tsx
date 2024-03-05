@@ -17,7 +17,7 @@ interface ICharacterModal {
 
 function CharacterModal({ $closeModal }: ICharacterModal) {
 
-    const { playerSkills, player, inventory } = useAppSelector(state => state.userReducer);
+    const { playerSkills, player, inventory, buffs } = useAppSelector(state => state.userReducer);
 
     const dispatch = useAppDispatch();
 
@@ -47,7 +47,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
         pickaxe: inventory.filter(i => i.item.subType === 'pickaxe').find(i => i.isEquipped)
     })
 
-    const [stats, setStats] = useState(getStats(playerSkills, player));
+    const [stats, setStats] = useState(getStats(playerSkills, player, buffs));
 
     useEffect(() => {
         setEquippedItems({
@@ -66,7 +66,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
             axe: inventory.filter(i => i.item.subType === 'axe').length,
             pickaxe: inventory.filter(i => i.item.subType === 'pickaxe').length
         });
-        setStats(getStats(playerSkills, player));
+        setStats(getStats(playerSkills, player, buffs));
     }, [inventory])
 
     return (

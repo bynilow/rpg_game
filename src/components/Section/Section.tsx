@@ -43,10 +43,9 @@ interface IBlockProps {
 }
 
 const Block = styled.div<IBlockProps>`
-    height: 100%;
     width: 100%;
     min-width: 300px;
-    
+    max-height: 100%;
     flex: 1;
     display: flex;
     flex-direction: column;

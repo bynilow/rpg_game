@@ -1,22 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 import AreaPage from './components/Pages/Area/AreaPage';
 import CombatPage from './components/Pages/Combat/CombatPage';
-import { useAppDispatch, useAppSelector } from './hooks/redux';
-import { IArea } from './models/IArea';
+import { useAppSelector } from './hooks/redux';
 import { IAreaCurrentEnemy } from './models/IEnemy';
-import CreatorPageItem from './components/Pages/Creator/CreatorItemPage';
-import CreatorPageArea from './components/Pages/Creator/CreatorAreaPage';
-import CreatorPageEnemy from './components/Pages/Creator/CreatorEnemiesPage';
-import { scrollBarX } from './styles/scrollbars';
-
+import Registration from './components/Pages/Registration/Registration';
+import Login from './components/Pages/Login/Login';
 
 function App() {
 
-  const {} = useAppSelector(state => state.userReducer)
-
-  const dispatch = useAppDispatch();
-
+  const { } = useAppSelector(state => state.userReducer)
 
   const [isBattle, setIsBattle] = useState(false);
   const [isStartedBattle, setIsStartedBattle] = useState(false);
@@ -26,10 +20,10 @@ function App() {
   const onClickStartBattle = ({ ...enemy }: IAreaCurrentEnemy) => {
     setIsStartedBattle(true);
     setTimeout(() => {
-        setBattleEnemy(enemy);
-        setIsBattle(true);
+      setBattleEnemy(enemy);
+      setIsBattle(true);
     }, 2000)
-}
+  }
 
   const onFinishBattle = (isWin: boolean) => {
     setBattleEnemy(null);
@@ -38,7 +32,7 @@ function App() {
     setIsEndedBattle(true);
     setTimeout(() => {
       setIsEndedBattle(false);
-  }, 2000)
+    }, 2000)
   }
 
   if (isBattle) {
@@ -62,20 +56,25 @@ function App() {
     return (
       <>
         <GlobalStyle />
-        <Application>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Registration />} />
+            <Route path='/game' element={
+              <AreaPage $onClickStartBattle={({ ...enemy }: IAreaCurrentEnemy) => onClickStartBattle(enemy)} />} />
+          </Routes>
+        </BrowserRouter>
           {
             isStartedBattle || isEndedBattle
               ? <BattleBlock $isStart={isStartedBattle} />
               : null
           }
-          <AreaPage
-            $onClickStartBattle={({ ...enemy }: IAreaCurrentEnemy) => onClickStartBattle(enemy)} />
-        </Application>
+          
       </>
 
   // <div>
-      //   <MapCreatorPage />
-      // </div>
+  //   <MapCreatorPage />
+  // </div>
     );
   }
   else {
@@ -147,23 +146,6 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     font-family: 'Comfortaa';
     font-weight: medium;
-  }
-`
-
-const Application = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 100vw;
-  min-height: 100vh;
-  padding-bottom: 10rem;
-  
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  ${
-    scrollBarX
   }
 `
 

@@ -25,7 +25,7 @@ interface IShopModal {
 function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: IShopModal) {
 
     const { areas } = useAppSelector(state => state.areaReducer);
-    const { playerSkills, inventory, player } = useAppSelector(state => state.userReducer);
+    const { playerSkills, inventory, player, buffs } = useAppSelector(state => state.userReducer);
     
     const dispatch = useAppDispatch();
 
@@ -88,11 +88,11 @@ function ShopModal({ $closeModal, $openInfoModal, $traderId, $locationId }: ISho
     const getBuyCost = (cost: number) => {
         return (cost * traderData.traderStats!.extraPriceMultiplier)
             - (cost * traderData.traderStats!.extraPriceMultiplier
-                / 100 * getStats(playerSkills, player).buyPricePercent)
+                / 100 * getStats(playerSkills, player, buffs).buyPricePercent)
     }
 
     const getSellPrice = (cost: number) => {
-        return cost + (cost / 100 * getStats(playerSkills, player).sellPricePercent)
+        return cost + (cost / 100 * getStats(playerSkills, player, buffs).sellPricePercent)
     }
 
     const [isBuying, setIsBuying] = useState(true);

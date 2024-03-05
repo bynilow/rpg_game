@@ -5,9 +5,14 @@ import Avatar from '../Avatar/Avatar';
 import { useEffect, useState } from 'react';
 import { getRandomNumber } from '../../functions/Random';
 import { getStats } from '../../functions/Stats';
-import { setHealthPoints } from '../../store/reducers/ActionCreators';
+import { logoutUserAC, setHealthPoints } from '../../store/reducers/ActionCreators';
 import SquareButton from '../Buttons/SquareButton';
 import Wrapper from '../Wrapper/Wrapper';
+import Title from '../Title/Title';
+import { Avatars, Models } from 'appwrite';
+import { palette } from '../../styles/palette';
+import { account, client } from '../../appwrite/config';
+import Dropdown from '../SearchBar/Dropdown';
 
 interface IHeader {
     $openInventory: Function;
@@ -18,7 +23,7 @@ interface IHeader {
 
 function Header({ $openInventory, $openSkills, $openCraft, $openCharacter }: IHeader) {
 
-    const { player, playerSkills } = useAppSelector(state => state.userReducer);
+    const { player, playerSkills, buffs, userData } = useAppSelector(state => state.userReducer);
 
     const dispatch = useAppDispatch();
 
@@ -26,7 +31,7 @@ function Header({ $openInventory, $openSkills, $openCraft, $openCharacter }: IHe
 
     useEffect(() => {
         const addHealth = setInterval(() => {
-            const stats = getStats(playerSkills, player);
+            const stats = getStats(playerSkills, player, buffs);
             if (player.health < stats.baseHealth) {
                 dispatch(setHealthPoints(player.health + stats.healthRegenerationScore));
             }
@@ -44,76 +49,110 @@ function Header({ $openInventory, $openSkills, $openCraft, $openCharacter }: IHe
         }
     }, [player, playerSkills])
 
+    const [avatar, setAvatar] = useState(new Avatars(client));
+    console.log(avatar.getBrowser('aa'))
+
     return (
         <Block>
-            <ButtonsBlock>
-                <LineBlock>
-                    <HealthLine max={getStats(playerSkills, player).baseHealth} value={player.health} />
-                    <LineText>
-                        {
-                            playerSkills.baseHealth.baseCount.toString().length >= 4
-                                ? `${(player.health / 1000).toFixed(1)}k / ${(getStats(playerSkills, player).baseHealth / 1000).toFixed(1)}k`
-                                : `${player.health.toFixed(0)} / ${getStats(playerSkills, player).baseHealth}`
-                        }
-                    </LineText>
-                </LineBlock>
+            <Container>
+                <HeaderInner>
+                    <UserInfo>
+                        <UserAvatar src={avatar.getBrowser('aa').href} />
+                        <UserName onClick={() => dispatch(logoutUserAC())}>
+                            {userData.name}username
+                        </UserName>
+                    </UserInfo>
+                    <ButtonsBlock>
+                        <LineBlock>
+                            <HealthLine max={getStats(playerSkills, player, buffs).baseHealth} value={player.health} />
+                            <LineText>
+                                {
+                                    playerSkills.baseHealth.baseCount.toString().length >= 4
+                                        ? `${(player.health / 1000).toFixed(1)}k / ${(getStats(playerSkills, player, buffs).baseHealth / 1000).toFixed(1)}k`
+                                        : `${player.health.toFixed(0)} / ${getStats(playerSkills, player, buffs).baseHealth}`
+                                }
+                            </LineText>
+                        </LineBlock>
 
-                <LineBlock onClick={() => $openSkills()}>
-                    {
-                        player.skillPoints
-                            ? <PointsText>
-                                +{player.skillPoints}
-                            </PointsText>
-                            : null
-                    }
-                    <LineText>
-                        УР: {player.level}
-                    </LineText>
-                    <LevelLine max={needXP} value={player.currentXP} />
-                    <LineText>
-                        {
-                            needXP >= 1_000
-                                ? needXP.toString().length >= 1_000_000
-                                    ? `${(player.currentXP / 1000000).toFixed(1)}m / ${(needXP / 1000000).toFixed(1)}m`
-                                    : `${(player.currentXP / 1000).toFixed(1)}k / ${(needXP / 1000).toFixed(1)}k`
-                                : `${player.currentXP.toFixed(1)} / ${needXP.toFixed(1)}`
-                        }
-                    </LineText>
-                </LineBlock>
+                        <LineBlock onClick={() => $openSkills()}>
+                            {
+                                player.skillPoints
+                                    ? <PointsText>
+                                        +{player.skillPoints}
+                                    </PointsText>
+                                    : null
+                            }
+                            <LineText>
+                                УР: {player.level}
+                            </LineText>
+                            <LevelLine max={needXP} value={player.currentXP} />
+                            <LineText>
+                                {
+                                    needXP >= 1_000
+                                        ? needXP.toString().length >= 1_000_000
+                                            ? `${(player.currentXP / 1000000).toFixed(1)}m / ${(needXP / 1000000).toFixed(1)}m`
+                                            : `${(player.currentXP / 1000).toFixed(1)}k / ${(needXP / 1000).toFixed(1)}k`
+                                        : `${player.currentXP.toFixed(1)} / ${needXP.toFixed(1)}`
+                                }
+                            </LineText>
+                        </LineBlock>
 
-                <Coins>
-                    <CoinsText>
-                        {player.coins}
-                    </CoinsText>
-                    <Avatar 
-                        $image={'icons/items/other/coin.png'} 
-                        width={'35px'} />
-                </Coins>
+                        <Coins>
+                            <CoinsText>
+                                {player.coins}
+                            </CoinsText>
+                            <Avatar
+                                $image={'icons/items/other/coin.png'}
+                                width={'35px'} />
+                        </Coins>
 
-                <SquareButton 
-                    $isSquare={false}
-                    $fontSize='1rem'
-                    $onClick={() => $openInventory()}>
-                    Инвентарь
-                </SquareButton>
+                        <SquareButton
+                            $isSquare={false}
+                            $fontSize='1rem'
+                            $onClick={() => $openInventory()}>
+                            Инвентарь
+                        </SquareButton>
 
-                <SquareButton 
-                    $isSquare={false}
-                    $fontSize='1rem'
-                    $onClick={() => $openCraft()}>
-                    Крафт
-                </SquareButton>
+                        <SquareButton
+                            $isSquare={false}
+                            $fontSize='1rem'
+                            $onClick={() => $openCraft()}>
+                            Крафт
+                        </SquareButton>
 
-                <SquareButton 
-                    $isSquare={false}
-                    $fontSize='1rem'
-                    $onClick={() => $openCharacter()}>
-                    Персонаж
-                </SquareButton>
-            </ButtonsBlock>
+                        <SquareButton
+                            $isSquare={false}
+                            $fontSize='1rem'
+                            $onClick={() => $openCharacter()}>
+                            Персонаж
+                        </SquareButton>
+                    </ButtonsBlock>
+
+                </HeaderInner>
+            </Container>
         </Block>
     );
 }
+
+const UserInfo = styled.div`
+    display: flex;
+    gap: 15px;
+    align-items: center;
+
+    height: 50%;
+`
+
+const UserAvatar = styled.img`
+    width: 3rem;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+    border-radius: 50%;
+`
+
+const UserName = styled.p`
+    color: black;
+    font-size: 1.5rem;
+`
 
 const PointsTextAnim = keyframes`
     0%{
@@ -251,22 +290,26 @@ const Coins = styled.div`
     align-items: center;
 `
 
-const ButtonsBlock = styled.div`
+const HeaderInner = styled.div`
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
-    gap: 10px;
-    height: 100%;
-    padding: 5px;
+    align-items: center;
 `
 
-const Block = styled.div`
-    margin: 2rem 0;
-    width: 90%;
+const ButtonsBlock = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 70%;
+`
+
+const Block = styled.header`
+    width: 100%;
+    height: 4rem;
     position: relative;
     display: flex;
-    justify-content: end;
-    align-items: center;
+    justify-content: center;
 `
 
 export default Header;

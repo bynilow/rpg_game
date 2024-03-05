@@ -5,6 +5,7 @@ import Avatar from '../../../../Avatar/Avatar';
 import { IArea } from '../../../../../models/IArea';
 import TimerLine from '../../../../TimerLine/TimerLine';
 import AreaMapped from './AreaMapped';
+import { palette } from '../../../../../styles/palette';
 
 interface IAreaPathProps {
     $area: IArea;
@@ -87,6 +88,8 @@ function AreaPath({
 
     return (
         <AreaMapped
+            $backgroundColor={'white'}
+            $hoveredColor={palette.backgroundColor}
             $isBlocked={!isMoving && $isBlocked} >
             <AreaBlockClickable onClick={e => onClickLevel(e)} />
             <Avatar 

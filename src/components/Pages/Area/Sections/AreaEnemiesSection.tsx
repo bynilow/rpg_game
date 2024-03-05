@@ -87,7 +87,7 @@ interface IListProps {
 
 const List = styled.div<IListProps>`
     width: 100%;
-    height: 100%;
+    max-height: 100%;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;

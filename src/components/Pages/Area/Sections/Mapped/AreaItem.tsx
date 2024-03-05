@@ -4,7 +4,7 @@ import { IFullItem } from '../../../../../models/IAreaItem';
 import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimerBackgroundColor } from '../../../../../styles/backgrounds';
 import Avatar from '../../../../Avatar/Avatar';
 import TimerLine from '../../../../TimerLine/TimerLine';
-import { AreaThing } from './AreaMapped';
+import AreaMapped, { AreaThing } from './AreaMapped';
 
 
 interface IAreaItemProps {
@@ -72,8 +72,8 @@ function Area({
     })
 
     return (
-        <AreaItemBlock 
-            color={getItemBackground($item.rare)} 
+        <AreaMapped 
+            $backgroundColor={getItemBackground($item.rare)} 
             $hoveredColor={getItemHoveredBackground($item.rare)}
             $isBlocked={!isMining && $isBlocked} >
             <AreaItemBlockClickable onClick={e => onClickStartMining(e)} />
@@ -93,7 +93,7 @@ function Area({
                 $isActive={isMining}
                 $maxTime={baseTimeToMining}
                 $currentTime={timeToMining}  />
-        </AreaItemBlock>
+        </AreaMapped>
     );
 }
 
@@ -111,26 +111,5 @@ const Title = styled.p`
     cursor: pointer;
     transition: .2s;
 `
-
-interface IAreaItemBlockProps{
-    color: string;
-    $hoveredColor: string;
-    $isBlocked: boolean;
-}
-
-const AreaItemBlock = styled(AreaThing)<IAreaItemBlockProps>`
-    background: ${p => p.color};
-
-    &:hover{
-        ${
-            p => p.$isBlocked
-                ? null
-                : `background: ${p.$hoveredColor};
-                    transform: scale(0.97);`
-        }
-        
-    }
-`
-
 
 export default Area;

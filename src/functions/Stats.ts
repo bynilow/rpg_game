@@ -1,3 +1,4 @@
+import { IBuff } from "../models/IBuff";
 import { IPlayer, IPlayerBaseStats } from "../models/IPlayer";
 
 
@@ -29,7 +30,7 @@ export interface IStats {
     sellPricePercent: number
 }
 
-export const getStats = (playerSkills: IPlayerBaseStats, player: IPlayer): IStats => ({
+export const getStats = (playerSkills: IPlayerBaseStats, player: IPlayer, buffs: IBuff[]): IStats => ({
     baseDamage: 
         Number(((
             playerSkills.baseDamage.currentScores
@@ -49,6 +50,7 @@ export const getStats = (playerSkills: IPlayerBaseStats, player: IPlayer): IStat
     oreSpeedMining:
         Number((
             playerSkills.oreSpeedMining.currentScores
+            + buffs.filter(i => i.idStat === 'oreSpeedMining').reduce<number>((ac, pv) => pv.count + ac, 0)
             + player.pickaxeStats.miningSpeed).toFixed(2)),
     oreDoubleLootPercentChance:
         Number((

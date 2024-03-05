@@ -4,24 +4,31 @@ import styled from 'styled-components'
 interface IAreaMappedProps {
     children: React.ReactNode | React.ReactNode[];
     $isBlocked: boolean;
+    $backgroundColor: string;
+    $hoveredColor: string;
 }
 
-const AreaMapped: FC<IAreaMappedProps> = ({children, $isBlocked}) => {
+const AreaMapped: FC<IAreaMappedProps> = ({children, $isBlocked, $backgroundColor, $hoveredColor}) => {
 
     return (  
-        <AreaThing $isBlocked={$isBlocked}>
+        <AreaThing 
+            $backgroundColor={$backgroundColor}
+            $hoveredColor={$hoveredColor}
+            $isBlocked={$isBlocked}>
             {children}
         </AreaThing>
     );
 }
 
 interface IAreaBlockProps {
+    $backgroundColor: string;
+    $hoveredColor: string;
     $isBlocked: boolean;
 }
 
 export const AreaThing = styled.div<IAreaBlockProps>`
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.56);
-    background: white;
+    background: ${p => p.$backgroundColor};
     padding: 5px;
     border-radius: 10px 10px 5px 5px;
     width: 100%;
@@ -54,9 +61,10 @@ export const AreaThing = styled.div<IAreaBlockProps>`
     &:hover{
         ${p => p.$isBlocked
             ? null 
-            : `background-color: #d8d8d8;
-                transform: scale(0.97);`
+            : `background-color: ${p.$hoveredColor};
+                transform: perspective(900px) translateY(-5px) rotateX(5deg) scale(1.05);`
         }
+        
     }
 `
 

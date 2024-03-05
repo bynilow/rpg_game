@@ -1,12 +1,15 @@
+import { Account, Models } from 'appwrite';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { account } from '../../../appwrite/config';
 import { getStats } from '../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IAviablePath, IChangeInfo } from '../../../models/IArea';
 import { IAreaCurrentEnemy } from '../../../models/IEnemy';
-import { getAvailablePaths, goLevel, setInventoryFromStorage } from '../../../store/reducers/ActionCreators';
+import { authUserAC, getAvailablePaths, goLevel, setInventoryFromStorage } from '../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../styles/scrollbars';
 import CircleButton from '../../Buttons/CircleButton';
+import Container from '../../Container/Container';
 import Header from '../../Header/Header';
 import CharacterModal from '../../Modals/Character/CharacterModal';
 import CraftModal from '../../Modals/CraftModal/CraftModal';
@@ -15,10 +18,12 @@ import InventoryModal from '../../Modals/InventoryModal/InventoryModal';
 import ShopModal from '../../Modals/ShopModal/ShopModal';
 import SkillsModal from '../../Modals/SkillsModal/SkillsModal';
 import TextModal from '../../Modals/TextModal/TextModal';
+import Sidebar from '../../SideBar/Sidebar';
 import AreaBackground from './AreaBackground';
 import AreaEnemiesSection from './Sections/AreaEnemiesSection';
 import AreaItemsSection from './Sections/AreaItemsSection';
 import AreaPathsSection from './Sections/AreaPathsSection';
+import { redirect, useNavigate } from 'react-router-dom';
 
 
 interface IAreaPage {
@@ -28,7 +33,7 @@ interface IAreaPage {
 function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const dispatch = useAppDispatch();
-    const { playerSkills, inventory, player } = useAppSelector(state => state.userReducer);
+    const { playerSkills, inventory, player, buffs, isLoading, userData } = useAppSelector(state => state.userReducer);
     const { areas, availablePaths, currentLocation } = useAppSelector(state => state.areaReducer);
 
     const [isInventoryOpen, setIsInventoryOpen] = useState(false);
@@ -65,7 +70,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     const [traderId, setTraderId] = useState('');
 
-    const [stats, setStats] = useState(getStats(playerSkills, player));
+    const [stats, setStats] = useState(getStats(playerSkills, player, buffs));
 
     const [actionType, setActionType] = useState('');
 
@@ -93,16 +98,22 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
                 dispatch(goLevel(selectedPath.pathId));
             }, 2300)
         }, 350)
+    }
 
-        
+    const navigate = useNavigate();
+    
+    const onUserAuth = async () => {
+        const isAuth = await dispatch(authUserAC());
+        if(!isAuth) navigate('/login');
     }
 
     useEffect(() => {
+        onUserAuth();
         dispatch(setInventoryFromStorage());
-    }, [])
+    }, [userData.$id])
 
     useEffect(() => {
-        setStats(getStats(playerSkills, player));
+        setStats(getStats(playerSkills, player, buffs));
     }, [player])
 
     useEffect(() => {
@@ -110,10 +121,10 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
         onChangeInfo({ id: currentLocation.id, whatInfo: 'area' });
 
     }, [currentLocation.id])
-
-    if(!currentLocation) return <div>Loading...</div>
+    
+    if(!currentLocation || isLoading) return <div>Loading...</div>
     return (
-        <>
+        <Global key={userData.$id}>
             {
                 traderId
                     ? <ShopModal 
@@ -165,61 +176,88 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
             <AreaBackground $image={currentLocation.avatar} />
 
+            
+            
             <Header 
                 $openInventory={() => setIsInventoryOpen(true)}
                 $openSkills={() => setIsSkillsOpen(true)}
                 $openCraft={() => setIsCraftOpen(true)}
                 $openCharacter={() => setIsCharacterOpen(true)} />
 
-            <Area>
-                <LevelName color={currentLocation.color}>
-                    {currentLocation.title}
-                    <CircleButton symbol='?' click={() => onClickOpenInfoModal()} />
+            <Container>
+                <Area>
+                    <Sidebar />
+                    <EmptySidebar />
+                    <AreaInfo>
+                        <LevelName color={currentLocation.color}>
+                            {currentLocation.title}
+                            <CircleButton symbol='?' click={() => onClickOpenInfoModal()} />
 
-                </LevelName>
+                        </LevelName>
 
-                <AreaActionMenu>
-                    <AreaPathsSection
-                        $playerStats={stats}
-                        $isBlocked={!!actionType}
-                        $isUpdatingLevel={isUpdatingLevel}
-                        $changeActionType={() => setActionType('path')}
-                        $clearActionType={() => setActionType('')}
-                        $goLevel={(path: IAviablePath) => goingLevel(path)} />
+                        <AreaActionMenu>
+                            <AreaPathsSection
+                                $playerStats={stats}
+                                $isBlocked={!!actionType}
+                                $isUpdatingLevel={isUpdatingLevel}
+                                $changeActionType={() => setActionType('path')}
+                                $clearActionType={() => setActionType('')}
+                                $goLevel={(path: IAviablePath) => goingLevel(path)} />
 
-                    <AreaItemsSection 
-                        $playerStats={stats}
-                        $isBlocked={!!actionType}
-                        $isUpdatingLevel={isUpdatingLevel}
-                        $changeActionType={() => setActionType('items')}
-                        $clearActionType={() => setActionType('')} />
+                            <AreaItemsSection
+                                $playerStats={stats}
+                                $isBlocked={!!actionType}
+                                $isUpdatingLevel={isUpdatingLevel}
+                                $changeActionType={() => setActionType('items')}
+                                $clearActionType={() => setActionType('')} />
 
-                    <AreaEnemiesSection 
-                        $isBlocked={!!actionType}
-                        $isUpdatingLevel={isUpdatingLevel}
-                        $onClickStartBattle={(e: IAreaCurrentEnemy) => onClickStartBattle(e)}
-                        $setTraderId={(id: string) => setTraderId(id)} />
-                <Empty />
-                </AreaActionMenu>
-
-                
-            </Area>
-        </>
+                            <AreaEnemiesSection
+                                $isBlocked={!!actionType}
+                                $isUpdatingLevel={isUpdatingLevel}
+                                $onClickStartBattle={(e: IAreaCurrentEnemy) => onClickStartBattle(e)}
+                                $setTraderId={(id: string) => setTraderId(id)} />
+                            <Empty />
+                        </AreaActionMenu>
+                    </AreaInfo>
+                </Area>
+            </Container>
+        </Global>
     );
 }
 
+const EmptySidebar = styled.div`
+    width: 5rem;
+`
+
+const AreaInfo = styled.div`
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+`
+
+const Global = styled.div`
+    max-height: 100vh;
+    padding-top: 1rem;
+    overflow-x: auto;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+`
+
 const Empty = styled.div`
-    height: 3rem;
+    /* height: 3rem; */
     width: 100%;
 `
 
 const Area = styled.div`
+    position: relative;
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 90%;
-    height: 90vh; 
-    padding-bottom: 5rem;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+    max-height: 100%;
 `
 
 const AreaActionMenu = styled.div`
@@ -229,11 +267,11 @@ const AreaActionMenu = styled.div`
     justify-content: space-between;
     gap: 3rem;
     width: 100%;
-    height: 100%;
+    height: 70vh;
     padding: 0.3rem;
     transition: 1s;
-
     overflow-y: hidden;
+
     ${scrollBarX}
 
     @media (max-width: 1200px) {
@@ -257,7 +295,7 @@ const LevelName = styled.div<LevelNameProps>`
                 : "linear-gradient(225deg, #ffffff 95%, #cd4d4d 95%);"
     };
   box-shadow: 0 0 5px black;
-  border-radius: 5px;
+  border-radius: 15px;
   /* #7a7a80
   #499b65
   #3e539e

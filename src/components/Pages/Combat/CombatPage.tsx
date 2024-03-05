@@ -24,7 +24,7 @@ interface ICombatPage {
 function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombatPage) {
 
     const { currentLocation } = useAppSelector(state => state.areaReducer);
-    const { player,playerSkills } = useAppSelector(state => state.userReducer);
+    const { player, playerSkills, buffs } = useAppSelector(state => state.userReducer);
 
     const dispatch = useAppDispatch();
 
@@ -43,7 +43,7 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
 
     const [enemyHealth, setEnemyHealth] = useState(enemy.stats.baseHealth);
 
-    const [playerStats, setPlayerStats] = useState(getStats(playerSkills, player));
+    const [playerStats, setPlayerStats] = useState(getStats(playerSkills, player, buffs));
 
     const [playerHealth, setPlayerHealth] = useState(player.health);
     const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerStats.attackSpeed < 0 ? 0.1 : playerStats.attackSpeed);

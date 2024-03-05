@@ -7,6 +7,8 @@ import { IPlayer, ISkillUp } from "../../models/IPlayer";
 import { AppDispatch } from "../store";
 import { areaSlice } from "./AreaSlice";
 import { userSlice } from "./UserSlice";
+import { account } from "../../appwrite/config";
+import { useNavigate } from "react-router-dom";
 
 interface IResult {
     results: any[]
@@ -267,5 +269,32 @@ export const setHealthPoints = (health: number) => async (dispatch: AppDispatch)
     }
     catch(e){
         console.error(e)
+    }
+}
+
+export const authUserAC = () => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(userSlice.actions.setIsLoading(true));
+        const userData = await account.get();
+        console.log(userData)
+        dispatch(userSlice.actions.setUser(userData))
+        dispatch(userSlice.actions.setIsLoading(false));
+        return true
+    }
+    catch(e){
+        console.error(e);
+        return false
+    }
+}
+
+export const logoutUserAC = () => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(userSlice.actions.setIsLoading(true));
+        await account.deleteSession('current');
+        dispatch(userSlice.actions.setUser({} as any))
+        dispatch(userSlice.actions.setIsLoading(false));
+    }
+    catch(e){
+        console.error(e);
     }
 }

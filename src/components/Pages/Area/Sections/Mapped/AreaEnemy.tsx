@@ -2,7 +2,7 @@ import styled, { keyframes } from 'styled-components';
 import { useAppSelector } from '../../../../../hooks/redux';
 import { getEnemyBackground, getHoveredEnemyBackground } from '../../../../../styles/backgrounds';
 import Avatar from '../../../../Avatar/Avatar';
-import { AreaThing } from './AreaMapped';
+import AreaMapped, { AreaThing } from './AreaMapped';
 import { Enemies } from '../../../../../data/Enemies';
 
 
@@ -20,11 +20,10 @@ function AreaEnemy({ id, $idInArea, $level, $index, $onClick, $isBlocked }: IAre
     const enemy = Enemies.find(e => e.id === id)!;
 
     return (
-        <AreaEnemyBlock 
-            color={getEnemyBackground(enemy.type)} 
+        <AreaMapped 
+            $backgroundColor={getEnemyBackground(enemy.type)} 
             $hoveredColor={getHoveredEnemyBackground(enemy.type)}
-            $isBlocked={$isBlocked}
-            $index={$index} >
+            $isBlocked={$isBlocked} >
             <EnemyClickableBlock onClick={() => $onClick()} />
             <Avatar 
                 $image={enemy.avatar} 
@@ -40,7 +39,7 @@ function AreaEnemy({ id, $idInArea, $level, $index, $onClick, $isBlocked }: IAre
                     </Level>
                     : null
             }
-        </AreaEnemyBlock>
+        </AreaMapped>
     );
 }
 
@@ -65,26 +64,5 @@ const Title = styled.p`
     cursor: pointer;
     transition: .2s;
 `
-
-interface IAreaItemBlockProps{
-    color: string;
-    $hoveredColor: string;
-    $index: number;
-    $isBlocked: boolean;
-}
-
-const AreaEnemyBlock = styled(AreaThing)<IAreaItemBlockProps>`
-    background: ${ p => p.color};
-    
-    &:hover{
-        ${p => p.$isBlocked 
-            ? null 
-            : `background: ${p.$hoveredColor};
-                transform: scale(0.97);`
-        }
-        
-    }
-`
-
 
 export default AreaEnemy;

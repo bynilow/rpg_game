@@ -2,149 +2,9 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IItemInventory } from "../../models/IInventory";
 import { IPlayer, IPlayerBaseStats, ISkillUp } from "../../models/IPlayer";
 import { IBuyItem, IFullItemWithCount } from "../../models/IAreaItem";
-
-const baseStats: IPlayerBaseStats = {
-    baseDamage: {
-        baseCount: 5,
-        currentScores: 5,
-        countScores: 1,
-        level: 1
-    },
-    damageMultiplier: {
-        baseCount: 1,
-        currentScores: 1,
-        countScores: 0.15,
-        level: 1
-    },
-    critDamageMultiplier: {
-        baseCount: 1.5,
-        countScores: 0.2,
-        currentScores: 1.5,
-        level: 1
-    },
-    critChance: {
-        baseCount: 3,
-        currentScores: 3,
-        countScores: 0.5,
-        level: 1
-    },
-    oreSpeedMining: {
-        baseCount: 0,
-        currentScores: 0,
-        countScores: 0.1,
-        level: 1
-    },
-    oreDoubleLootPercentChance: {
-        baseCount: 0,
-        currentScores: 0,
-        countScores: 3,
-        level: 1
-    },
-    treeSpeedMining: {
-        baseCount: 0,
-        currentScores: 0,
-        countScores: 0.1,
-        level: 1
-    },
-    treeDoubleLootPercentChance: {
-        baseCount: 0,
-        currentScores: 0,
-        countScores: 3,
-        level: 1
-    },
-    capacity: {
-        baseCount: 150,
-        currentScores: 150,
-        countScores: 20,
-        level: 1
-    },
-
-    blockingChancePercent: {
-        baseCount: 3,
-        currentScores: 3,
-        countScores: 0.25,
-        level: 1
-    },
-    blockingMultiplier: {
-        baseCount: 1.5,
-        currentScores: 1.5,
-        countScores: 0.25,
-        level: 1
-    },
-    dodgePercentChance: {
-        baseCount: 3,
-        currentScores: 3,
-        countScores: 0.1,
-        level: 1
-    },
-    missPercentChance: {
-        baseCount: 5,
-        currentScores: 5,
-        countScores: 0.1,
-        level: 1
-    },
-    movementSpeed: {
-        baseCount: 0,
-        currentScores: 0,
-        countScores: 0.1,
-        level: 1
-    },
-    attackSpeed: {
-        baseCount: 6,
-        currentScores: 6,
-        countScores: 0.1,
-        level: 1
-    },
-    baseHealth: {
-        baseCount: 100,
-        currentScores: 100,
-        countScores: 1,
-        level: 1
-    },
-    maxHealthMultiplier: {
-        baseCount: 1,
-        currentScores: 1,
-        countScores: 0.3,
-        level: 1
-    },
-    healthRegenerationScore: {
-        baseCount: 1,
-        currentScores: 1,
-        countScores: 1.5,
-        level: 1
-    },
-
-    experienceMultiplier: {
-        baseCount: 1,
-        currentScores: 1,
-        countScores: 0.15,
-        level: 1
-    },
-    craftSpeed: {
-        baseCount: 0,
-        currentScores: 0,
-        countScores: 0.1,
-        level: 1
-    },
-    craftDoubleLootPercentChance: {
-        baseCount: 0,
-        currentScores: 0,
-        countScores: 3,
-        level: 1
-    },
-    buyPricePercent: {
-        baseCount: 0,
-        currentScores: 0,
-        countScores: 0.5,
-        level: 1
-    },
-    sellPricePercent: {
-        baseCount: 0,
-        currentScores: 0,
-        countScores: 1,
-        level: 1
-    }
-}
+import { PlayerBaseStats } from "../../data/PlayerStats";
+import { IBuff } from "../../models/IBuff";
+import { Models } from "appwrite";
 
 const emptyPlayer: IPlayer = {
     title: 'character player',
@@ -204,16 +64,52 @@ const emptyPlayer: IPlayer = {
     }
 }
 
+const testingBuffs: IBuff[] = [
+    {
+        title: 'Зелье силы',
+        description: 'Зелье силы дает силу',
+        idStat: 'baseDamage',
+        count: 100,
+        type: '',
+        dateReceived: 'now',
+        dateExpires: 'now',
+    },
+    {
+        title: 'Зелье добычи руды',
+        description: 'Ускоряет скорость шахтерства',
+        idStat: 'oreSpeedMining',
+        count: -2.5,
+        type: 's',
+        dateReceived: 'now',
+        dateExpires: 'now',
+    },
+    {
+        title: 'Бафчик уклонения',
+        description: 'накидывает шансов уклонения',
+        idStat: 'dodgePercentChance',
+        count: 35,
+        type: '%',
+        dateReceived: 'now',
+        dateExpires: 'now',
+    }
+]
+
 interface IUserSlice {
     inventory: IItemInventory[];
     player: IPlayer;
     playerSkills: IPlayerBaseStats;
+    buffs: IBuff[];
+    userData: Models.User<Models.Preferences>;
+    isLoading: boolean;
 }
 
 const initialState: IUserSlice = {
     inventory: localStorage.inventory ? JSON.parse(localStorage.inventory) : [],
     player: localStorage.player ? JSON.parse(localStorage.player) : emptyPlayer,
-    playerSkills: localStorage.skills ? JSON.parse(localStorage.skills) : baseStats,
+    playerSkills: localStorage.skills ? JSON.parse(localStorage.skills) : PlayerBaseStats,
+    buffs: testingBuffs,
+    userData: {} as Models.User<Models.Preferences>,
+    isLoading: true
 }
 
 export const userSlice = createSlice({
@@ -450,6 +346,12 @@ export const userSlice = createSlice({
             state.player.health = payloadHealth;
 
             localStorage.player = JSON.stringify(state.player);
+        },
+        setUser(state, action: PayloadAction<Models.User<Models.Preferences>>){
+            state.userData = action.payload;
+        },
+        setIsLoading(state, action: PayloadAction<boolean>){
+            state.isLoading = action.payload;
         }
     }
 })
