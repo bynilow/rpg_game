@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components'
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { addXP } from '../../../../store/reducers/ActionCreators';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 interface IMinutesRemainingProps {
     $nextUpdateDateTime: string;

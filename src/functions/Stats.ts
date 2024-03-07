@@ -4,7 +4,6 @@ import { IPlayer, IPlayerBaseStats } from "../models/IPlayer";
 
 export interface IStats {
     baseDamage: number,
-    damageMultiplier: number,
     critDamageMultiplier: number,
     critChance: number,
     oreSpeedMining: number,
@@ -19,8 +18,7 @@ export interface IStats {
     missPercentChance: number,
     movementSpeed: number,
     attackSpeed: number,
-    baseHealth: number,
-    maxHealthMultiplier: number,
+    health: number,
     healthRegenerationScore: number,
 
     experienceMultiplier: number,
@@ -33,12 +31,8 @@ export interface IStats {
 export const getStats = (playerSkills: IPlayerBaseStats, player: IPlayer, buffs: IBuff[]): IStats => ({
     baseDamage: 
         Number(((
-            playerSkills.baseDamage.currentScores
-            + player.weaponStats.damage)
-            * playerSkills.damageMultiplier.currentScores).toFixed(2)),
-    damageMultiplier:
-        Number((
-            playerSkills.damageMultiplier.currentScores).toFixed(2)),
+            playerSkills.damage.currentScores
+            + player.weaponStats.damage)).toFixed(2)),
     critDamageMultiplier:
         Number((
             playerSkills.critDamageMultiplier.currentScores
@@ -102,16 +96,12 @@ export const getStats = (playerSkills: IPlayerBaseStats, player: IPlayer, buffs:
             + player.chestStats.speedAttack
             + player.footStats.speedAttack
             + player.weaponStats.speedAttack).toFixed(2)),
-    baseHealth:
+    health:
         Number((
-            playerSkills.baseHealth.currentScores
-            * (playerSkills.maxHealthMultiplier.currentScores
-                + player.headStats.healthMultiplier
-                + player.chestStats.healthMultiplier
-                + player.footStats.healthMultiplier)).toFixed(1)),
-    maxHealthMultiplier:
-        Number((
-            playerSkills.maxHealthMultiplier.currentScores).toFixed(2)),
+            playerSkills.health.currentScores
+            * (+ player.headStats.health
+                + player.chestStats.health
+                + player.footStats.health)).toFixed(1)),
     healthRegenerationScore:
         Number((
             playerSkills.healthRegenerationScore.currentScores).toFixed(0)),

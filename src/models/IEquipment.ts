@@ -1,6 +1,6 @@
 
 export interface IArmor {
-    healthMultiplier: number;
+    health: number;
     missChance: number;
     dodgeChance: number;
     speedMovement: number;

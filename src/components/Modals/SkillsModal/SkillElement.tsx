@@ -1,17 +1,17 @@
 import styled from 'styled-components';
 import SquareButton from '../../Buttons/SquareButton';
 import Title from '../../Title/Title';
+import { useState } from 'react';
 
 interface ISkillElementProps {
     id: string;
     $title: string;
     $description: string;
     $type: 'score' | 'multiplier' | 'percent';
-    $count: number;
     $level: number;
     $availablePoint: number;
-    $onChangePoints: Function;
-    $points: number;
+    $onClickAddLevel: Function;
+    $onClickRemoveLevel: Function;
     $onHoverSkillElement: Function;
 }
 
@@ -20,18 +20,28 @@ function SkillElement({
     $title,
     $description,
     $type,
-    $count,
     $availablePoint,
-    $onChangePoints,
+    $onClickAddLevel,
+    $onClickRemoveLevel,
     $level,
-    $points,
     $onHoverSkillElement}: ISkillElementProps) {
 
+    const [selectedLevels, setSelectedLevels] = useState(0); 
+
+    const onClickAddLevel = () => {
+        setSelectedLevels(pv => pv + 1);
+        $onClickAddLevel();
+    }
+
+    const onClickRemoveLevel = () => {
+        setSelectedLevels(pv => pv - 1);
+        $onClickRemoveLevel();
+    }
 
     return (  
         <Skill onMouseEnter={() => $onHoverSkillElement()} >
             <SkillInfoBlock>
-                <Level $selectedCount={$points}>
+                <Level $selectedCount={selectedLevels}>
                     {
                         $level
                     }
@@ -44,10 +54,10 @@ function SkillElement({
             </SkillInfoBlock>
             <ButtonsBlock>
                 {
-                    $points
+                    selectedLevels
                     ? <SquareButton 
                         $width='4rem'
-                        $onClick={() => $onChangePoints(-1)}>
+                        $onClick={() => onClickRemoveLevel()}>
                         ❮
                     </SquareButton>
                     : null
@@ -56,7 +66,7 @@ function SkillElement({
                     $availablePoint
                     ? <SquareButton 
                         $width='4rem'
-                        $onClick={() => $onChangePoints(+1)}>
+                        $onClick={() => onClickAddLevel()}>
                         ❯
                     </SquareButton>
                     : null

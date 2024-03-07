@@ -172,74 +172,22 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
                             Общие характеристики
                         </Title>
                         <CharList>
-                            <Char>
-                                Максимальное ОЗ: {stats.baseHealth}
-                            </Char>
-                            <Char>
-                                Скорость регенирации ОЗ: {stats.healthRegenerationScore}/s
-                            </Char>
-                            <Char>
-                                Общий урон: {stats.baseDamage}
-                            </Char>
-                            <Char>
-                                Множитель урона: x{stats.damageMultiplier}
-                            </Char>
-                            <Char>
-                                Множитель крит. урона: x{stats.critDamageMultiplier}
-                            </Char>
-                            <Char>
-                                Шанс крит. урона: {stats.critChance}%
-                            </Char>
-                            <Char>
-                                Скорость добычи руды: {stats.oreSpeedMining}s
-                            </Char>
-                            <Char>
-                                Шанс выпадения дополнительной руды: {stats.oreDoubleLootPercentChance}%
-                            </Char>
-                            <Char>
-                                Скорость добычи дерева: {stats.treeSpeedMining}s
-                            </Char>
-                            <Char>
-                                Шанс выпадения дополнительного дерева: {stats.treeDoubleLootPercentChance}%
-                            </Char>
-                            <Char>
-                                Грузоподъемность: {stats.capacity}kg
-                            </Char>
-
-                            <Char>
-                                Шанс блокирования: {stats.blockingChancePercent}%
-                            </Char>
-                            <Char>
-                                Множитель блокирования: x{stats.blockingMultiplier}
-                            </Char>
-                            <Char>
-                                Шанс уклонения: {stats.dodgePercentChance}%
-                            </Char>
-                            <Char>
-                                Шанс промаха: {stats.missPercentChance}%
-                            </Char>
-                            <Char>
-                                Скорость перемещения: {stats.movementSpeed}s
-                            </Char>
-                            <Char>
-                                Скорость атаки: {stats.attackSpeed}s
-                            </Char>
-
-                            <Char>
-                                Множитель опыта: x{stats.experienceMultiplier}
-                            </Char>
-                            <Char>
-                                Скорость добычи создания предметов: {stats.craftSpeed}s
-                            </Char>
-                            <Char>
-                                Шанс дополнительного предмета при создании: {stats.craftDoubleLootPercentChance}%
-                            </Char>
-                            <Char>
-                                Скидка при покупке: {stats.buyPricePercent}%
-                            </Char>
-                            <Char>
-                                Наценка при продаже: {stats.sellPricePercent}%
-                            </Char>
+                            {
+                                [...Object.entries(playerSkills)].map(skill => 
+                                    <Char>
+                                        {
+                                            skill[1].type === ''
+                                                ? skill[1].title +' '+ skill[1].currentScores
+                                            : skill[1].type === 'x'
+                                                ? skill[1].title +' x'+ skill[1].currentScores
+                                            : skill[1].type === '%'
+                                                ? skill[1].title +' '+ skill[1].currentScores + '%'
+                                            : skill[1].type === 's'
+                                                ? skill[1].title +' '+ skill[1].currentScores + 's'
+                                                : skill[1].title +' '+ skill[1].currentScores + 'kg'
+                                        }
+                                    </Char>)
+                            }
                         </CharList>
                     </Characteristics>
                 </CharacterInfo>

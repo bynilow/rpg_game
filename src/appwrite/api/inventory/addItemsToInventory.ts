@@ -1,6 +1,6 @@
 import { ID } from "appwrite";
-import { databases } from "../config";
-import { inventoryCollection } from "../databaseConfig";
+import { databases } from "../../config";
+import { inventoryCollection } from "../../databaseConfig";
 import { getExistsItem } from "./getExistsItem";
 
 type AddItemT = {

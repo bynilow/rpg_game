@@ -1,6 +1,6 @@
 import { Query } from "appwrite";
-import { inventoryCollection } from "../databaseConfig";
-import { databases } from "../config";
+import { inventoryCollection } from "../../databaseConfig";
+import { databases } from "../../config";
 
 export const getExistsItem = async (itemId: string) => {
     const item = await databases.listDocuments(

@@ -5,6 +5,7 @@ import { IBuyItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { PlayerBaseStats } from "../../data/PlayerStats";
 import { IBuff } from "../../models/IBuff";
 import { Models } from "appwrite";
+import { BASE_COUNT_SKILL_POINTS } from "../../const/const";
 
 const emptyPlayer: IPlayer = {
     title: 'character player',
@@ -22,24 +23,24 @@ const emptyPlayer: IPlayer = {
     },
     level: 1,
     currentXP: 0,
-    skillPoints: 10,
+    skillPoints: BASE_COUNT_SKILL_POINTS,
     coins: 0,
     headStats: {
-        healthMultiplier: 0,
+        health: 0,
         missChance: 0,
         dodgeChance: 0,
         speedMovement: 0,
         speedAttack: 0
     },
     chestStats: {
-        healthMultiplier: 0,
+        health: 0,
         missChance: 0,
         dodgeChance: 0,
         speedMovement: 0,
         speedAttack: 0
     },
     footStats: {
-        healthMultiplier: 0,
+        health: 0,
         missChance: 0,
         dodgeChance: 0,
         speedMovement: 0,
@@ -105,8 +106,8 @@ interface IUserSlice {
 
 const initialState: IUserSlice = {
     inventory: [],
-    player: localStorage.player ? JSON.parse(localStorage.player) : emptyPlayer,
-    playerSkills: localStorage.skills ? JSON.parse(localStorage.skills) : PlayerBaseStats,
+    player: emptyPlayer,
+    playerSkills: PlayerBaseStats,
     buffs: testingBuffs,
     userData: {} as Models.User<Models.Preferences>,
     isLoading: true
@@ -175,6 +176,15 @@ export const userSlice = createSlice({
 
             localStorage.player = JSON.stringify(state.player);
         },
+        setExperience(state, action: PayloadAction<number>){
+            state.player.currentXP = action.payload;
+        },
+        setLevel(state, action: PayloadAction<number>){
+            state.player.level = action.payload;
+        },
+        setSkillPoints(state, action: PayloadAction<number>){
+            state.player.skillPoints = action.payload;
+        },
         addSkills(state, action: PayloadAction<ISkillUp[]>) {
             const skills = action.payload;
             skills.forEach(s => {
@@ -194,9 +204,11 @@ export const userSlice = createSlice({
 
             localStorage.skills = JSON.stringify(state.playerSkills);
         },
+        addSkillPoints(state, action: PayloadAction<number>){
+            state.player.skillPoints += action.payload;
+        },
         decrementSkillPoints(state, action: PayloadAction<number>) {
             state.player.skillPoints -= action.payload;
-            localStorage.player = JSON.stringify(state.player);
         },
         equipItem(state, action: PayloadAction<string>){
             const itemId = action.payload;
@@ -237,7 +249,7 @@ export const userSlice = createSlice({
                     else{
                         state.player.headStats = {
                             dodgeChance: 0,
-                            healthMultiplier: 0,
+                            health: 0,
                             missChance: 0,
                             speedAttack: 0,
                             speedMovement: 0,
@@ -251,7 +263,7 @@ export const userSlice = createSlice({
                     else{
                         state.player.chestStats = {
                             dodgeChance: 0,
-                            healthMultiplier: 0,
+                            health: 0,
                             missChance: 0,
                             speedAttack: 0,
                             speedMovement: 0,
@@ -265,7 +277,7 @@ export const userSlice = createSlice({
                     else{
                         state.player.footStats = {
                             dodgeChance: 0,
-                            healthMultiplier: 0,
+                            health: 0,
                             missChance: 0,
                             speedAttack: 0,
                             speedMovement: 0,
@@ -345,6 +357,12 @@ export const userSlice = createSlice({
         },
         setIsLoading(state, action: PayloadAction<boolean>){
             state.isLoading = action.payload;
+        },
+        addCoins(state, action: PayloadAction<number>){
+            state.player.coins += action.payload;
+        },
+        setCoins(state, action: PayloadAction<number>){
+            state.player.coins = action.payload;
         }
     }
 })

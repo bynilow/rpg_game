@@ -67,7 +67,7 @@ function CreatorPageItem() {
         }
         if(isArmor){
             const stats: IArmor = {
-                healthMultiplier: health,
+                health: health,
                 dodgeChance: dodge,
                 missChance: missArmor,
                 speedAttack: attack,
@@ -95,7 +95,7 @@ function CreatorPageItem() {
                     weight: Number((items[i - 1].weight * 1.5).toFixed(1)),
                     rare: rareIter,
                     armorStats: {
-                        healthMultiplier: Number((items[i - 1].armorStats!.healthMultiplier + 0.1).toFixed(1)),
+                        health: Number((items[i - 1].armorStats!.health + 0.1).toFixed(1)),
                         dodgeChance: Number((items[i - 1].armorStats!.dodgeChance + 0.1).toFixed(1)),
                         missChance: Number((items[i - 1].armorStats!.missChance - 0.1).toFixed(1)),
                         speedAttack: Number((items[i - 1].armorStats!.speedAttack - 0.1).toFixed(1)),

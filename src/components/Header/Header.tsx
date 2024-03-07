@@ -32,7 +32,7 @@ function Header({ $openInventory, $openSkills, $openCraft, $openCharacter }: IHe
     useEffect(() => {
         const addHealth = setInterval(() => {
             const stats = getStats(playerSkills, player, buffs);
-            if (player.health < stats.baseHealth) {
+            if (player.health < stats.health) {
                 dispatch(setHealthPoints(player.health + stats.healthRegenerationScore));
             }
             else {
@@ -63,12 +63,12 @@ function Header({ $openInventory, $openSkills, $openCraft, $openCharacter }: IHe
                     </UserInfo>
                     <ButtonsBlock>
                         <LineBlock>
-                            <HealthLine max={getStats(playerSkills, player, buffs).baseHealth} value={player.health} />
+                            <HealthLine max={getStats(playerSkills, player, buffs).health} value={player.health} />
                             <LineText>
                                 {
-                                    playerSkills.baseHealth.baseCount.toString().length >= 4
-                                        ? `${(player.health / 1000).toFixed(1)}k / ${(getStats(playerSkills, player, buffs).baseHealth / 1000).toFixed(1)}k`
-                                        : `${player.health.toFixed(0)} / ${getStats(playerSkills, player, buffs).baseHealth}`
+                                    playerSkills.health.baseCount.toString().length >= 4
+                                        ? `${(player.health / 1000).toFixed(1)}k / ${(getStats(playerSkills, player, buffs).health / 1000).toFixed(1)}k`
+                                        : `${player.health.toFixed(0)} / ${getStats(playerSkills, player, buffs).health}`
                                 }
                             </LineText>
                         </LineBlock>

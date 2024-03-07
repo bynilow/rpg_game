@@ -10,10 +10,17 @@ import { userSlice } from "./UserSlice";
 import { account, client, databases } from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
 import { Databases, ID, Query } from "appwrite";
-import { inventoryCollection } from "../../appwrite/databaseConfig";
-import { getExistsItem } from "../../appwrite/api/getExistsItem";
-import { addItemsToInventory } from "../../appwrite/api/addItemsToInventory";
-import { removeItemsFromInventory } from "../../appwrite/api/removeItemsFromInventory";
+import { inventoryCollection, statsCollection } from "../../appwrite/databaseConfig";
+import { getExistsItem } from "../../appwrite/api/inventory/getExistsItem";
+import { addItemsToInventory } from "../../appwrite/api/inventory/addItemsToInventory";
+import { removeItemsFromInventory } from "../../appwrite/api/inventory/removeItemsFromInventory";
+import { getUserStats } from "../../appwrite/api/stats/getUserStats";
+import { BASE_COUNT_SKILL_POINTS, MULTIPLIER_NEED_EXPERIENCE } from "../../const/const";
+import { addCoins } from "../../appwrite/api/stats/addCoins";
+import { removeCoins } from "../../appwrite/api/stats/removeCoins";
+import { addExperience } from "../../appwrite/api/stats/addExperience";
+import { removeSkillPoints } from "../../appwrite/api/stats/changeSkillPoints";
+import { addSkill } from "../../appwrite/api/skills/addSkill";
 
 interface IResult {
     results: any[]
@@ -198,17 +205,6 @@ export const removeItemsFromInventoryAC = (items:IFullItemWithCount[]) => async 
     }
 }
 
-export const setInventoryFromStorage = () => async (dispatch: AppDispatch) => {
-    try{
-        const items = JSON.parse(localStorage.inventory);
-        dispatch(userSlice.actions.setInventory(items));
-        
-    }
-    catch(e){
-        console.error(e)
-    }
-}
-
 export const setDeadEnemy = ({...enemy}: IEnemyDead) => async (dispatch: AppDispatch) => {
     try{
         dispatch(areaSlice.actions.setEnemyDead(enemy));
@@ -218,8 +214,10 @@ export const setDeadEnemy = ({...enemy}: IEnemyDead) => async (dispatch: AppDisp
     }
 }
 
-export const addXP = (xp: number) => async (dispatch: AppDispatch) => {
-    try{
+export const addXPAC = (xp: number) => async (dispatch: AppDispatch) => {
+    try {
+        console.log('закинуто опыта: ', xp)
+        await addExperience(xp);
         dispatch(userSlice.actions.addXP(xp));
     }
     catch(e){
@@ -227,9 +225,22 @@ export const addXP = (xp: number) => async (dispatch: AppDispatch) => {
     }
 }
 
-export const addSkills = (skills: ISkillUp[]) => async (dispatch: AppDispatch) => {
+export const addSkillsAC = (skills: ISkillUp[]) => async (dispatch: AppDispatch) => {
     try{
+        skills.forEach(async (skill) => {
+            await addSkill(skill.id, skill.countLevels);
+        })
         dispatch(userSlice.actions.addSkills(skills));
+    }
+    catch(e){
+        console.error(e)
+    }
+}
+
+export const addSkillPointsAC = (points: number) => async (dispatch: AppDispatch) => {
+    try{
+        await addSkillPointsAC(points);
+        dispatch(userSlice.actions.addSkillPoints(points));
     }
     catch(e){
         console.error(e)
@@ -238,6 +249,7 @@ export const addSkills = (skills: ISkillUp[]) => async (dispatch: AppDispatch) =
 
 export const decrementSkillPoints = (points: number) => async (dispatch: AppDispatch) => {
     try{
+        await removeSkillPoints(points);
         dispatch(userSlice.actions.decrementSkillPoints(points));
     }
     catch(e){
@@ -254,11 +266,31 @@ export const equipItem = (id: string) => async (dispatch: AppDispatch) => {
     }
 }
 
+export const addCoinsAC = (coins: number) => async (dispatch: AppDispatch) => {
+    try{
+        await addCoins(coins);
+        dispatch(userSlice.actions.addCoins(coins));
+    }
+    catch (e){
+        console.error(e)
+    }
+}
+
+export const removeCoinsAC = (coins: number) => async (dispatch: AppDispatch) => {
+    try{
+        await removeCoins(coins);
+        dispatch(userSlice.actions.removeCoins(coins));
+    }
+    catch (e){
+        console.error(e)
+    }
+}
+
 export const buyItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) => {
     try{
         dispatch(areaSlice.actions.removeItemTrader(buyingItem));
         await dispatch(addItemsToInventoryAC([buyingItem.item]));
-        dispatch(userSlice.actions.removeCoins(buyingItem.item.cost * buyingItem.item.count));
+        await dispatch(removeCoinsAC(buyingItem.item.cost * buyingItem.item.count));
     }
     catch (e){
         console.error(e)
@@ -268,6 +300,7 @@ export const buyItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) =
 export const sellItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) => {
     try{
         await dispatch(removeItemsFromInventoryAC([buyingItem.item]));
+        dispatch(addCoinsAC(buyingItem.item.cost * buyingItem.item.count));
         dispatch(userSlice.actions.sellItem(buyingItem));
     }
     catch (e){
@@ -289,8 +322,8 @@ export const authUserAC = () => async (dispatch: AppDispatch) => {
         dispatch(userSlice.actions.setIsLoading(true));
         const userData = await account.get();
         sessionStorage.user = JSON.stringify(userData);
-        
-        const databases = new Databases(client);
+        dispatch(userSlice.actions.setUser(userData));
+
         const items = await databases.listDocuments(
             inventoryCollection.databaseId,
             inventoryCollection.collectionId,
@@ -298,14 +331,35 @@ export const authUserAC = () => async (dispatch: AppDispatch) => {
                 Query.equal('user_id', userData.$id)
             ]
         );
-        console.log(items)
         const finalItems = items.documents.map(item => ({
             item: Items.find(i => i.id === item.item_id)!,
             count: item.item_count,
             isEquipped: item.is_equipped
         }));
         dispatch(userSlice.actions.setInventory(finalItems));
-        dispatch(userSlice.actions.setUser(userData));
+
+        const stats = await getUserStats();
+        console.log(stats)
+        if(stats){
+            dispatch(userSlice.actions.setCoins(stats.coins));
+            dispatch(userSlice.actions.setExperience(stats.experience));
+            dispatch(userSlice.actions.setLevel(stats.level));
+            dispatch(userSlice.actions.setSkillPoints(stats.skill_points));
+        } else{ 
+            await databases.createDocument(
+                statsCollection.databaseId,
+                statsCollection.collectionId,
+                ID.unique(),
+                {
+                    user_id: userData.$id,
+                    coins: 0,
+                    experience: 0,
+                    skill_points: BASE_COUNT_SKILL_POINTS
+                }
+            )
+        }
+        
+
         dispatch(userSlice.actions.setIsLoading(false));
         return true
     }

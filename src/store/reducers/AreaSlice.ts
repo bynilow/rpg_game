@@ -157,7 +157,7 @@ export const areaSlice = createSlice({
             }
 
             localStorage.areas = JSON.stringify(state.areas);
-        }
+        },
 
     }
 })

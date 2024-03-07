@@ -446,7 +446,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 25,
         "weight": 5,
         "armorStats": {
-            "healthMultiplier": 1.1,
+            "health": 15,
             "missChance": 0.7,
             "dodgeChance": 1.1,
             "speedMovement": -0.2,
@@ -482,7 +482,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 37.5,
         "weight": 7.5,
         "armorStats": {
-            "healthMultiplier": 1.2,
+            "health": 18,
             "missChance": 0.6,
             "dodgeChance": 1.2,
             "speedMovement": -0.3,
@@ -518,7 +518,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 56.2,
         "weight": 11.5,
         "armorStats": {
-            "healthMultiplier": 1.3,
+            "health": 22,
             "missChance": 0.5,
             "dodgeChance": 1.3,
             "speedMovement": -0.4,
@@ -554,7 +554,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 84.3,
         "weight": 16.8,
         "armorStats": {
-            "healthMultiplier": 1.4,
+            "health": 27,
             "missChance": 0.4,
             "dodgeChance": 1.4,
             "speedMovement": -0.5,
@@ -590,7 +590,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 126.5,
         "weight": 25.3,
         "armorStats": {
-            "healthMultiplier": 1.5,
+            "health": 35,
             "missChance": 0.3,
             "dodgeChance": 1.5,
             "speedMovement": -0.6,
@@ -626,7 +626,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 30,
         "weight": 7,
         "armorStats": {
-            "healthMultiplier": 1.35,
+            "health": 22,
             "missChance": 1.4,
             "dodgeChance": 0.4,
             "speedMovement": 0.2,
@@ -662,7 +662,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 45,
         "weight": 10.5,
         "armorStats": {
-            "healthMultiplier": 1.45,
+            "health": 27,
             "missChance": 1.3,
             "dodgeChance": 0.5,
             "speedMovement": 0.1,
@@ -698,7 +698,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 67.5,
         "weight": 15,
         "armorStats": {
-            "healthMultiplier": 1.55,
+            "health": 33,
             "missChance": 1.2,
             "dodgeChance": 0.6,
             "speedMovement": 0.0,
@@ -734,7 +734,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 100.5,
         "weight": 22.5,
         "armorStats": {
-            "healthMultiplier": 1.65,
+            "health": 40,
             "missChance": 1.1,
             "dodgeChance": 0.7,
             "speedMovement": -0.1,
@@ -770,7 +770,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 150,
         "weight": 33,
         "armorStats": {
-            "healthMultiplier": 1.75,
+            "health": 52,
             "missChance": 1.0,
             "dodgeChance": 0.8,
             "speedMovement": -0.2,
@@ -806,7 +806,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 30,
         "weight": 8.5,
         "armorStats": {
-            "healthMultiplier": 1.5,
+            "health": 33,
             "missChance": 2.5,
             "dodgeChance": -0.2,
             "speedMovement": 1.2,
@@ -842,7 +842,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 45,
         "weight": 12.7,
         "armorStats": {
-            "healthMultiplier": 1.6,
+            "health": 39,
             "missChance": 2.4,
             "dodgeChance": -0.1,
             "speedMovement": 1.1,
@@ -878,7 +878,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 67.5,
         "weight": 19.0,
         "armorStats": {
-            "healthMultiplier": 1.7,
+            "health": 49,
             "missChance": 2.3,
             "dodgeChance": 0,
             "speedMovement": 1.0,
@@ -914,7 +914,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 101.2,
         "weight": 28.5,
         "armorStats": {
-            "healthMultiplier": 1.8,
+            "health": 59,
             "missChance": 2.2,
             "dodgeChance": 0.1,
             "speedMovement": 0.9,
@@ -950,7 +950,7 @@ export const Items: IFullItem[] = [
         "baseCountXP": 151.8,
         "weight": 42.7,
         "armorStats": {
-            "healthMultiplier": 1.9,
+            "health": 77,
             "missChance": 2.1,
             "dodgeChance": 0.2,
             "speedMovement": 0.8,
@@ -1000,7 +1000,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.45,
+            "health": 50,
             "dodgeChance": 0.7,
             "missChance": 0.9,
             "speedAttack": -0.2,
@@ -1036,7 +1036,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.6,
+            "health": 60,
             "dodgeChance": 0.8,
             "missChance": 0.8,
             "speedAttack": -0.3,
@@ -1072,7 +1072,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.7,
+            "health": 75,
             "dodgeChance": 0.9,
             "missChance": 0.7,
             "speedAttack": -0.4,
@@ -1108,7 +1108,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.8,
+            "health": 90,
             "dodgeChance": 1,
             "missChance": 0.6,
             "speedAttack": -0.5,
@@ -1144,7 +1144,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.9,
+            "health": 117,
             "dodgeChance": 1.1,
             "missChance": 0.5,
             "speedAttack": -0.6,
@@ -1180,7 +1180,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.75,
+            "health": 75,
             "dodgeChance": 0,
             "missChance": 1.3,
             "speedAttack": 0.4,
@@ -1216,7 +1216,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.9,
+            "health": 90,
             "dodgeChance": 0.1,
             "missChance": 1.2,
             "speedAttack": 0.3,
@@ -1252,7 +1252,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 2,
+            "health": 112,
             "dodgeChance": 0.2,
             "missChance": 1.1,
             "speedAttack": 0.2,
@@ -1288,7 +1288,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 2.1,
+            "health": 135,
             "dodgeChance": 0.3,
             "missChance": 1,
             "speedAttack": 0.1,
@@ -1324,7 +1324,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 2.2,
+            "health": 176,
             "dodgeChance": 0.4,
             "missChance": 0.9,
             "speedAttack": 0,
@@ -1360,7 +1360,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 2,
+            "health": 110,
             "dodgeChance": -0.3,
             "missChance": 2.1,
             "speedAttack": 0.7,
@@ -1396,7 +1396,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 2.1,
+            "health": 132,
             "dodgeChance": -0.2,
             "missChance": 2,
             "speedAttack": 0.6,
@@ -1432,7 +1432,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 2.2,
+            "health": 165,
             "dodgeChance": -0.1,
             "missChance": 1.9,
             "speedAttack": 0.5,
@@ -1468,7 +1468,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 2.3,
+            "health": 198,
             "dodgeChance": 0,
             "missChance": 1.8,
             "speedAttack": 0.4,
@@ -1504,7 +1504,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 2.4,
+            "health": 258,
             "dodgeChance": 0.1,
             "missChance": 1.7,
             "speedAttack": 0.3,
@@ -1540,7 +1540,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 0.6,
+            "health": 35,
             "dodgeChance": 1.6,
             "missChance": 0.5,
             "speedAttack": -1,
@@ -1576,7 +1576,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 0.7,
+            "health": 42,
             "dodgeChance": 1.7,
             "missChance": 0.4,
             "speedAttack": -1.1,
@@ -1612,7 +1612,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 0.8,
+            "health": 52,
             "dodgeChance": 1.8,
             "missChance": 0.3,
             "speedAttack": -1.2,
@@ -1648,7 +1648,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 0.9,
+            "health": 63,
             "dodgeChance": 1.9,
             "missChance": 0.2,
             "speedAttack": -1.3,
@@ -1684,7 +1684,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1,
+            "health": 82,
             "dodgeChance": 2,
             "missChance": 0.1,
             "speedAttack": -1.4,
@@ -1720,7 +1720,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.1,
+            "health": 52,
             "dodgeChance": 0.8,
             "missChance": 1.1,
             "speedAttack": 0.1,
@@ -1756,7 +1756,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.2,
+            "health": 63,
             "dodgeChance": 0.9,
             "missChance": 1,
             "speedAttack": 0,
@@ -1792,7 +1792,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.3,
+            "health": 78,
             "dodgeChance": 1,
             "missChance": 0.9,
             "speedAttack": -0.1,
@@ -1828,7 +1828,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.4,
+            "health": 94,
             "dodgeChance": 1.1,
             "missChance": 0.8,
             "speedAttack": -0.2,
@@ -1864,7 +1864,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.5,
+            "health": 123,
             "dodgeChance": 1.2,
             "missChance": 0.7,
             "speedAttack": -0.3,
@@ -1900,7 +1900,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.3,
+            "health": 77,
             "dodgeChance": -0.3,
             "missChance": 1.5,
             "speedAttack": 1.2,
@@ -1936,7 +1936,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.4,
+            "health": 92,
             "dodgeChance": -0.2,
             "missChance": 1.4,
             "speedAttack": 1.1,
@@ -1972,7 +1972,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.5,
+            "health": 115,
             "dodgeChance": -0.1,
             "missChance": 1.3,
             "speedAttack": 1,
@@ -2008,7 +2008,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.6,
+            "health": 138,
             "dodgeChance": 0,
             "missChance": 1.2,
             "speedAttack": 0.9,
@@ -2044,7 +2044,7 @@ export const Items: IFullItem[] = [
             }
         ],
         "armorStats": {
-            "healthMultiplier": 1.7,
+            "health": 180,
             "dodgeChance": 0.1,
             "missChance": 1.1,
             "speedAttack": 0.8,

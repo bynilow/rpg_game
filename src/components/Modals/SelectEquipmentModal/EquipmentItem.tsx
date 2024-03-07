@@ -27,7 +27,7 @@ function EquipmentItem({ $item, $isEquipped }: IEquipmentItemProps) {
         switch ($item.type) {
             case 'armor':
                 setStats([
-                    `Множитель ОЗ: x${$item.armorStats?.healthMultiplier}`,
+                    `ОЗ: x${$item.armorStats?.health}`,
                     `Шанс уклонения: ${$item.armorStats?.dodgeChance}%`,
                     `Шанс промаха: ${$item.armorStats?.missChance}%`,
                     `Скорость атаки: ${$item.armorStats?.speedAttack}s`,

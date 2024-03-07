@@ -2,15 +2,17 @@ import { IActionTexts } from "./IEnemy";
 import { IArmor, ITool, IWeapon } from "./IEquipment";
 
 interface IPlayerStat {
+    title: string;
     baseCount: number;
     currentScores: number;
-    countScores: number;
     level: number;
+    givesScores: number;
+    type: '' | 'x' | '%' | 's' | 'kg';
+    description: string;
 }
 
 export interface IPlayerBaseStats{
-    baseDamage: IPlayerStat;
-    damageMultiplier: IPlayerStat;
+    damage: IPlayerStat;
     critDamageMultiplier: IPlayerStat;
     critChance: IPlayerStat;
     oreSpeedMining: IPlayerStat;
@@ -25,8 +27,7 @@ export interface IPlayerBaseStats{
     missPercentChance: IPlayerStat;
     movementSpeed: IPlayerStat;
     attackSpeed: IPlayerStat;
-    baseHealth: IPlayerStat;
-    maxHealthMultiplier: IPlayerStat;
+    health: IPlayerStat;
     healthRegenerationScore: IPlayerStat; 
 
     experienceMultiplier: IPlayerStat;

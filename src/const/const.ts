@@ -1,0 +1,2 @@
+export const BASE_COUNT_SKILL_POINTS = 5
+export const MULTIPLIER_NEED_EXPERIENCE = 2.7

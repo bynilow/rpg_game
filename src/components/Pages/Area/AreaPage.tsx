@@ -6,7 +6,7 @@ import { getStats } from '../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IAviablePath, IChangeInfo } from '../../../models/IArea';
 import { IAreaCurrentEnemy } from '../../../models/IEnemy';
-import { authUserAC, getAvailablePaths, goLevel, setInventoryFromStorage } from '../../../store/reducers/ActionCreators';
+import { authUserAC, getAvailablePaths, goLevel } from '../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../styles/scrollbars';
 import CircleButton from '../../Buttons/CircleButton';
 import Container from '../../Container/Container';
@@ -77,7 +77,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
     const [isHpFailModalOpened, setIsHpFailModalOpened] = useState(false);
 
     const onClickStartBattle = (e: IAreaCurrentEnemy) => {
-        if(player.health / stats.baseHealth * 100 > 10){
+        if(player.health / stats.health * 100 > 10){
             $onClickStartBattle(e);
         }
         else{
@@ -109,7 +109,6 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
     useEffect(() => {
         onUserAuth();
-        dispatch(setInventoryFromStorage());
     }, [userData.$id])
 
     useEffect(() => {

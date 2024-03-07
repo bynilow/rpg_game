@@ -6,7 +6,7 @@ import { sortFilterCraftItems } from '../../../functions/Sorting/SortingCraft';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IChangeInfo } from '../../../models/IArea';
 import { IFullItem, IFullItemWithCount } from '../../../models/IAreaItem';
-import { addItemsToInventoryAC, addXP, removeItemsFromInventoryAC } from '../../../store/reducers/ActionCreators';
+import { addItemsToInventoryAC, addXPAC, removeItemsFromInventoryAC } from '../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../styles/scrollbars';
 import CheckboxSearch from '../../SearchBar/CheckboxSearch';
 import Dropdown from '../../SearchBar/Dropdown';
@@ -66,7 +66,7 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
             count: sumCount}]));
         dispatch(removeItemsFromInventoryAC(itemsRemove));
         const experience = itemCraft.baseCountXP * sumCount * playerSkills.experienceMultiplier.currentScores;
-        dispatch(addXP(experience));
+        dispatch(addXPAC(experience));
         sortFilterInventory();
     }
 

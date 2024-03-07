@@ -4,7 +4,7 @@ import { getRandomNumberForLoot } from '../../../../functions/Random';
 import { IStats } from '../../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { IFullItem } from '../../../../models/IAreaItem';
-import { addXP, mineItemAC, updateAreaItems } from '../../../../store/reducers/ActionCreators';
+import { addXPAC, mineItemAC, updateAreaItems } from '../../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../../styles/scrollbars';
 import Section from '../../../Section/Section';
 import Title from '../../../Title/Title';
@@ -42,7 +42,7 @@ function AreaItemsSection({
             ...miningItem,
             count: countLoot
         }));
-        dispatch(addXP(miningItem.baseCountXP * $playerStats.experienceMultiplier));
+        dispatch(addXPAC(miningItem.baseCountXP * $playerStats.experienceMultiplier));
     }
 
     const onClickMine = (id: string) => {
