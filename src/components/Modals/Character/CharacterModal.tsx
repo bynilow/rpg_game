@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getStats } from '../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { addItemsToInventory } from '../../../store/reducers/ActionCreators';
+import { addItemsToInventoryAC } from '../../../store/reducers/ActionCreators';
 import { getItemBackground } from '../../../styles/backgrounds';
 import { scrollBarX } from '../../../styles/scrollbars';
 import Avatar from '../../Avatar/Avatar';
@@ -32,7 +32,7 @@ function CharacterModal({ $closeModal }: ICharacterModal) {
     });
 
     const onClickAddItems = () => {
-        dispatch(addItemsToInventory([{
+        dispatch(addItemsToInventoryAC([{
             ...Items.find(i => i.id === 'pickaxe_legendary')!,
             count: 1
         }]))

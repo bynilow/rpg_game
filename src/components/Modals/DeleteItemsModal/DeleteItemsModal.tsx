@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IFullItemWithCount } from '../../../models/IAreaItem';
-import { removeItemsFromInventory } from '../../../store/reducers/ActionCreators';
+import { removeItemsFromInventoryAC } from '../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../styles/scrollbars';
 import SquareButton from '../../Buttons/SquareButton';
 import Range from '../../Range/Range';
@@ -25,7 +25,7 @@ function DeleteItemsModal({$closeModal, $itemTitle, $min, $max, $item}: IDeleteI
     const [count, setCount] = useState($min);
 
     const onClickDeleteItem = () => {
-        dispatch(removeItemsFromInventory([{...$item, count}]));
+        dispatch(removeItemsFromInventoryAC([{...$item, count}]));
         $closeModal();
     }
 

@@ -6,7 +6,7 @@ import { sortFilterCraftItems } from '../../../functions/Sorting/SortingCraft';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IChangeInfo } from '../../../models/IArea';
 import { IFullItem, IFullItemWithCount } from '../../../models/IAreaItem';
-import { addItemsToInventory, addXP, removeItemsFromInventory } from '../../../store/reducers/ActionCreators';
+import { addItemsToInventoryAC, addXP, removeItemsFromInventoryAC } from '../../../store/reducers/ActionCreators';
 import { scrollBarX } from '../../../styles/scrollbars';
 import CheckboxSearch from '../../SearchBar/CheckboxSearch';
 import Dropdown from '../../SearchBar/Dropdown';
@@ -60,11 +60,11 @@ function CraftModal({ $closeModal, $openInfoModal }: ICraftModal) {
             count.push(getRandomNumberForLoot(playerSkills.craftDoubleLootPercentChance.currentScores));
         }
         const sumCount = count.reduce((a,cv) => a + cv, 0);
-        dispatch(addItemsToInventory([{
+        dispatch(addItemsToInventoryAC([{
             ...itemCraft,
             dateReceiving: new Date().toISOString(),
             count: sumCount}]));
-        dispatch(removeItemsFromInventory(itemsRemove));
+        dispatch(removeItemsFromInventoryAC(itemsRemove));
         const experience = itemCraft.baseCountXP * sumCount * playerSkills.experienceMultiplier.currentScores;
         dispatch(addXP(experience));
         sortFilterInventory();

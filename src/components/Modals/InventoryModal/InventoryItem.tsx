@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch } from '../../../hooks/redux';
 import { IItemInventory } from '../../../models/IInventory';
-import { equipItem, removeItemsFromInventory } from '../../../store/reducers/ActionCreators';
+import { equipItem, removeItemsFromInventoryAC } from '../../../store/reducers/ActionCreators';
 import { palette } from '../../../styles/palette';
 import Avatar from '../../Avatar/Avatar';
 import CircleButton from '../../Buttons/CircleButton';
@@ -29,7 +29,7 @@ function InventoryItem({item, count, $onClickMultipleDelete}:IItemInventory & II
 
     const onClickDeleteItem = () => {
         if(isSelectToDelete){
-            dispatch(removeItemsFromInventory([{...item, count: 1}]));
+            dispatch(removeItemsFromInventoryAC([{...item, count: 1}]));
         }
         else{
             if(count > 2){

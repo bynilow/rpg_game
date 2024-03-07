@@ -104,7 +104,7 @@ interface IUserSlice {
 }
 
 const initialState: IUserSlice = {
-    inventory: localStorage.inventory ? JSON.parse(localStorage.inventory) : [],
+    inventory: [],
     player: localStorage.player ? JSON.parse(localStorage.player) : emptyPlayer,
     playerSkills: localStorage.skills ? JSON.parse(localStorage.skills) : PlayerBaseStats,
     buffs: testingBuffs,
@@ -139,7 +139,6 @@ export const userSlice = createSlice({
                 }
             })
 
-            localStorage.inventory = JSON.stringify(state.inventory);
             localStorage.player = JSON.stringify(state.player);
         },
         removeItemsFromInventory(state, action: PayloadAction<IFullItemWithCount[]>) {
@@ -156,7 +155,6 @@ export const userSlice = createSlice({
                 }
             })
 
-            localStorage.inventory = JSON.stringify(state.inventory);
         },
         setInventory(state, action: PayloadAction<IItemInventory[]>) {
             state.inventory = action.payload;
@@ -314,14 +312,12 @@ export const userSlice = createSlice({
                     break;
             }
 
-            localStorage.inventory = JSON.stringify(state.inventory);
             localStorage.player = JSON.stringify(state.player);
         },
         removeCoins(state, action: PayloadAction<number>) {
             state.player.coins -= action.payload;
             
             localStorage.player = JSON.stringify(state.player);
-            localStorage.inventory = JSON.stringify(state.inventory);
         },
         sellItem(state, action: PayloadAction<IBuyItem>) {
             const itemId = action.payload.item.id;
@@ -337,9 +333,6 @@ export const userSlice = createSlice({
             }
 
             state.player.coins += count * costPerUnit;
-
-            localStorage.player = JSON.stringify(state.player);
-            localStorage.inventory = JSON.stringify(state.inventory);
         },
         setHealthPoints(state, action: PayloadAction<number>){
             const payloadHealth = action.payload;

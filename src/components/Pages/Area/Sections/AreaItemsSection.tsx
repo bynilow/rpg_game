@@ -27,6 +27,7 @@ function AreaItemsSection({
     $clearActionType}: IAreaItemsSectionProps) {
 
     const { currentLocation } = useAppSelector(state => state.areaReducer)
+    const { userData } = useAppSelector(state => state.userReducer)
 
     const dispatch = useAppDispatch();
 

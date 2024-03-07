@@ -8,7 +8,7 @@ import { getStats } from '../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { ICombatHistory } from '../../../models/ICombat';
 import { IEnemy } from '../../../models/IEnemy';
-import { addItemsToInventory, addXP, setDeadEnemy, setHealthPoints } from '../../../store/reducers/ActionCreators';
+import { addItemsToInventoryAC, addXP, setDeadEnemy, setHealthPoints } from '../../../store/reducers/ActionCreators';
 import EndCombatModal from '../../Modals/WinCombatModal/EndCombatModal';
 import CharacterSection from './Sections/CharacterSection';
 import EnemySection from './Sections/EnemySection';
@@ -152,7 +152,7 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
             possibleLoot: enemy.possibleLoot
         });
 
-        dispatch(addItemsToInventory(items));
+        dispatch(addItemsToInventoryAC(items));
         dispatch(addXP(items[0].count)); /// first item - is received experience
         dispatch(setHealthPoints(playerHealth));
         dispatch(setDeadEnemy({ levelId: currentLocation.id, enemyIdInArea: $enemyIdInArea }));

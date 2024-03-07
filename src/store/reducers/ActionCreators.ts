@@ -7,8 +7,13 @@ import { IPlayer, ISkillUp } from "../../models/IPlayer";
 import { AppDispatch } from "../store";
 import { areaSlice } from "./AreaSlice";
 import { userSlice } from "./UserSlice";
-import { account } from "../../appwrite/config";
+import { account, client, databases } from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
+import { Databases, ID, Query } from "appwrite";
+import { inventoryCollection } from "../../appwrite/databaseConfig";
+import { getExistsItem } from "../../appwrite/api/getExistsItem";
+import { addItemsToInventory } from "../../appwrite/api/addItemsToInventory";
+import { removeItemsFromInventory } from "../../appwrite/api/removeItemsFromInventory";
 
 interface IResult {
     results: any[]
@@ -151,6 +156,9 @@ export const updateAreaEnemies = (updatedLevel: IUpdateAreaEnemies) => async (di
 export const mineItemAC = (miningItem: IFullItemWithCount) => async (dispatch: AppDispatch) => {
     try{
         dispatch(areaSlice.actions.mineItem(miningItem));
+        
+        await addItemsToInventory([{id: miningItem.id, count: miningItem.count}]);
+
         dispatch(userSlice.actions.addItemsToInventory([miningItem]));
         
     }
@@ -168,8 +176,10 @@ export const setAreasFromStorage = () => async (dispatch: AppDispatch) => {
     }
 }
 
-export const addItemsToInventory = (items:IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
+export const addItemsToInventoryAC = (items:IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
     try{
+        items = items.filter(item => item.id !== 'coin' && item.id !== 'experience');
+        await addItemsToInventory(items.map(item => ({id: item.id, count: item.count})));
         dispatch(userSlice.actions.addItemsToInventory(items));
     }
     catch(e){
@@ -177,8 +187,10 @@ export const addItemsToInventory = (items:IFullItemWithCount[]) => async (dispat
     }
 }
 
-export const removeItemsFromInventory = (items:IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
+export const removeItemsFromInventoryAC = (items:IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
     try{
+        await removeItemsFromInventory(items.map(item => ({id: item.id, count: item.count})));
+
         dispatch(userSlice.actions.removeItemsFromInventory(items));
     }
     catch(e){
@@ -245,8 +257,7 @@ export const equipItem = (id: string) => async (dispatch: AppDispatch) => {
 export const buyItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) => {
     try{
         dispatch(areaSlice.actions.removeItemTrader(buyingItem));
-        
-        dispatch(userSlice.actions.addItemsToInventory([buyingItem.item]));
+        await dispatch(addItemsToInventoryAC([buyingItem.item]));
         dispatch(userSlice.actions.removeCoins(buyingItem.item.cost * buyingItem.item.count));
     }
     catch (e){
@@ -256,6 +267,7 @@ export const buyItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) =
 
 export const sellItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) => {
     try{
+        await dispatch(removeItemsFromInventoryAC([buyingItem.item]));
         dispatch(userSlice.actions.sellItem(buyingItem));
     }
     catch (e){
@@ -276,8 +288,24 @@ export const authUserAC = () => async (dispatch: AppDispatch) => {
     try{
         dispatch(userSlice.actions.setIsLoading(true));
         const userData = await account.get();
-        console.log(userData)
-        dispatch(userSlice.actions.setUser(userData))
+        sessionStorage.user = JSON.stringify(userData);
+        
+        const databases = new Databases(client);
+        const items = await databases.listDocuments(
+            inventoryCollection.databaseId,
+            inventoryCollection.collectionId,
+            [
+                Query.equal('user_id', userData.$id)
+            ]
+        );
+        console.log(items)
+        const finalItems = items.documents.map(item => ({
+            item: Items.find(i => i.id === item.item_id)!,
+            count: item.item_count,
+            isEquipped: item.is_equipped
+        }));
+        dispatch(userSlice.actions.setInventory(finalItems));
+        dispatch(userSlice.actions.setUser(userData));
         dispatch(userSlice.actions.setIsLoading(false));
         return true
     }

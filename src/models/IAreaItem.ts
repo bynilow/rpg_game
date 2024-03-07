@@ -12,6 +12,7 @@ export type IRare = 'common' | 'uncommon' | 'rare' | 'mythical' | 'legendary'
 export const rareList = ['common', 'uncommon', 'rare', 'mythical', 'legendary'];
 
 export interface IFullItem {
+    documentId?: string;
     id: string;
     rare: IRare;
     idInArea: string;

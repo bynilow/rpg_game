@@ -50,7 +50,6 @@ function Header({ $openInventory, $openSkills, $openCraft, $openCharacter }: IHe
     }, [player, playerSkills])
 
     const [avatar, setAvatar] = useState(new Avatars(client));
-    console.log(avatar.getBrowser('aa'))
 
     return (
         <Block>
