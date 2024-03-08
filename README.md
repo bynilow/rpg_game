@@ -3,4 +3,4 @@
 
 Реализован адаптив. 
 
-<b>Стек:</b> React, RTK, styled-components
+<b>Стек:</b> React, RTK, styled-components, appwrite
