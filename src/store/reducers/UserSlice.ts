@@ -102,6 +102,7 @@ interface IUserSlice {
     buffs: IBuff[];
     userData: Models.User<Models.Preferences>;
     isLoading: boolean;
+    isSkillsLoading: boolean;
 }
 
 const initialState: IUserSlice = {
@@ -110,7 +111,8 @@ const initialState: IUserSlice = {
     playerSkills: PlayerBaseStats,
     buffs: testingBuffs,
     userData: {} as Models.User<Models.Preferences>,
-    isLoading: true
+    isLoading: true,
+    isSkillsLoading: false
 }
 
 export const userSlice = createSlice({
@@ -185,24 +187,15 @@ export const userSlice = createSlice({
         setSkillPoints(state, action: PayloadAction<number>){
             state.player.skillPoints = action.payload;
         },
+        setSkills(state, action: PayloadAction<IPlayerBaseStats>){
+            state.playerSkills = action.payload;
+        },
         addSkills(state, action: PayloadAction<ISkillUp[]>) {
             const skills = action.payload;
-            skills.forEach(s => {
-                if (s.id === 'missPercentChance' ||
-                    s.id === 'attackSpeed' ||
-                    s.id === 'movementSpeed' ||
-                    s.id === 'treeSpeedMining' ||
-                    s.id === 'oreSpeedMining') {
-                    state.playerSkills[s.id]['level'] += s.countLevels;
-                    state.playerSkills[s.id]['currentScores'] -= s.countSkills;
-                }
-                else {
-                    state.playerSkills[s.id]['level'] += s.countLevels;
-                    state.playerSkills[s.id]['currentScores'] += s.countSkills;
-                }
+            skills.forEach(skill => {
+                state.playerSkills[skill.id].level += skill.countLevels;
             });
 
-            localStorage.skills = JSON.stringify(state.playerSkills);
         },
         addSkillPoints(state, action: PayloadAction<number>){
             state.player.skillPoints += action.payload;
@@ -357,6 +350,9 @@ export const userSlice = createSlice({
         },
         setIsLoading(state, action: PayloadAction<boolean>){
             state.isLoading = action.payload;
+        },
+        setIsSkillsLoading(state, action: PayloadAction<boolean>){
+            state.isSkillsLoading = action.payload;
         },
         addCoins(state, action: PayloadAction<number>){
             state.player.coins += action.payload;

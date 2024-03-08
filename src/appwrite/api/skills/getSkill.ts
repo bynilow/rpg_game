@@ -14,3 +14,15 @@ export const getSkill = async (skillId: string) => {
 
     return skills.documents[0]
 }
+
+export const getAllSkills = async () => {
+    const skills = await databases.listDocuments(
+        skillsCollection.databaseId,
+        skillsCollection.collectionId,
+        [
+            Query.equal('user_id', JSON.parse(sessionStorage.user).$id)
+        ]
+    )
+
+    return skills.documents
+}

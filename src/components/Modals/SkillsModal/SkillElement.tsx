@@ -1,24 +1,32 @@
 import styled from 'styled-components';
 import SquareButton from '../../Buttons/SquareButton';
 import Title from '../../Title/Title';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { palette } from '../../../styles/palette';
 
 interface ISkillElementProps {
     id: string;
     $title: string;
     $description: string;
-    $type: 'score' | 'multiplier' | 'percent';
+    $type: string;
     $level: number;
+    $baseCount: number;
+    $currentScores: number;
+    $givesScores: number;
     $availablePoint: number;
     $onClickAddLevel: Function;
     $onClickRemoveLevel: Function;
     $onHoverSkillElement: Function;
+
 }
 
 function SkillElement({ 
     id,
     $title,
     $description,
+    $baseCount,
+    $currentScores,
+    $givesScores,
     $type,
     $availablePoint,
     $onClickAddLevel,
@@ -27,6 +35,7 @@ function SkillElement({
     $onHoverSkillElement}: ISkillElementProps) {
 
     const [selectedLevels, setSelectedLevels] = useState(0); 
+    const [isOpened, setIsOpened] = useState(false);
 
     const onClickAddLevel = () => {
         setSelectedLevels(pv => pv + 1);
@@ -38,8 +47,15 @@ function SkillElement({
         $onClickRemoveLevel();
     }
 
+    const currentScores = ($baseCount + $givesScores * $level-1).toFixed(1);
+    const [nextScores, setNextScores] = useState(($givesScores * selectedLevels + Number(currentScores)).toFixed(1));
+
+    useEffect(() => {
+        setNextScores(($givesScores * selectedLevels + Number(currentScores)).toFixed(1));
+    }, [selectedLevels])
+
     return (  
-        <Skill onMouseEnter={() => $onHoverSkillElement()} >
+        <Skill onClick={() => setIsOpened(pv => !pv)}>
             <SkillInfoBlock>
                 <Level $selectedCount={selectedLevels}>
                     {
@@ -51,48 +67,104 @@ function SkillElement({
                         $title
                     }
                 </Title>
+                <ButtonsBlock>
+                    {
+                        selectedLevels
+                            ? <SquareButton
+                                $width='auto'
+                                $onClick={() => onClickRemoveLevel()}>
+                                ❮
+                            </SquareButton>
+                            : null
+                    }
+                    {
+                        $availablePoint
+                            ? <SquareButton
+                                $width='auto'
+                                $onClick={() => onClickAddLevel()}>
+                                ❯
+                            </SquareButton>
+                            : null
+                    }
+                </ButtonsBlock>
             </SkillInfoBlock>
-            <ButtonsBlock>
-                {
-                    selectedLevels
-                    ? <SquareButton 
-                        $width='4rem'
-                        $onClick={() => onClickRemoveLevel()}>
-                        ❮
-                    </SquareButton>
-                    : null
-                }
-                {
-                    $availablePoint
-                    ? <SquareButton 
-                        $width='4rem'
-                        $onClick={() => onClickAddLevel()}>
-                        ❯
-                    </SquareButton>
-                    : null
-                }
-            </ButtonsBlock>
+            <Description $isOpened={isOpened}>
+                <Char>
+                    
+                    {
+                        $type === ''
+                            ? <CurrentScores>
+                                {currentScores} + <GivesScores>{$givesScores} {selectedLevels ? '= '+nextScores : ''}</GivesScores> 
+                            </CurrentScores>
+                        : $type === 'x'
+                            ? <CurrentScores>
+                                x{currentScores} + <GivesScores>x{$givesScores} {selectedLevels ? '= x'+nextScores : ''} </GivesScores>
+                            </CurrentScores>
+                        : $type === '%'
+                            ? <CurrentScores>
+                                {currentScores}% + <GivesScores>{$givesScores}% {selectedLevels ? '= '+nextScores+'%' : ''} </GivesScores>
+                                </CurrentScores>
+                        : $type === 's'
+                            ? <CurrentScores>
+                                {currentScores}s - <GivesScores>{$givesScores}s {selectedLevels ? '= '+nextScores+'s' : ''} </GivesScores>
+                            </CurrentScores>
+                            : <CurrentScores>
+                                {currentScores}kg + <GivesScores>{$givesScores}kg = {selectedLevels ? '= '+nextScores+'kg' : ''} </GivesScores>
+                            </CurrentScores>
+                    }
+                </Char>
+                {$description}
+            </Description>
+            
         </Skill>
     );
 }
+
+const GivesScores = styled.span`
+    font-size: 2rem;
+    color: ${palette.greenColor};
+    font-weight: bold;
+`
+
+const CurrentScores = styled.p`
+    font-size: 1.5rem;
+    color: black;
+`
+
+const Char = styled.p`
+
+`
+
+interface IDescriptionProps{
+    $isOpened: boolean;
+}
+
+const Description = styled.div<IDescriptionProps>`
+    width: 100%;
+    max-height: ${p => p.$isOpened ? '500px': '0px'};
+    visibility: ${p => p.$isOpened ? 'visible' : 'hidden'};
+    color: ${palette.darkGray};
+    transition: 0.3s;
+`
 
 const ButtonsBlock = styled.div`
     position: absolute;
     top: 0;
     right: 0;
+    height: 100%;
     margin-right: 5px;
     display: flex;
     align-items: center;
     gap: 10px;
-    height: 100%;
 `
 
 const SkillInfoBlock = styled.div`
+    position: relative;
     display: flex;
     height: 100%;
     align-items: center;
-    width: 70%;
-    gap: 1.3em;
+    width: 100%;
+    gap: 15px;
 `
 
 interface ILevelProps{
@@ -101,10 +173,12 @@ interface ILevelProps{
 
 const Level = styled.div<ILevelProps>`
     position: relative;
-    height: 100%;
-    aspect-ratio: 1/1;
+    height: auto;
     object-fit: contain;
     color: #000000;
+    width: 5%;
+    aspect-ratio: 1/1;
+    padding-right: 4px;
     border-right: 2px solid black;
     display: flex;
     align-items: center;
@@ -137,10 +211,11 @@ const Level = styled.div<ILevelProps>`
 const Skill = styled.div`
     position: relative;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    gap: 0;
+    align-items: start;
     width: 100%;
-    min-height: 5rem;
     padding: 5px;
     border-radius: 5px;
     box-shadow: 0 0 5px black;

@@ -3,7 +3,7 @@ import { Enemies } from "../../data/Enemies";
 import { getChance, getRandomNumber } from "../../functions/Random";
 import { IAreaItem, IBuyItem, IFullItemWithCount } from "../../models/IAreaItem";
 import { IAreaCurrentEnemy, IAreaEnemy, IEnemyDead } from "../../models/IEnemy";
-import { IPlayer, ISkillUp } from "../../models/IPlayer";
+import { IPlayer, IPlayerBaseStats, IPlayerStat, ISkillUp } from "../../models/IPlayer";
 import { AppDispatch } from "../store";
 import { areaSlice } from "./AreaSlice";
 import { userSlice } from "./UserSlice";
@@ -21,6 +21,8 @@ import { removeCoins } from "../../appwrite/api/stats/removeCoins";
 import { addExperience } from "../../appwrite/api/stats/addExperience";
 import { removeSkillPoints } from "../../appwrite/api/stats/changeSkillPoints";
 import { addSkill } from "../../appwrite/api/skills/addSkill";
+import { getAllSkills } from "../../appwrite/api/skills/getSkill";
+import { PlayerBaseStats } from "../../data/PlayerStats";
 
 interface IResult {
     results: any[]
@@ -227,10 +229,14 @@ export const addXPAC = (xp: number) => async (dispatch: AppDispatch) => {
 
 export const addSkillsAC = (skills: ISkillUp[]) => async (dispatch: AppDispatch) => {
     try{
-        skills.forEach(async (skill) => {
+        dispatch(userSlice.actions.setIsSkillsLoading(true));
+        
+        for(const skill of skills){
             await addSkill(skill.id, skill.countLevels);
-        })
-        dispatch(userSlice.actions.addSkills(skills));
+        }
+        await dispatch(userSlice.actions.addSkills(skills));
+
+        dispatch(userSlice.actions.setIsSkillsLoading(false));
     }
     catch(e){
         console.error(e)
@@ -247,7 +253,7 @@ export const addSkillPointsAC = (points: number) => async (dispatch: AppDispatch
     }
 }
 
-export const decrementSkillPoints = (points: number) => async (dispatch: AppDispatch) => {
+export const decrementSkillPointsAC = (points: number) => async (dispatch: AppDispatch) => {
     try{
         await removeSkillPoints(points);
         dispatch(userSlice.actions.decrementSkillPoints(points));
@@ -320,6 +326,7 @@ export const setHealthPoints = (health: number) => async (dispatch: AppDispatch)
 export const authUserAC = () => async (dispatch: AppDispatch) => {
     try{
         dispatch(userSlice.actions.setIsLoading(true));
+
         const userData = await account.get();
         sessionStorage.user = JSON.stringify(userData);
         dispatch(userSlice.actions.setUser(userData));
@@ -358,8 +365,29 @@ export const authUserAC = () => async (dispatch: AppDispatch) => {
                 }
             )
         }
-        
 
+        let userSkills = await getAllSkills();
+        type SkillEntriesT = [
+            string, IPlayerStat
+        ];
+        let skillsEntries: SkillEntriesT[] = [];
+        
+        [...Object.entries(PlayerBaseStats)].forEach((baseSkill:SkillEntriesT) => {
+            const foundSkill = userSkills.find(userSkill => userSkill.skill_id === baseSkill[0]);
+            if(foundSkill){
+                skillsEntries.push([
+                    foundSkill.skill_id,
+                    {
+                        ...baseSkill[1],
+                        level: foundSkill.level + 1,
+                    }
+                ])
+            } else {
+                skillsEntries.push(baseSkill);
+            }
+        })
+        dispatch(userSlice.actions.setSkills(Object.fromEntries(skillsEntries) as IPlayerBaseStats));
+        
         dispatch(userSlice.actions.setIsLoading(false));
         return true
     }

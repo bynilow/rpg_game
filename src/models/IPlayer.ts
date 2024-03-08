@@ -1,7 +1,7 @@
 import { IActionTexts } from "./IEnemy";
 import { IArmor, ITool, IWeapon } from "./IEquipment";
 
-interface IPlayerStat {
+export interface IPlayerStat {
     title: string;
     baseCount: number;
     currentScores: number;
@@ -58,8 +58,5 @@ export interface IPlayer{
 
 export interface ISkillUp {
     id: string;
-    countSkills: number;
     countLevels: number;
-    type: 'score' | 'multiplier' | 'percent';
-    
 }

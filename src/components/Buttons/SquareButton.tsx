@@ -1,6 +1,7 @@
 import { FC } from 'react';
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import Wrapper from '../Wrapper/Wrapper';
+import { palette } from '../../styles/palette';
 
 interface ISquareButtonProps {
     children: React.ReactNode;
@@ -9,27 +10,45 @@ interface ISquareButtonProps {
     $isSquare?: boolean;
     $color?: string;
     $onClick: Function;
+    $isDisabled?: boolean;
 }
 
 const SquareButton: FC<ISquareButtonProps> = ({
-    $width = 'auto', 
-    children, 
-    $fontSize, 
-    $isSquare = true, 
+    $width = 'auto',
+    children,
+    $fontSize,
+    $isSquare = true,
     $color = 'black',
-    $onClick}) => {
+    $onClick,
+    $isDisabled }) => {
 
-    return (  
+    return (
         <Button
+            disabled={$isDisabled}
             $fontSize={$fontSize}
             $isSquare={$isSquare}
             $width={$width}
             $color={$color}
-            onClick={() => $onClick()}>
-            {children}
+            onClick={(e) => {
+                e.stopPropagation();
+                $onClick();
+            }}>
+            {
+                children
+            }
         </Button>
     );
 }
+
+const AnimLoader = keyframes`
+    from{
+        transform: scale(1);
+    }
+    to{
+        transform: scale(1.2);
+    }
+`
+
 
 interface IButtonProps {
     $fontSize?: string;
@@ -41,6 +60,7 @@ interface IButtonProps {
 const Button = styled.button<IButtonProps>`
     ${Wrapper}
 
+    position: relative;
     font-weight: bold;
     font-size: ${p => p.$fontSize || '1.5rem'};
     width: ${p => p.$width};
@@ -58,6 +78,13 @@ const Button = styled.button<IButtonProps>`
 
     &:hover{
         transform: scale(0.9);
+    }
+
+    &:disabled{
+        transform: scale(0.95);
+        background-color: ${palette.lightestGray};
+        cursor: default;
+        
     }
 `
 

@@ -27,7 +27,7 @@ export const addSkill = async (skillId: string, count: number) => {
                     skill_id: skillId
                 }
             )
-        }        
+        } 
     } catch(e) {
         console.log(e)
     }
