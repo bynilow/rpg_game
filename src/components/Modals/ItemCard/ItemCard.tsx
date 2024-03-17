@@ -3,36 +3,63 @@ import { Items } from '../../../data/ItemsData';
 import { getItemBackground, getItemHoveredBackground } from '../../../styles/backgrounds';
 import Avatar from '../../Avatar/Avatar';
 import Title from '../../Title/Title';
+import { palette } from '../../../styles/palette';
+import CircleButton from '../../Buttons/CircleButton';
+import { useAppDispatch } from '../../../hooks/redux';
+import { removeItemTradingAC } from '../../../store/reducers/ActionCreators';
 
-interface IWinCombatItem {
+interface IItemCard {
     id: string
     count: number;
+    extraInfo?: string;
 }
 
-function WinCombatItem({id, count}:IWinCombatItem) {
+function ItemCard({ id, count, extraInfo }: IItemCard) {
+
+    const dispatch = useAppDispatch();
 
     const item = Items.find(i => i.id === id)!;
 
-    return ( 
-        <Item 
+    const onClickDelete = () => {
+        dispatch(removeItemTradingAC(id));
+    }
+
+    return (
+        <Item
             color={getItemBackground(item.rare)}
             $hoveredColor={getItemHoveredBackground(item.rare)}>
-            <Avatar 
+            <ButtonOuter>
+                <CircleButton
+                    symbol={palette.cancelMark}
+                    click={() => onClickDelete()} />
+            </ButtonOuter>
+            <Avatar
                 $image={item.avatar}
-                width={'100px'} />
+                width={'40%'} />
             <Info>
-                <Title $size='1.5rem'>
+                <Title $size='1rem'>
                     {
                         item.title
-                    } 
+                    }
                 </Title>
                 <Count>
-                    Количество: {count}
+                    x{count}
                 </Count>
             </Info>
         </Item>
-     );
+    );
 }
+
+const ButtonOuter = styled.div`
+    position: absolute;
+    padding: 15px;
+    top: -10%;
+    right: -10%;
+    display: flex;
+    transform: scale(0);
+    
+    transition: 0.2s;
+`
 
 const Info = styled.div`
     width: 100%;
@@ -44,7 +71,7 @@ const Info = styled.div`
 `
 
 const Count = styled.p`
-    margin: 0;
+
 `
 
 interface IItemProps {
@@ -53,9 +80,10 @@ interface IItemProps {
 }
 
 const Item = styled.div<IItemProps>`
-    
-    width: 12rem;
-    height: 16rem;
+    position: relative;
+    width: 10rem;
+    height: 10rem;
+    aspect-ratio: 1/1;
     box-shadow: 0 0 5px black;
     border-radius: 5px;
     padding: 10px;
@@ -74,6 +102,10 @@ const Item = styled.div<IItemProps>`
         background: ${p => p.$hoveredColor};
     }
 
+    &:hover ${ButtonOuter}{
+        transform: scale(1);
+    }
+
 `
 
-export default WinCombatItem;
+export default ItemCard;

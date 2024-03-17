@@ -97,6 +97,7 @@ const testingBuffs: IBuff[] = [
 
 interface IUserSlice {
     inventory: IItemInventory[];
+    tradingItems: IFullItemWithCount[];
     player: IPlayer;
     playerSkills: IPlayerBaseStats;
     buffs: IBuff[];
@@ -107,6 +108,7 @@ interface IUserSlice {
 
 const initialState: IUserSlice = {
     inventory: [],
+    tradingItems: [],
     player: emptyPlayer,
     playerSkills: PlayerBaseStats,
     buffs: testingBuffs,
@@ -158,6 +160,12 @@ export const userSlice = createSlice({
                 }
             })
 
+        },
+        addItemsTrading(state, action: PayloadAction<IFullItemWithCount[]>){
+            state.tradingItems.push(...action.payload);
+        },
+        removeItemTrading(state, action: PayloadAction<string>){
+            state.tradingItems = state.tradingItems.filter(item => item.id !== action.payload);
         },
         setInventory(state, action: PayloadAction<IItemInventory[]>) {
             state.inventory = action.payload;

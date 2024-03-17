@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import { scrollBarX } from '../../../styles/scrollbars';
-import WinCombatItem from './WinCombatItem';
+import WinCombatItem from '../ItemCard/ItemCard';
 import Modal from '../Modal';
 import Title from '../../Title/Title';
 import SquareButton from '../../Buttons/SquareButton';

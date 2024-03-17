@@ -8,28 +8,35 @@ import SquareButton from '../../Buttons/SquareButton';
 import Range from '../../Range/Range';
 import Title from '../../Title/Title';
 import Modal from '../Modal';
+import { palette } from '../../../styles/palette';
 
 interface IDeleteItemsModal {
+    $isDeleteMode: boolean;
     $item: IFullItemWithCount
     $closeModal: Function;
     $itemTitle: string;
     $min: number;
     $max: number;
+    $onClickAcceptCount?: Function;
 }
 
-function DeleteItemsModal({$closeModal, $itemTitle, $min, $max, $item}: IDeleteItemsModal) {
+function DeleteItemsModal({ $closeModal, $itemTitle, $min, $max, $item, $isDeleteMode, $onClickAcceptCount }: IDeleteItemsModal) {
 
-    const {inventory} = useAppSelector(state => state.userReducer);
+    const { inventory } = useAppSelector(state => state.userReducer);
     const dispatch = useAppDispatch();
 
     const [count, setCount] = useState($min);
 
     const onClickDeleteItem = () => {
-        dispatch(removeItemsFromInventoryAC([{...$item, count}]));
+        dispatch(removeItemsFromInventoryAC([{ ...$item, count }]));
         $closeModal();
     }
 
-    return (  
+    const onClickAcceptCount = () => {
+        if ($onClickAcceptCount) $onClickAcceptCount(count);
+    }
+
+    return (
         <Modal
             $zIndex={9999}
             $size='small'
@@ -40,7 +47,11 @@ function DeleteItemsModal({$closeModal, $itemTitle, $min, $max, $item}: IDeleteI
             $isCloseButton >
             <ModalInner>
                 <Title>
-                    Удаление
+                    {
+                        $isDeleteMode
+                            ? 'Удаление'
+                            : 'Количество'
+                    }
                 </Title>
                 <Title $size='2rem'>
                     {$itemTitle} <Count>
@@ -48,10 +59,14 @@ function DeleteItemsModal({$closeModal, $itemTitle, $min, $max, $item}: IDeleteI
                     </Count>
                 </Title>
                 <Range $min={$min} $max={$max} $onChange={(count: number) => setCount(count)} />
-                <SquareButton 
+                <SquareButton
                     $fontSize='3rem'
-                    $onClick={() => onClickDeleteItem()} >
-                    🗸
+                    $onClick={
+                        $isDeleteMode
+                            ? () => onClickDeleteItem()
+                            : () => onClickAcceptCount()
+                    } >
+                    {palette.checkMark}
                 </SquareButton>
             </ModalInner>
         </Modal>

@@ -3,7 +3,7 @@ import { IPlayer, IPlayerBaseStats } from "../models/IPlayer";
 
 
 export interface IStats {
-    baseDamage: number,
+    damage: number,
     critDamageMultiplier: number,
     critChance: number,
     oreSpeedMining: number,
@@ -28,97 +28,161 @@ export interface IStats {
     sellPricePercent: number
 }
 
+const getStatNumber = (num: number) => {
+    return Number(num.toFixed(2));
+}
+
 export const getStats = (playerSkills: IPlayerBaseStats, player: IPlayer, buffs: IBuff[]): IStats => ({
-    baseDamage: 
-        Number(((
-            playerSkills.damage.currentScores
-            + player.weaponStats.damage)).toFixed(2)),
+    damage: 
+        getStatNumber(
+            playerSkills.damage.level * playerSkills.damage.givesScores
+            + player.weaponStats.damage
+            + (buffs.find(buff => buff.idStat === 'damage')?.count || 0)
+        ),
+
     critDamageMultiplier:
-        Number((
-            playerSkills.critDamageMultiplier.currentScores
-            + player.weaponStats.critDamageMultiplier).toFixed(2)),
+        getStatNumber(
+            playerSkills.critDamageMultiplier.level * playerSkills.critDamageMultiplier.givesScores
+            + player.weaponStats.critDamageMultiplier
+            + (buffs.find(buff => buff.idStat === 'critDamageMultiplier')?.count || 0)
+        ),
+
     critChance:
-        Number((
-            playerSkills.critChance.currentScores
-            + player.weaponStats.critChance).toFixed(2)),
+        getStatNumber(
+            playerSkills.critChance.level * playerSkills.critChance.givesScores
+            + player.weaponStats.critChance
+            + (buffs.find(buff => buff.idStat === 'critChance')?.count || 0)
+        ),
+
     oreSpeedMining:
-        Number((
-            playerSkills.oreSpeedMining.currentScores
+        getStatNumber(
+            playerSkills.oreSpeedMining.level * playerSkills.oreSpeedMining.givesScores
             + buffs.filter(i => i.idStat === 'oreSpeedMining').reduce<number>((ac, pv) => pv.count + ac, 0)
-            + player.pickaxeStats.miningSpeed).toFixed(2)),
+            + player.pickaxeStats.miningSpeed
+            + (buffs.find(buff => buff.idStat === 'oreSpeedMining')?.count || 0)
+        ),
+
     oreDoubleLootPercentChance:
-        Number((
-            playerSkills.oreDoubleLootPercentChance.currentScores
-            + player.pickaxeStats.doubleChancePercent).toFixed(2)),
+        getStatNumber(
+            playerSkills.oreDoubleLootPercentChance.level * playerSkills.oreDoubleLootPercentChance.givesScores
+            + player.pickaxeStats.doubleChancePercent
+            + (buffs.find(buff => buff.idStat === 'oreDoubleLootPercentChance')?.count || 0)
+        ),
+
     treeSpeedMining:
-        Number((
-            playerSkills.treeSpeedMining.currentScores
-            + player.axeStats.miningSpeed).toFixed(2)),
+        getStatNumber(
+            playerSkills.treeSpeedMining.level * playerSkills.treeSpeedMining.givesScores
+            + player.axeStats.miningSpeed
+            + (buffs.find(buff => buff.idStat === 'treeSpeedMining')?.count || 0)
+        ),
+
     treeDoubleLootPercentChance:
-        Number((
-            playerSkills.treeDoubleLootPercentChance.currentScores
-            + player.axeStats.doubleChancePercent).toFixed(2)),
+        getStatNumber(
+            playerSkills.treeDoubleLootPercentChance.level * playerSkills.treeDoubleLootPercentChance.givesScores
+            + player.axeStats.doubleChancePercent
+            + (buffs.find(buff => buff.idStat === 'treeDoubleLootPercentChance')?.count || 0)
+        ),
+
     capacity:
-        Number((
-            playerSkills.capacity.currentScores).toFixed(0)),
+        getStatNumber(
+            playerSkills.capacity.level * playerSkills.capacity.givesScores
+            + (buffs.find(buff => buff.idStat === 'capacity')?.count || 0)
+        ),
 
     blockingChancePercent:
-        Number((
-            playerSkills.blockingChancePercent.currentScores
-            + player.weaponStats.blockingChancePercent).toFixed(2)),
+        getStatNumber(
+            playerSkills.blockingChancePercent.level * playerSkills.blockingChancePercent.givesScores
+            + player.weaponStats.blockingChancePercent
+            + (buffs.find(buff => buff.idStat === 'blockingChancePercent')?.count || 0)
+        ),
+
     blockingMultiplier:
-        Number((
-            playerSkills.blockingMultiplier.currentScores
-            + player.weaponStats.blockingMultiplier).toFixed(2)),
+        getStatNumber(
+            playerSkills.blockingMultiplier.level * playerSkills.blockingMultiplier.givesScores
+            + player.weaponStats.blockingMultiplier
+            + (buffs.find(buff => buff.idStat === 'blockingMultiplier')?.count || 0)
+        ),
+
     dodgePercentChance:
-        Number((
-            playerSkills.dodgePercentChance.currentScores
+        getStatNumber(
+            playerSkills.dodgePercentChance.level * playerSkills.dodgePercentChance.givesScores
             + player.headStats.dodgeChance
             + player.chestStats.dodgeChance
-            + player.footStats.dodgeChance).toFixed(2)),
+            + player.footStats.dodgeChance
+            + (buffs.find(buff => buff.idStat === 'dodgePercentChance')?.count || 0)
+        ),
+
     missPercentChance:
-        Number((
-            playerSkills.missPercentChance.currentScores
+        getStatNumber(
+            playerSkills.missPercentChance.level * playerSkills.missPercentChance.givesScores
             + player.headStats.missChance
             + player.chestStats.missChance
             + player.footStats.missChance
-            + player.weaponStats.missChance).toFixed(2)),
+            + player.weaponStats.missChance
+            + (buffs.find(buff => buff.idStat === 'missPercentChance')?.count || 0)
+        ),
+
     movementSpeed:
-        Number((
-            playerSkills.movementSpeed.currentScores
+        getStatNumber(
+            playerSkills.movementSpeed.level * playerSkills.movementSpeed.givesScores
             + player.headStats.speedMovement
             + player.chestStats.speedMovement
-            + player.footStats.speedMovement).toFixed(2)),
+            + player.footStats.speedMovement
+            + (buffs.find(buff => buff.idStat === 'movementSpeed')?.count || 0)
+        ),
+
     attackSpeed:
-        Number((
-            playerSkills.attackSpeed.currentScores
+        getStatNumber(
+            playerSkills.attackSpeed.level * playerSkills.attackSpeed.givesScores
             + player.headStats.speedAttack
             + player.chestStats.speedAttack
             + player.footStats.speedAttack
-            + player.weaponStats.speedAttack).toFixed(2)),
+            + player.weaponStats.speedAttack
+            + (buffs.find(buff => buff.idStat === 'attackSpeed')?.count || 0)
+        ),
+
     health:
-        Number((
-            playerSkills.health.currentScores
+        getStatNumber(
+            playerSkills.health.level * playerSkills.health.givesScores
             * (+ player.headStats.health
                 + player.chestStats.health
-                + player.footStats.health)).toFixed(1)),
+                + player.footStats.health
+                + (buffs.find(buff => buff.idStat === 'health')?.count || 0)
+            )),
+
     healthRegenerationScore:
-        Number((
-            playerSkills.healthRegenerationScore.currentScores).toFixed(0)),
+        getStatNumber(
+            playerSkills.healthRegenerationScore.level * playerSkills.healthRegenerationScore.givesScores
+            + (buffs.find(buff => buff.idStat === 'healthRegenerationScore')?.count || 0)
+        ),
 
     experienceMultiplier:
-        Number((
-            playerSkills.experienceMultiplier.currentScores).toFixed(2)),
+        getStatNumber(
+            playerSkills.experienceMultiplier.level * playerSkills.experienceMultiplier.givesScores
+            + (buffs.find(buff => buff.idStat === 'experienceMultiplier')?.count || 0)
+        ),
+
     craftSpeed:
-        Number((
-            playerSkills.craftSpeed.currentScores).toFixed(2)),
+        getStatNumber(
+            playerSkills.craftSpeed.level * playerSkills.craftSpeed.givesScores
+            + (buffs.find(buff => buff.idStat === 'craftSpeed')?.count || 0)
+        ),
+
     craftDoubleLootPercentChance:
-        Number((
-            playerSkills.craftDoubleLootPercentChance.currentScores).toFixed(2)),
+        getStatNumber(
+            playerSkills.craftDoubleLootPercentChance.level * playerSkills.craftDoubleLootPercentChance.givesScores
+            + (buffs.find(buff => buff.idStat === 'craftDoubleLootPercentChance')?.count || 0)
+        ),
+
     buyPricePercent:
-        Number((
-            playerSkills.buyPricePercent.currentScores).toFixed(2)),
+        getStatNumber(
+            playerSkills.buyPricePercent.level * playerSkills.buyPricePercent.givesScores
+            + (buffs.find(buff => buff.idStat === 'buyPricePercent')?.count || 0)
+        ),
+
     sellPricePercent:
-        Number((
-            playerSkills.sellPricePercent.currentScores).toFixed(2))
+        getStatNumber(
+            playerSkills.sellPricePercent.level * playerSkills.sellPricePercent.givesScores
+            + (buffs.find(buff => buff.idStat === 'sellPricePercent')?.count || 0)
+        )
 })

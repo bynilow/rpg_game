@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { sortFilterInventory } from '../../../functions/Sorting/SortingInventory';
-import { useAppSelector } from '../../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { IFullItemWithCount } from '../../../models/IAreaItem';
 import { scrollBarX } from '../../../styles/scrollbars';
 import Dropdown from '../../SearchBar/Dropdown';
@@ -12,14 +12,19 @@ import DeleteItemsModal from '../DeleteItemsModal/DeleteItemsModal';
 import Modal from '../Modal';
 import InventoryEmptyItem from './InventoryEmptyItem';
 import InventoryItem from './InventoryItem';
+import SquareButton from '../../Buttons/SquareButton';
+import { palette } from '../../../styles/palette';
+import { addItemsTradingAC } from '../../../store/reducers/ActionCreators';
 
 interface IInventoryModal {
     closeModal: Function;
+    $isSelectMode?: boolean;
 }
 
-function InventoryModal({ closeModal }: IInventoryModal) {
+function InventoryModal({ closeModal, $isSelectMode = true }: IInventoryModal) {
 
-    const { inventory, playerSkills } = useAppSelector(state => state.userReducer)
+    const { inventory, playerSkills, tradingItems } = useAppSelector(state => state.userReducer);
+    const dispatch = useAppDispatch();
 
     const [inputText, setInputText] = useState('');
     const [selectedMaterial, setSelectedMaterial] = useState('all');
@@ -48,15 +53,29 @@ function InventoryModal({ closeModal }: IInventoryModal) {
         setIsDeleteModalOpened(true);
     };
 
+    const [selectedItems, setSelectedItems] = useState<IFullItemWithCount[]>([]);
+
+    const onClickAcceptItems = () => {
+        console.log(selectedItems)
+        dispatch(addItemsTradingAC(selectedItems));
+        closeModal();
+    };
+
+    const onClickSelectItem = (item: IFullItemWithCount) => {
+        console.log(item)
+        setSelectedItems(pv => [...pv, item]);
+    };
+
     useEffect(() => {
         changeSortFilterInventory();
-    }, [selectedMaterial, selectedRare, selectedSort, isReversed, inputText, inventory])
+    }, [selectedMaterial, selectedRare, selectedSort, isReversed, inputText, inventory]);
 
     return (
         <>
             {
-                isDeleteModalOpened
+                isDeleteModalOpened && !$isSelectMode
                     ? <DeleteItemsModal
+                        $isDeleteMode={true}
                         $min={1}
                         $max={itemToDelete?.count!}
                         $itemTitle='Береза'
@@ -68,6 +87,7 @@ function InventoryModal({ closeModal }: IInventoryModal) {
                 $flexDirection={'column'}
                 $justifyContent='baseline'
                 $size='large'
+                $zIndex={99999}
                 $isCloseButton
                 $closeButtonFunction={() => closeModal()}>
 
@@ -125,6 +145,10 @@ function InventoryModal({ closeModal }: IInventoryModal) {
                                 sortedInventory.map(i =>
                                     <InventoryItem
                                         key={i.item.id}
+                                        $isSelected={!!tradingItems.find((item: any) => item.item.id === i.item.id)}
+                                        $selectedCount={tradingItems.find((item: any) => item.item.id === i.item.id)?.count || 0}
+                                        $onSelectItem={(item: IFullItemWithCount) => onClickSelectItem(item)}
+                                        $isSelectMode={$isSelectMode}
                                         $onClickMultipleDelete={(item: IFullItemWithCount) => onClickMultipleDelete(item)}
                                         item={i.item}
                                         count={i.count} />)
@@ -134,6 +158,15 @@ function InventoryModal({ closeModal }: IInventoryModal) {
 
                         </ItemsList>
                         : <Title $size='1.5em'>Инвентарь пуст...</Title>
+                }
+                {
+                    $isSelectMode && selectedItems.length
+                        ? <SquareButton
+                            $width='3rem'
+                            $onClick={() => onClickAcceptItems()}>
+                            {palette.checkMark}
+                        </SquareButton>
+                        : null
                 }
             </Modal>
         </>

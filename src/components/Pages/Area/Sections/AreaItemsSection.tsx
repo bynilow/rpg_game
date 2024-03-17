@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { getRandomNumberForLoot } from '../../../../functions/Random';
-import { IStats } from '../../../../functions/Stats';
+import { IStats, getStats } from '../../../../functions/Stats';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { IFullItem } from '../../../../models/IAreaItem';
 import { addXPAC, mineItemAC, updateAreaItems } from '../../../../store/reducers/ActionCreators';
@@ -27,7 +27,7 @@ function AreaItemsSection({
     $clearActionType}: IAreaItemsSectionProps) {
 
     const { currentLocation } = useAppSelector(state => state.areaReducer)
-    const { userData } = useAppSelector(state => state.userReducer)
+    const { userData, player, playerSkills } = useAppSelector(state => state.userReducer)
 
     const dispatch = useAppDispatch();
 
@@ -78,15 +78,17 @@ function AreaItemsSection({
                 $timeToUpdate={currentLocation.timeToRespawnAreaItems}
                 $nextUpdateDateTime={"2024-01-22T12:00:00"} />
 
-            <List key={$isUpdatingLevel.toString()} $isUpdatingLevel={$isUpdatingLevel}>
+            <List 
+                key={
+                    playerSkills.treeSpeedMining.level 
+                    + playerSkills.oreSpeedMining.level} 
+                $isUpdatingLevel={$isUpdatingLevel}>
                 {
                     currentLocation.currentAreaItems.map((i: IFullItem, ind) =>
                         <AreaItem
                             key={
                                 i.idInArea
                                 + currentLocation.id
-                                + $playerStats.oreSpeedMining
-                                + $playerStats.treeSpeedMining
                             }
                             $index={ind}
                             $isBlocked={$isBlocked}
@@ -97,8 +99,8 @@ function AreaItemsSection({
                             $mineItem={() => mineItem(i)}
                             $playerSpeedMining={
                                 i.type === 'tree'
-                                    ? $playerStats.treeSpeedMining
-                                    : $playerStats.oreSpeedMining} />)
+                                    ? getStats(playerSkills, player, []).treeSpeedMining
+                                    : getStats(playerSkills, player, []).oreSpeedMining} />)
                 }
             </List>
         </Section>

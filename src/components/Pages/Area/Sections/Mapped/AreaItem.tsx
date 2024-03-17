@@ -5,6 +5,8 @@ import { getItemBackground, getItemHoveredBackground, getRareColor, getRareTimer
 import Avatar from '../../../../Avatar/Avatar';
 import TimerLine from '../../../../TimerLine/TimerLine';
 import AreaMapped, { AreaThing } from './AreaMapped';
+import { getStats } from '../../../../../functions/Stats';
+import { useAppSelector } from '../../../../../hooks/redux';
 
 
 interface IAreaItemProps {
@@ -27,6 +29,8 @@ function Area({
     $setIsMiningId, 
     $clearIsMiningId, 
     $playerSpeedMining}: IAreaItemProps) {
+
+    const {playerSkills, player} = useAppSelector(state => state.userReducer)
 
     const [isMining, setIsMining] = useState(false);
     const isMiningRef = useRef(isMining);

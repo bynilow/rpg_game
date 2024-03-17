@@ -25,28 +25,28 @@ function Modal({
     $isEnableAnims = true,
     $isCloseButton,
     $closeButtonFunction,
-    $gap = '1.3em',
+    $gap = '1.3rem',
     $justifyContent = 'space-between',
     $size = 'medium',
-    $zIndex=10 }: IModal) {
+    $zIndex = 10 }: IModal) {
 
     const [isOpenAnim, setIsOpenAnim] = useState(true);
     const [isCloseAnim, setIsCloseAnim] = useState(false);
 
     const onClickCloseButton = () => {
-        if(!isCloseAnim && $isEnableAnims){
+        if (!isCloseAnim && $isEnableAnims) {
             setIsCloseAnim(true);
             setTimeout(() => {
                 $closeButtonFunction();
             }, 700)
         }
-        else if(!$isEnableAnims){
+        else if (!$isEnableAnims) {
             $closeButtonFunction();
         }
     }
 
     return (
-        <ModalBlock 
+        <ModalBlock
             key={isCloseAnim.toString()}
             $isClosing={isCloseAnim}
             $zIndex={$zIndex} >
@@ -196,11 +196,14 @@ interface IModalBackgroundProps {
 
 const ModalBlock = styled.div<IModalBackgroundProps>`
     z-index: ${p => p.$zIndex};
-    position: absolute;
+    position: fixed;
     width: 100vw;
     height: 100vh;
     top: 0;
+    bottom: 0;
+    right: 0;
     left: 0;
+    margin: auto;
     background-color: #0000006e;
     backdrop-filter: blur(5px);
 

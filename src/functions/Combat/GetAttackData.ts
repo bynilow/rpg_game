@@ -14,7 +14,7 @@ export const getAttackData = ({
     isEnemyAttack, enemy, player, playerStats
 }: IGetAttackData) => {
 
-    const playerCurrentDamage = playerStats.baseDamage;
+    const playerCurrentDamage = playerStats.damage;
 
     const avatar = isEnemyAttack
         ? enemy.avatar

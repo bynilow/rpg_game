@@ -408,3 +408,21 @@ export const logoutUserAC = () => async (dispatch: AppDispatch) => {
         console.error(e);
     }
 }
+
+export const addItemsTradingAC = (item: IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(userSlice.actions.addItemsTrading(item));
+    }
+    catch(e){
+        console.error(e);
+    }
+}
+
+export const removeItemTradingAC = (id: string) => async (dispatch: AppDispatch) => {
+    try{
+        dispatch(userSlice.actions.removeItemTrading(id));
+    }
+    catch(e){
+        console.error(e);
+    }
+}

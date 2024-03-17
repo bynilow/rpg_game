@@ -43,7 +43,7 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
 
     const [enemyHealth, setEnemyHealth] = useState(enemy.stats.baseHealth);
 
-    const [playerStats, setPlayerStats] = useState(getStats(playerSkills, player, buffs));
+    const [playerStats, setPlayerStats] = useState(getStats(playerSkills, player, []));
 
     const [playerHealth, setPlayerHealth] = useState(player.health);
     const [playerCurrentTimeAttack, setPlayerCurrentTimeAttack] = useState(playerStats.attackSpeed < 0 ? 0.1 : playerStats.attackSpeed);
@@ -52,8 +52,6 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
     const [combatHistory, setCombatHistory] = useState<ICombatHistory[]>([]);
 
     const [enemyTime, setEnemyTime] = useState<number>(enemy.stats.attackSpeed);
-
-
 
     const enemyAttack = () => {
         setEnemyTime(enemy.stats.attackSpeed);
@@ -228,7 +226,7 @@ function CombatPage({ $enemyId, $finishBattle, $enemyIdInArea, $level }: ICombat
 
     }, [])
 
-    const playerCurrentMaxHealth = playerSkills.baseHealth.currentScores * playerSkills.maxHealthMultiplier.currentScores;
+    const playerCurrentMaxHealth = playerStats.health;
 
     return (
         <>
