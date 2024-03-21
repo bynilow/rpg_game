@@ -15,7 +15,7 @@ interface IDropdownProps {
     $isRare?: boolean;
 }
 
-function Dropdown({$selectedTypes, $isRare, $setSelected}: IDropdownProps) {
+function Dropdown({ $selectedTypes, $isRare, $setSelected }: IDropdownProps) {
 
     const [selectedTypeId, setSelectedTypeId] = useState($selectedTypes[0].id);
 
@@ -41,13 +41,14 @@ function Dropdown({$selectedTypes, $isRare, $setSelected}: IDropdownProps) {
                 {
                     $selectedTypes.map(t =>
                         <DropdownOption
-                            isSelected={selectedTypeId === t.id}
+                            key={t.id}
+                            $isSelected={selectedTypeId === t.id}
                             onClick={() => onChangeSelected(t.id)}>
                             {
                                 $isRare && <RareIcon color={getRareColor(t.id as IRare)} />
                             }
                             {t.title}
-                        </DropdownOption> )
+                        </DropdownOption>)
                 }
             </DropdownOptions>
         </SelectDropdown>
@@ -66,7 +67,7 @@ const RareIcon = styled.div<IRareIconProps>`
 `
 
 interface IDropdownOptionProps {
-    isSelected: boolean;
+    $isSelected: boolean;
 }
 
 const DropdownOption = styled.div<IDropdownOptionProps>`
@@ -79,7 +80,7 @@ const DropdownOption = styled.div<IDropdownOptionProps>`
     padding: 5px;
     cursor: pointer;
     transition: 0.1s;
-    border-bottom: ${p => p.isSelected ? '1px solid black;' : 'none;'};
+    border-bottom: ${p => p.$isSelected ? '1px solid black;' : 'none;'};
 
     &:hover{
         padding-left: 1.3em;

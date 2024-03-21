@@ -81,7 +81,7 @@ function InventoryItem({
 		setSelectedCount(count);
 		setIsSelectModalOpened(false);
 		setIsSelected(true);
-		if ($onSelectItem) $onSelectItem({ item, count });
+		if ($onSelectItem) $onSelectItem({ ...item, count });
 	}
 
 	const onClickCancelSelect = () => {

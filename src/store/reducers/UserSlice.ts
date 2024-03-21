@@ -97,7 +97,8 @@ const testingBuffs: IBuff[] = [
 
 interface IUserSlice {
     inventory: IItemInventory[];
-    tradingItems: IFullItemWithCount[];
+    tradingItems: Models.Document[] & IFullItemWithCount[];
+    currentTradeId: string;
     player: IPlayer;
     playerSkills: IPlayerBaseStats;
     buffs: IBuff[];
@@ -109,6 +110,7 @@ interface IUserSlice {
 const initialState: IUserSlice = {
     inventory: [],
     tradingItems: [],
+    currentTradeId: '',
     player: emptyPlayer,
     playerSkills: PlayerBaseStats,
     buffs: testingBuffs,
@@ -120,7 +122,7 @@ const initialState: IUserSlice = {
 export const userSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: { 
+    reducers: {
         addItemsToInventory(state, action: PayloadAction<IFullItemWithCount[]>) {
             const date = new Date().toISOString();
             const items = action.payload;
@@ -161,11 +163,14 @@ export const userSlice = createSlice({
             })
 
         },
-        addItemsTrading(state, action: PayloadAction<IFullItemWithCount[]>){
+        setCurrentTradingId(state, action: PayloadAction<string>) {
+            state.currentTradeId = action.payload;
+        },
+        addItemsTrading(state, action: PayloadAction<IFullItemWithCount[] & Models.Document[]>) {
             state.tradingItems.push(...action.payload);
         },
-        removeItemTrading(state, action: PayloadAction<string>){
-            state.tradingItems = state.tradingItems.filter(item => item.id !== action.payload);
+        removeItemTrading(state, action: PayloadAction<string>) {
+            state.tradingItems = state.tradingItems.filter(item => item.$id !== action.payload) as Models.Document[] & IFullItemWithCount[];
         },
         setInventory(state, action: PayloadAction<IItemInventory[]>) {
             state.inventory = action.payload;
@@ -186,16 +191,16 @@ export const userSlice = createSlice({
 
             localStorage.player = JSON.stringify(state.player);
         },
-        setExperience(state, action: PayloadAction<number>){
+        setExperience(state, action: PayloadAction<number>) {
             state.player.currentXP = action.payload;
         },
-        setLevel(state, action: PayloadAction<number>){
+        setLevel(state, action: PayloadAction<number>) {
             state.player.level = action.payload;
         },
-        setSkillPoints(state, action: PayloadAction<number>){
+        setSkillPoints(state, action: PayloadAction<number>) {
             state.player.skillPoints = action.payload;
         },
-        setSkills(state, action: PayloadAction<IPlayerBaseStats>){
+        setSkills(state, action: PayloadAction<IPlayerBaseStats>) {
             state.playerSkills = action.payload;
         },
         addSkills(state, action: PayloadAction<ISkillUp[]>) {
@@ -205,13 +210,13 @@ export const userSlice = createSlice({
             });
 
         },
-        addSkillPoints(state, action: PayloadAction<number>){
+        addSkillPoints(state, action: PayloadAction<number>) {
             state.player.skillPoints += action.payload;
         },
         decrementSkillPoints(state, action: PayloadAction<number>) {
             state.player.skillPoints -= action.payload;
         },
-        equipItem(state, action: PayloadAction<string>){
+        equipItem(state, action: PayloadAction<string>) {
             const itemId = action.payload;
             const foundedIndex = state.inventory.findIndex(i => i.item.id === itemId)!;
             const foundedItem = state.inventory.find(i => i.item.id === itemId);
@@ -219,21 +224,21 @@ export const userSlice = createSlice({
             const foundedType = foundedItem?.item.subType || foundedItem?.item.type;
 
             state.inventory = state.inventory.map(i => {
-                if(i.item.subType === foundedType || i.item.type === foundedType){
-                    if(i.item.id === itemId){
+                if (i.item.subType === foundedType || i.item.type === foundedType) {
+                    if (i.item.id === itemId) {
                         return {
                             ...i,
                             isEquipped: !foundedItemIsEquiped
                         }
                     }
-                    else{
+                    else {
                         return {
                             ...i,
                             isEquipped: false
                         }
                     }
                 }
-                else{
+                else {
                     return i
                 }
             })
@@ -242,12 +247,12 @@ export const userSlice = createSlice({
             const weaponStats = foundedItem?.item.weaponStats;
             const toolStats = foundedItem?.item.toolStats;
 
-            switch(foundedType){
+            switch (foundedType) {
                 case 'helmet':
-                    if(!foundedItemIsEquiped){
+                    if (!foundedItemIsEquiped) {
                         state.player.headStats = { ...armorStats! }
                     }
-                    else{
+                    else {
                         state.player.headStats = {
                             dodgeChance: 0,
                             health: 0,
@@ -258,10 +263,10 @@ export const userSlice = createSlice({
                     }
                     break;
                 case 'chest':
-                    if(!foundedItemIsEquiped){
+                    if (!foundedItemIsEquiped) {
                         state.player.chestStats = { ...armorStats! }
                     }
-                    else{
+                    else {
                         state.player.chestStats = {
                             dodgeChance: 0,
                             health: 0,
@@ -272,10 +277,10 @@ export const userSlice = createSlice({
                     }
                     break;
                 case 'foot':
-                    if(!foundedItemIsEquiped){
+                    if (!foundedItemIsEquiped) {
                         state.player.footStats = { ...armorStats! }
                     }
-                    else{
+                    else {
                         state.player.footStats = {
                             dodgeChance: 0,
                             health: 0,
@@ -286,10 +291,10 @@ export const userSlice = createSlice({
                     }
                     break;
                 case 'weapon':
-                    if(!foundedItemIsEquiped){
+                    if (!foundedItemIsEquiped) {
                         state.player.weaponStats = { ...weaponStats! }
                     }
-                    else{
+                    else {
                         state.player.weaponStats = {
                             blockingChancePercent: 0,
                             blockingMultiplier: 0,
@@ -302,10 +307,10 @@ export const userSlice = createSlice({
                     }
                     break;
                 case 'axe':
-                    if(!foundedItemIsEquiped){
+                    if (!foundedItemIsEquiped) {
                         state.player.axeStats = { ...toolStats! }
                     }
-                    else{
+                    else {
                         state.player.axeStats = {
                             doubleChancePercent: 0,
                             miningSpeed: 0
@@ -313,10 +318,10 @@ export const userSlice = createSlice({
                     }
                     break;
                 case 'pickaxe':
-                    if(!foundedItemIsEquiped){
+                    if (!foundedItemIsEquiped) {
                         state.player.pickaxeStats = { ...toolStats! }
                     }
-                    else{
+                    else {
                         state.player.pickaxeStats = {
                             doubleChancePercent: 0,
                             miningSpeed: 0
@@ -329,7 +334,7 @@ export const userSlice = createSlice({
         },
         removeCoins(state, action: PayloadAction<number>) {
             state.player.coins -= action.payload;
-            
+
             localStorage.player = JSON.stringify(state.player);
         },
         sellItem(state, action: PayloadAction<IBuyItem>) {
@@ -338,34 +343,34 @@ export const userSlice = createSlice({
             const count = action.payload.item.count;
             const costPerUnit = action.payload.buyingCostPerUnit;
 
-            if(state.inventory[itemIndex].count - count > 0){
+            if (state.inventory[itemIndex].count - count > 0) {
                 state.inventory[itemIndex].count -= count;
             }
-            else{
+            else {
                 state.inventory.splice(itemIndex, 1)
             }
 
             state.player.coins += count * costPerUnit;
         },
-        setHealthPoints(state, action: PayloadAction<number>){
+        setHealthPoints(state, action: PayloadAction<number>) {
             const payloadHealth = action.payload;
             state.player.health = payloadHealth;
 
             localStorage.player = JSON.stringify(state.player);
         },
-        setUser(state, action: PayloadAction<Models.User<Models.Preferences>>){
+        setUser(state, action: PayloadAction<Models.User<Models.Preferences>>) {
             state.userData = action.payload;
         },
-        setIsLoading(state, action: PayloadAction<boolean>){
+        setIsLoading(state, action: PayloadAction<boolean>) {
             state.isLoading = action.payload;
         },
-        setIsSkillsLoading(state, action: PayloadAction<boolean>){
+        setIsSkillsLoading(state, action: PayloadAction<boolean>) {
             state.isSkillsLoading = action.payload;
         },
-        addCoins(state, action: PayloadAction<number>){
+        addCoins(state, action: PayloadAction<number>) {
             state.player.coins += action.payload;
         },
-        setCoins(state, action: PayloadAction<number>){
+        setCoins(state, action: PayloadAction<number>) {
             state.player.coins = action.payload;
         }
     }

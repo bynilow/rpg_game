@@ -12,3 +12,8 @@ export const skillsCollection = {
     databaseId: 'grindfestdb',
     collectionId: 'skills'
 }
+
+export const tradingItemsCollection = {
+    databaseId: 'grindfestdb',
+    collectionId: 'trades_items'
+}

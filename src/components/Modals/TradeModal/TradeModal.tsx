@@ -30,7 +30,6 @@ const TradeModal: FC<ITradeModalProps> = ({ personId }) => {
 	}
 
 	useEffect(() => {
-		console.log(tradingItems)
 		setSelectedItems(tradingItems);
 	}, [tradingItems])
 
@@ -70,11 +69,12 @@ const TradeModal: FC<ITradeModalProps> = ({ personId }) => {
 								</CoinsBlock>
 								<List key={tradingItems.length}>
 									{
-										tradingItems.map((item: any) =>
+										tradingItems.map((item) =>
 											<ItemCard
 												key={item.item.id}
+												$documentId={item.$id}
 												id={item.item.id}
-												count={item.count} />)
+												count={item.item.count} />)
 									}
 									<SquareButton $width="10rem" $onClick={() => setIsInventoryOpened(true)}>
 										+

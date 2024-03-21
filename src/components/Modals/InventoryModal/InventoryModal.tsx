@@ -54,6 +54,7 @@ function InventoryModal({ closeModal, $isSelectMode = true }: IInventoryModal) {
     };
 
     const [selectedItems, setSelectedItems] = useState<IFullItemWithCount[]>([]);
+    const [lastSelectedItems, setLastSelectedItems] = useState(tradingItems);
 
     const onClickAcceptItems = () => {
         console.log(selectedItems)
@@ -62,7 +63,6 @@ function InventoryModal({ closeModal, $isSelectMode = true }: IInventoryModal) {
     };
 
     const onClickSelectItem = (item: IFullItemWithCount) => {
-        console.log(item)
         setSelectedItems(pv => [...pv, item]);
     };
 
@@ -145,8 +145,8 @@ function InventoryModal({ closeModal, $isSelectMode = true }: IInventoryModal) {
                                 sortedInventory.map(i =>
                                     <InventoryItem
                                         key={i.item.id}
-                                        $isSelected={!!tradingItems.find((item: any) => item.item.id === i.item.id)}
-                                        $selectedCount={tradingItems.find((item: any) => item.item.id === i.item.id)?.count || 0}
+                                        $isSelected={!!tradingItems.find((item) => item.id === i.item.id)}
+                                        $selectedCount={tradingItems.find((item: any) => item.id === i.item.id)?.count || 0}
                                         $onSelectItem={(item: IFullItemWithCount) => onClickSelectItem(item)}
                                         $isSelectMode={$isSelectMode}
                                         $onClickMultipleDelete={(item: IFullItemWithCount) => onClickMultipleDelete(item)}
@@ -160,7 +160,7 @@ function InventoryModal({ closeModal, $isSelectMode = true }: IInventoryModal) {
                         : <Title $size='1.5em'>Инвентарь пуст...</Title>
                 }
                 {
-                    $isSelectMode && selectedItems.length
+                    ($isSelectMode && selectedItems.length) || JSON.stringify(lastSelectedItems) !== JSON.stringify(tradingItems)
                         ? <SquareButton
                             $width='3rem'
                             $onClick={() => onClickAcceptItems()}>

@@ -9,26 +9,28 @@ import { useAppDispatch } from '../../../hooks/redux';
 import { removeItemTradingAC } from '../../../store/reducers/ActionCreators';
 
 interface IItemCard {
+    $documentId?: string;
+    $isTrading?: boolean;
     id: string
     count: number;
     extraInfo?: string;
 }
 
-function ItemCard({ id, count, extraInfo }: IItemCard) {
+function ItemCard({ id, count, extraInfo, $documentId, $isTrading = false }: IItemCard) {
 
     const dispatch = useAppDispatch();
 
     const item = Items.find(i => i.id === id)!;
 
     const onClickDelete = () => {
-        dispatch(removeItemTradingAC(id));
+        dispatch(removeItemTradingAC($documentId!));
     }
 
     return (
         <Item
             color={getItemBackground(item.rare)}
             $hoveredColor={getItemHoveredBackground(item.rare)}>
-            <ButtonOuter>
+            <ButtonOuter $isTrading={$isTrading}>
                 <CircleButton
                     symbol={palette.cancelMark}
                     click={() => onClickDelete()} />
@@ -50,7 +52,11 @@ function ItemCard({ id, count, extraInfo }: IItemCard) {
     );
 }
 
-const ButtonOuter = styled.div`
+interface IButtonOuter {
+    $isTrading: boolean;
+}
+
+const ButtonOuter = styled.div<IButtonOuter>`
     position: absolute;
     padding: 15px;
     top: -10%;
@@ -59,6 +65,8 @@ const ButtonOuter = styled.div`
     transform: scale(0);
     
     transition: 0.2s;
+
+    ${p => p.$isTrading ? 'display: block;' : 'display: hidden;'}
 `
 
 const Info = styled.div`

@@ -9,7 +9,7 @@ import { areaSlice } from "./AreaSlice";
 import { userSlice } from "./UserSlice";
 import { account, client, databases } from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
-import { Databases, ID, Query } from "appwrite";
+import { Databases, ID, Models, Query } from "appwrite";
 import { inventoryCollection, statsCollection } from "../../appwrite/databaseConfig";
 import { getExistsItem } from "../../appwrite/api/inventory/getExistsItem";
 import { addItemsToInventory } from "../../appwrite/api/inventory/addItemsToInventory";
@@ -23,6 +23,8 @@ import { removeSkillPoints } from "../../appwrite/api/stats/changeSkillPoints";
 import { addSkill } from "../../appwrite/api/skills/addSkill";
 import { getAllSkills } from "../../appwrite/api/skills/getSkill";
 import { PlayerBaseStats } from "../../data/PlayerStats";
+import { addItemsToTrading } from "../../appwrite/api/trading/addItemsToTrading";
+import { removeItemFromTrading } from "../../appwrite/api/trading/removeItemFromTrading";
 
 interface IResult {
     results: any[]
@@ -39,27 +41,27 @@ interface IUpdateAreaEnemies {
     levelId: string;
 }
 
-export const goLevel = (levelId:string) => async (dispatch: AppDispatch) => {
-    try{
+export const goLevel = (levelId: string) => async (dispatch: AppDispatch) => {
+    try {
         dispatch(areaSlice.actions.goLevel(levelId));
         dispatch(areaSlice.actions.getAvailablePaths(levelId));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
-export const getAvailablePaths = (levelId:string) => async (dispatch: AppDispatch) => {
-    try{
+export const getAvailablePaths = (levelId: string) => async (dispatch: AppDispatch) => {
+    try {
         dispatch(areaSlice.actions.getAvailablePaths(levelId));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         const items = updatedLevel.itemsToUpdate.map(i => {
             const count = getRandomNumber(i.countMin, i.countMax);
             if (count !== 0) {
@@ -75,21 +77,21 @@ export const updateAreaItems = (updatedLevel: IUpdateAreaItems) => async (dispat
             date: updatedLevel.date,
             items: filteredItems as []
         }));
-        
+
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const updateAreaEnemies = (updatedLevel: IUpdateAreaEnemies) => async (dispatch: AppDispatch) => {
-    try{
-        interface IEnemiesData{
+    try {
+        interface IEnemiesData {
             date: string;
             enemies: IAreaCurrentEnemy[];
             levelId: string;
         }
-        let enemiesData:IEnemiesData = {
+        let enemiesData: IEnemiesData = {
             date: new Date().toISOString(),
             enemies: [],
             levelId: updatedLevel.levelId
@@ -107,7 +109,7 @@ export const updateAreaEnemies = (updatedLevel: IUpdateAreaEnemies) => async (di
             const isSpawned = getChance(e.spawnChance);
 
             if (isSpawned) {
-                for(let j = 0; j < count; j++){
+                for (let j = 0; j < count; j++) {
                     switch (currentEnemy.type) {
                         case 'trader':
                             const possibleItems = currentEnemy.possibleLoot;
@@ -155,63 +157,63 @@ export const updateAreaEnemies = (updatedLevel: IUpdateAreaEnemies) => async (di
         });
         enemiesData.enemies = enemies;
         dispatch(areaSlice.actions.updateAreaEnemies(enemiesData));
-        
+
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const mineItemAC = (miningItem: IFullItemWithCount) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         dispatch(areaSlice.actions.mineItem(miningItem));
-        
-        await addItemsToInventory([{id: miningItem.id, count: miningItem.count}]);
+
+        await addItemsToInventory([{ id: miningItem.id, count: miningItem.count }]);
 
         dispatch(userSlice.actions.addItemsToInventory([miningItem]));
-        
+
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const setAreasFromStorage = () => async (dispatch: AppDispatch) => {
-    try{
+    try {
         dispatch(areaSlice.actions.setAreasFromStorage());
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
-export const addItemsToInventoryAC = (items:IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
-    try{
+export const addItemsToInventoryAC = (items: IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
+    try {
         items = items.filter(item => item.id !== 'coin' && item.id !== 'experience');
-        await addItemsToInventory(items.map(item => ({id: item.id, count: item.count})));
+        await addItemsToInventory(items.map(item => ({ id: item.id, count: item.count })));
         dispatch(userSlice.actions.addItemsToInventory(items));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
-export const removeItemsFromInventoryAC = (items:IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
-    try{
-        await removeItemsFromInventory(items.map(item => ({id: item.id, count: item.count})));
+export const removeItemsFromInventoryAC = (items: IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
+    try {
+        await removeItemsFromInventory(items.map(item => ({ id: item.id, count: item.count })));
 
         dispatch(userSlice.actions.removeItemsFromInventory(items));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
-export const setDeadEnemy = ({...enemy}: IEnemyDead) => async (dispatch: AppDispatch) => {
-    try{
+export const setDeadEnemy = ({ ...enemy }: IEnemyDead) => async (dispatch: AppDispatch) => {
+    try {
         dispatch(areaSlice.actions.setEnemyDead(enemy));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
@@ -222,109 +224,109 @@ export const addXPAC = (xp: number) => async (dispatch: AppDispatch) => {
         await addExperience(xp);
         dispatch(userSlice.actions.addXP(xp));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const addSkillsAC = (skills: ISkillUp[]) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         dispatch(userSlice.actions.setIsSkillsLoading(true));
-        
-        for(const skill of skills){
+
+        for (const skill of skills) {
             await addSkill(skill.id, skill.countLevels);
         }
         await dispatch(userSlice.actions.addSkills(skills));
 
         dispatch(userSlice.actions.setIsSkillsLoading(false));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const addSkillPointsAC = (points: number) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         await addSkillPointsAC(points);
         dispatch(userSlice.actions.addSkillPoints(points));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const decrementSkillPointsAC = (points: number) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         await removeSkillPoints(points);
         dispatch(userSlice.actions.decrementSkillPoints(points));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const equipItem = (id: string) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         dispatch(userSlice.actions.equipItem(id));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const addCoinsAC = (coins: number) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         await addCoins(coins);
         dispatch(userSlice.actions.addCoins(coins));
     }
-    catch (e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const removeCoinsAC = (coins: number) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         await removeCoins(coins);
         dispatch(userSlice.actions.removeCoins(coins));
     }
-    catch (e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const buyItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         dispatch(areaSlice.actions.removeItemTrader(buyingItem));
         await dispatch(addItemsToInventoryAC([buyingItem.item]));
         await dispatch(removeCoinsAC(buyingItem.item.cost * buyingItem.item.count));
     }
-    catch (e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const sellItem = (buyingItem: IBuyItem) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         await dispatch(removeItemsFromInventoryAC([buyingItem.item]));
         dispatch(addCoinsAC(buyingItem.item.cost * buyingItem.item.count));
         dispatch(userSlice.actions.sellItem(buyingItem));
     }
-    catch (e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const setHealthPoints = (health: number) => async (dispatch: AppDispatch) => {
-    try{
+    try {
         dispatch(userSlice.actions.setHealthPoints(health));
     }
-    catch(e){
+    catch (e) {
         console.error(e)
     }
 }
 
 export const authUserAC = () => async (dispatch: AppDispatch) => {
-    try{
+    try {
         dispatch(userSlice.actions.setIsLoading(true));
 
         const userData = await account.get();
@@ -346,13 +348,12 @@ export const authUserAC = () => async (dispatch: AppDispatch) => {
         dispatch(userSlice.actions.setInventory(finalItems));
 
         const stats = await getUserStats();
-        console.log(stats)
-        if(stats){
+        if (stats) {
             dispatch(userSlice.actions.setCoins(stats.coins));
             dispatch(userSlice.actions.setExperience(stats.experience));
             dispatch(userSlice.actions.setLevel(stats.level));
             dispatch(userSlice.actions.setSkillPoints(stats.skill_points));
-        } else{ 
+        } else {
             await databases.createDocument(
                 statsCollection.databaseId,
                 statsCollection.collectionId,
@@ -371,10 +372,10 @@ export const authUserAC = () => async (dispatch: AppDispatch) => {
             string, IPlayerStat
         ];
         let skillsEntries: SkillEntriesT[] = [];
-        
-        [...Object.entries(PlayerBaseStats)].forEach((baseSkill:SkillEntriesT) => {
+
+        [...Object.entries(PlayerBaseStats)].forEach((baseSkill: SkillEntriesT) => {
             const foundSkill = userSkills.find(userSkill => userSkill.skill_id === baseSkill[0]);
-            if(foundSkill){
+            if (foundSkill) {
                 skillsEntries.push([
                     foundSkill.skill_id,
                     {
@@ -387,42 +388,44 @@ export const authUserAC = () => async (dispatch: AppDispatch) => {
             }
         })
         dispatch(userSlice.actions.setSkills(Object.fromEntries(skillsEntries) as IPlayerBaseStats));
-        
+
         dispatch(userSlice.actions.setIsLoading(false));
         return true
     }
-    catch(e){
+    catch (e) {
         console.error(e);
         return false
     }
 }
 
 export const logoutUserAC = () => async (dispatch: AppDispatch) => {
-    try{
+    try {
         dispatch(userSlice.actions.setIsLoading(true));
         await account.deleteSession('current');
         dispatch(userSlice.actions.setUser({} as any))
         dispatch(userSlice.actions.setIsLoading(false));
     }
-    catch(e){
+    catch (e) {
         console.error(e);
     }
 }
 
-export const addItemsTradingAC = (item: IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
-    try{
-        dispatch(userSlice.actions.addItemsTrading(item));
+export const addItemsTradingAC = (items: IFullItemWithCount[]) => async (dispatch: AppDispatch) => {
+    try {
+        const documentItems: Models.Document[] & IFullItemWithCount[] = await addItemsToTrading(items, '65fc398368c0ad5eba92');
+        dispatch(userSlice.actions.addItemsTrading(documentItems));
     }
-    catch(e){
+    catch (e) {
         console.error(e);
     }
 }
 
-export const removeItemTradingAC = (id: string) => async (dispatch: AppDispatch) => {
-    try{
-        dispatch(userSlice.actions.removeItemTrading(id));
+export const removeItemTradingAC = (documentId: string) => async (dispatch: AppDispatch) => {
+    try {
+        await removeItemFromTrading(documentId)
+        dispatch(userSlice.actions.removeItemTrading(documentId));
     }
-    catch(e){
+    catch (e) {
         console.error(e);
     }
 }
