@@ -4,5 +4,11 @@
         "revealOn": "run",
         "revealWithFocus": "none",
         "clearOnRun": "none"
-    }
+    },
+    "folder-color.pathColors": [
+        {
+            "folderPath": "app\\src\\components\\",
+            "color": "foldercolorizer.purple"
+        }
+    ]
 }

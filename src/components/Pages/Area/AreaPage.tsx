@@ -184,7 +184,7 @@ function AreaPage({ $onClickStartBattle }: IAreaPage) {
 
 			<Container>
 				<Area>
-					<Sidebar />
+					{/* <Sidebar /> */}
 					<EmptySidebar />
 					<AreaInfo>
 						<LevelName color={currentLocation.color}>

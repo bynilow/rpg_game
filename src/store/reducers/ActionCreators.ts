@@ -25,6 +25,7 @@ import { getAllSkills } from "../../appwrite/api/skills/getSkill";
 import { PlayerBaseStats } from "../../data/PlayerStats";
 import { addItemsToTrading } from "../../appwrite/api/trading/addItemsToTrading";
 import { removeItemFromTrading } from "../../appwrite/api/trading/removeItemFromTrading";
+import { getTradeItems } from "../../appwrite/api/trading/getTradeItems";
 
 interface IResult {
     results: any[]
@@ -404,6 +405,16 @@ export const logoutUserAC = () => async (dispatch: AppDispatch) => {
         await account.deleteSession('current');
         dispatch(userSlice.actions.setUser({} as any))
         dispatch(userSlice.actions.setIsLoading(false));
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
+
+export const getTradeItemsAC = () => async (dispatch: AppDispatch) => {
+    try {
+        const items = await getTradeItems('65fc398368c0ad5eba92');
+        dispatch(userSlice.actions.setTradingItems(items));
     }
     catch (e) {
         console.error(e);

@@ -64,17 +64,17 @@ function App() {
               <AreaPage $onClickStartBattle={({ ...enemy }: IAreaCurrentEnemy) => onClickStartBattle(enemy)} />} />
           </Routes>
         </BrowserRouter>
-          {
-            isStartedBattle || isEndedBattle
-              ? <BattleBlock $isStart={isStartedBattle} />
-              : null
-          }
-          
+        {
+          isStartedBattle || isEndedBattle
+            ? <BattleBlock $isStart={isStartedBattle} />
+            : null
+        }
+
       </>
 
-  // <div>
-  //   <MapCreatorPage />
-  // </div>
+      // <div>
+      //   <MapCreatorPage />
+      // </div>
     );
   }
   else {
@@ -95,7 +95,7 @@ const StartBattleAnim = keyframes`
   }
 `
 
-interface IBattleBlockProps{
+interface IBattleBlockProps {
   $isStart: boolean;
 }
 
@@ -146,6 +146,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     font-family: 'Comfortaa';
     font-weight: medium;
+    line-height: 1;
   }
 `
 

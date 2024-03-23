@@ -24,7 +24,7 @@ export const addItemsToTrading = async (items: AddItemT[], tradeId: string) => {
                         trade_id: tradeId
                     }
                 );
-            createdItem = { ...createdItem, item }
+            createdItem = { ...createdItem, ...item }
             documentItems.push(createdItem);
         }
         console.log(documentItems)

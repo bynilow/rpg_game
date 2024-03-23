@@ -9,6 +9,7 @@ import { useAppDispatch } from '../../../hooks/redux';
 import { removeItemTradingAC } from '../../../store/reducers/ActionCreators';
 
 interface IItemCard {
+    $isCurrentPlayerItem?: boolean;
     $documentId?: string;
     $isTrading?: boolean;
     id: string
@@ -16,7 +17,7 @@ interface IItemCard {
     extraInfo?: string;
 }
 
-function ItemCard({ id, count, extraInfo, $documentId, $isTrading = false }: IItemCard) {
+function ItemCard({ id, count, extraInfo, $documentId, $isTrading = false, $isCurrentPlayerItem = false }: IItemCard) {
 
     const dispatch = useAppDispatch();
 
@@ -30,7 +31,7 @@ function ItemCard({ id, count, extraInfo, $documentId, $isTrading = false }: IIt
         <Item
             color={getItemBackground(item.rare)}
             $hoveredColor={getItemHoveredBackground(item.rare)}>
-            <ButtonOuter $isTrading={$isTrading}>
+            <ButtonOuter $isVisible={$isTrading && $isCurrentPlayerItem}>
                 <CircleButton
                     symbol={palette.cancelMark}
                     click={() => onClickDelete()} />
@@ -53,7 +54,7 @@ function ItemCard({ id, count, extraInfo, $documentId, $isTrading = false }: IIt
 }
 
 interface IButtonOuter {
-    $isTrading: boolean;
+    $isVisible: boolean;
 }
 
 const ButtonOuter = styled.div<IButtonOuter>`
@@ -66,12 +67,11 @@ const ButtonOuter = styled.div<IButtonOuter>`
     
     transition: 0.2s;
 
-    ${p => p.$isTrading ? 'display: block;' : 'display: hidden;'}
+    ${p => p.$isVisible ? 'display: block;' : 'display: hidden;'}
 `
 
 const Info = styled.div`
     width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -89,14 +89,15 @@ interface IItemProps {
 
 const Item = styled.div<IItemProps>`
     position: relative;
-    width: 10rem;
-    height: 10rem;
-    aspect-ratio: 1/1;
+    width: auto;
+    /* height: 10rem; */
+    /* aspect-ratio: 1/1; */
     box-shadow: 0 0 5px black;
     border-radius: 5px;
     padding: 10px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     text-align: center;
     gap: 10px;
@@ -113,6 +114,10 @@ const Item = styled.div<IItemProps>`
     &:hover ${ButtonOuter}{
         transform: scale(1);
     }
+
+    /* @media (max-width: 426px) {
+        width: 100%;
+    } */
 
 `
 

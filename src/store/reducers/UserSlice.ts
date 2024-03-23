@@ -166,6 +166,9 @@ export const userSlice = createSlice({
         setCurrentTradingId(state, action: PayloadAction<string>) {
             state.currentTradeId = action.payload;
         },
+        setTradingItems(state, action: PayloadAction<IFullItemWithCount[] & Models.Document[]>) {
+            state.tradingItems = action.payload;
+        },
         addItemsTrading(state, action: PayloadAction<IFullItemWithCount[] & Models.Document[]>) {
             state.tradingItems.push(...action.payload);
         },
